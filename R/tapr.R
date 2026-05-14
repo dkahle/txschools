@@ -22,9 +22,9 @@
 #' @return A tibble with a `txschools` attribute carrying source/metadata.
 #' @export
 txs_get_tapr <- function(year,
-                         level,
+                         level = c("campus", "district", "region", "state"),
                          geography = NULL,
-                         data_type = c("advanced", "rates"),
+                         data_type = c("rates", "advanced"),
                          file_format = c("csv", "txt", "xlsx"),
                          cache = TRUE,
                          refresh = FALSE,
@@ -37,8 +37,15 @@ txs_get_tapr <- function(year,
   file_format <- match.arg(file_format)
   output      <- match.arg(output)
   level       <- match.arg(level, c("campus", "district", "region", "state"))
+  cache       <- isTRUE(cache)
 
-  downloads <- txs_list_downloads(year, source = "tapr", refresh = FALSE)
+  downloads <- if (cache) {
+    txs_list_downloads(year, source = "tapr", refresh = refresh)
+  } else {
+    with_temporary_cache_dir(
+      txs_list_downloads(year, source = "tapr", refresh = refresh)
+    )
+  }
   hits <- downloads[
     downloads$level == level &
       downloads$data_type == data_type &
@@ -59,10 +66,12 @@ txs_get_tapr <- function(year,
     hits <- hits[1L, , drop = FALSE]
   }
   url <- hits$url
+  filename <- basename(httr2::url_parse(url)$path)
   dest <- cache_path(
     "tapr", year, level, data_type,
-    file = basename(httr2::url_parse(url)$path)
+    file = filename
   )
+  if (!cache) dest <- temp_download_path(filename)
 
   used_cache <- FALSE
   if (cache && !refresh && file.exists(dest)) {
@@ -90,7 +99,7 @@ txs_get_tapr <- function(year,
       size_bytes   = info$size_bytes,
       content_type = info$content_type
     )
-    write_sidecar(dest, meta)
+    if (cache) write_sidecar(dest, meta)
   }
 
   df_raw <- read_tapr_file(dest, file_format = file_format)

@@ -30,7 +30,7 @@ silently coerced into numerics or \code{NA}.
 }
 \section{Default codes}{
 
-\verb{r paste(sprintf("}\%s\verb{", txschools:::TXS_MASK_VALUES), collapse = ", ")}
+\code{.}, \code{*}, \code{-1}, \code{-2}, \code{-3}, \code{-4}, \code{-99}, \code{n/a}, \code{N/A}.
 }
 
 \examples{

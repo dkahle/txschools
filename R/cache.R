@@ -35,6 +35,23 @@ cache_path <- function(source, year = NULL, level = NULL,
 # Sidecar metadata is written next to the cached file as `<file>.txschools.yml`.
 sidecar_path <- function(path) paste0(path, ".txschools.yml")
 
+temp_download_path <- function(filename) {
+  ext <- tools::file_ext(filename)
+  fileext <- if (nzchar(ext)) paste0(".", ext) else ""
+  tempfile(pattern = "txschools-", tmpdir = tempdir(), fileext = fileext)
+}
+
+with_temporary_cache_dir <- function(expr) {
+  old <- getOption("txschools.cache_dir", default = NULL)
+  tmp <- tempfile("txschools-cache-")
+  on.exit({
+    options(txschools.cache_dir = old)
+    unlink(tmp, recursive = TRUE)
+  }, add = TRUE)
+  options(txschools.cache_dir = tmp)
+  force(expr)
+}
+
 write_sidecar <- function(path, meta) {
   meta$package_version <- as.character(utils::packageVersion("txschools"))
   meta$user_agent      <- getOption("txschools.user_agent", TXS_USER_AGENT_BASE)
@@ -121,16 +138,29 @@ txs_cache_list <- function() {
 txs_cache_delete <- function(year = NULL, source = NULL, level = NULL,
                              all = FALSE, ask = interactive()) {
   inv <- txs_cache_list()
-  if (!nrow(inv)) return(invisible(inv))
 
   if (isTRUE(all)) {
-    target <- inv
-  } else {
-    target <- inv
-    if (!is.null(source)) target <- target[target$source %in% source, , drop = FALSE]
-    if (!is.null(year))   target <- target[target$year   %in% as.integer(year), , drop = FALSE]
-    if (!is.null(level))  target <- target[target$level  %in% level, , drop = FALSE]
+    root <- txs_cache_dir()
+    if (!dir.exists(root)) return(invisible(inv))
+    if (isTRUE(ask)) {
+      cli::cli_alert_warning("About to delete the entire txschools cache.")
+      ans <- utils::menu(c("Yes", "No"), title = "Proceed?")
+      if (ans != 1L) {
+        cli::cli_alert_info("Aborted; nothing deleted.")
+        return(invisible(inv[0, , drop = FALSE]))
+      }
+    }
+    unlink(root, recursive = TRUE)
+    cli::cli_alert_success("Deleted the txschools cache.")
+    return(invisible(inv))
   }
+
+  if (!nrow(inv)) return(invisible(inv))
+
+  target <- inv
+  if (!is.null(source)) target <- target[target$source %in% source, , drop = FALSE]
+  if (!is.null(year))   target <- target[target$year   %in% as.integer(year), , drop = FALSE]
+  if (!is.null(level))  target <- target[target$level  %in% level, , drop = FALSE]
   if (!nrow(target)) {
     cli::cli_alert_info("No cached files matched the filter.")
     return(invisible(target))

@@ -86,3 +86,30 @@ test_that("txs_get_tapr filters by geography", {
   expect_equal(nrow(df), 1L)
   expect_equal(df$CAMPUS, "000000001")
 })
+
+test_that("txs_get_tapr spec defaults use campus rates and cache=FALSE is temporary", {
+  dir <- withr::local_tempdir()
+  withr::local_options(txschools.cache_dir = dir)
+
+  fake_url <- "https://example.org/perfreport/tapr/2023-24/download/cs.csv"
+  fake_downloads <- tibble::tibble(
+    source = "tapr", year = 2023L, school_year = "2023-24",
+    level = "campus", data_type = "rates",
+    file_format = "csv",
+    label = "Campus Rates (CSV)", url = fake_url
+  )
+  mockery::stub(txs_get_tapr, "txs_list_downloads", function(...) fake_downloads)
+  mockery::stub(txs_get_tapr, "http_download", function(url, dest, ...) {
+    file.copy(fixture_path("synthetic_campus_advanced.csv"), dest, overwrite = TRUE)
+    list(path = dest, sha256 = sha256_file(dest),
+         size_bytes = file.size(dest), content_type = "text/csv",
+         retrieved_at = iso8601_now(), source_url = url)
+  })
+
+  df <- txs_get_tapr(2023, file_format = "csv", cache = FALSE,
+                     output = "raw", verbose = FALSE)
+  meta <- attr(df, "txschools")
+  expect_equal(meta$level, "campus")
+  expect_equal(meta$data_type, "rates")
+  expect_length(list.files(dir, all.files = TRUE, no.. = TRUE), 0)
+})

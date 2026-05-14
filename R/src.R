@@ -4,7 +4,7 @@
 #' @return A tibble with a `txschools` attribute.
 #' @export
 txs_get_src <- function(year,
-                        level,
+                        level = c("campus", "district", "region", "state"),
                         geography = NULL,
                         data_type = c("rates"),
                         file_format = c("csv", "txt", "xlsx"),

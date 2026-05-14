@@ -7,8 +7,6 @@
 #' @param years Integer vector of beginning years.
 #' @param levels Character vector of levels.
 #' @param data_type `"rates"` or `"advanced"`.
-#' @param file_format `"csv"`, `"txt"`, or `"xlsx"`.
-#' @param source `"tapr"`, `"src"`, or `"aeis"`.
 #' @return A tibble plan.
 #' @examples
 #' \dontrun{
@@ -17,10 +15,10 @@
 #' @export
 txs_bulk_plan <- function(years,
                           levels = c("campus", "district"),
-                          data_type = "advanced",
-                          file_format = "csv",
-                          source = "tapr") {
+                          data_type = "advanced") {
   years <- vapply(years, normalize_year, integer(1))
+  file_format <- "csv"
+  source <- "tapr"
   grid <- expand.grid(
     year = years, level = levels, data_type = data_type,
     file_format = file_format, source = source,
@@ -83,10 +81,10 @@ txs_bulk_plan <- function(years,
 #'   `sha256`, and `error`.
 #' @export
 txs_bulk_download <- function(plan,
-                              delay = getOption("txschools.bulk_delay", 5),
+                              delay = 5,
                               refresh = FALSE,
                               stop_on_error = FALSE,
-                              max_tries = TXS_MAX_TRIES) {
+                              max_tries = 3) {
   if (!is.data.frame(plan) || !nrow(plan)) return(plan)
   n <- nrow(plan)
   status   <- character(n)

@@ -15,8 +15,8 @@ the School Report Card (SRC), and the AEIS archive.
 `txschools` is **not affiliated with or endorsed by the Texas Education
 Agency**. It downloads files from TEA’s *public* TAPR/SRC/AEIS pages on
 demand and does **not** redistribute TEA data. Users are responsible for
-compliance with [TEA’s terms of
-use](https://tea.texas.gov/about-tea/welcome-and-overview/terms-of-use-and-linking-policy)
+compliance with [TEA’s site
+policies](https://tea.texas.gov/about-tea/welcome-and-overview/site-policies)
 and with FERPA and other applicable privacy laws. Masking and
 suppression values applied by TEA are preserved exactly; this package
 **never imputes or infers masked values**.
@@ -32,14 +32,16 @@ pak::pak("dkahle/txschools")
 
 ``` r
 library(txschools)
+```
 
-# What years are available?
+These calls make polite requests to TEA’s public pages and cache any
+downloaded files locally:
+
+``` r
 txs_list_years("tapr")
 
-# What downloads exist for a given year?
 txs_list_downloads(2023, source = "tapr")
 
-# Download (or use cached copy of) the campus-level advanced TAPR file
 df <- txs_get_tapr(
   year       = 2023,
   level      = "campus",
@@ -48,13 +50,46 @@ df <- txs_get_tapr(
   output     = "tidy"
 )
 
-# Where the file lives + its source metadata
 attr(df, "txschools")
+```
+
+Examples that do not touch the network are useful for checking the
+package behavior and output shape:
+
+``` r
+years <- txs_catalog()$tapr$years
+data.frame(
+  source = "tapr",
+  first_year = min(years),
+  latest_catalog_year = max(years)
+)
+#>   source first_year latest_catalog_year
+#> 1   tapr       2012                2024
+```
+
+``` r
+values <- c("97.2", "*", ".", "-1", "100")
+mask_strip(values)
+#> # A tibble: 5 × 3
+#>   value_num masked mask_code
+#>       <dbl> <lgl>  <chr>    
+#> 1      97.2 FALSE  <NA>     
+#> 2      NA   TRUE   *        
+#> 3      NA   TRUE   .        
+#> 4      NA   TRUE   -1       
+#> 5     100   FALSE  <NA>
+```
+
+``` r
+txs_cite(source = "tapr")
+#> Texas Education Agency (2026). "Texas Academic Performance Reports."
+#> Public data; accessed via the txschools R package.,
+#> <https://tea.texas.gov/texas-schools/accountability/academic-accountability/performance-reporting/texas-academic-performance-reports>.
 ```
 
 ## How it stays polite
 
-- Conservative rate-limiting (default 10 requests/sec; bulk downloads
+- Conservative rate-limiting (default 1 request/sec; bulk downloads
   default to a 5-second delay between files).
 - Identifies itself with a clear, package-named `User-Agent`.
 - Respects `robots.txt` (configurable via

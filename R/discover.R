@@ -201,7 +201,7 @@ scrape_tapr_download_pages <- function(year) {
   cat   <- catalog_source("tapr")
   base  <- cat$base
   pages <- list(
-    basic    = catalog_url(cat$basic_download,    base, year),
+    rates    = catalog_url(cat$basic_download,    base, year),
     advanced = catalog_url(cat$advanced_download, base, year)
   )
   out <- list()
@@ -249,12 +249,13 @@ parse_links_html <- function(html_str, page_url, year, source, data_type,
   if (!length(hrefs)) return(list())
   urls <- vapply(hrefs, function(h) xml2::url_absolute(h, page_url),
                  character(1))
-  rows <- vector("list", length(urls))
+  rows <- list()
   for (i in seq_along(urls)) {
     bn  <- tolower(basename(httr2::url_parse(urls[i])$path))
     lvl <- classify_level(bn, level_prefixes)
     fmt <- classify_format(bn)
-    rows[[i]] <- list(
+    if (is.na(lvl) || is.na(fmt)) next
+    rows[[length(rows) + 1L]] <- list(
       source      = source,
       year        = year,
       school_year = year_label(year),

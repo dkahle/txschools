@@ -6,10 +6,10 @@
 \usage{
 txs_bulk_download(
   plan,
-  delay = getOption("txschools.bulk_delay", 5),
+  delay = 5,
   refresh = FALSE,
   stop_on_error = FALSE,
-  max_tries = TXS_MAX_TRIES
+  max_tries = 3
 )
 }
 \arguments{

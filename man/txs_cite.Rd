@@ -4,7 +4,7 @@
 \alias{txs_cite}
 \title{Build a citation}
 \usage{
-txs_cite(x = NULL, source = c("tapr", "src", "aeis"))
+txs_cite(x = NULL, source = "tapr")
 }
 \arguments{
 \item{x}{Optional. A tibble returned by \verb{txs_get_*()}. If \code{NULL},

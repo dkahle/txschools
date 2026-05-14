@@ -26,9 +26,9 @@ tapr:
     - 2022
     - 2023
     - 2024
-  landing:           "{base}/{year_label}/index.html"
-  basic_download:    "{base}/{year_label}/DownloadData.html"
-  advanced_download: "{base}/{year_label}/xplore/Index.html"
+  landing:           "{base}/{end_year}/index.html"
+  basic_download:    "{base}/{end_year}/Basic%20Download/DownloadSelData.html"
+  advanced_download: "{base}/{end_year}/Advance%20Download/download-data-adv.html"
   # Filename heuristics: filenames beginning with these tokens map to
   # the indicated level. Used to classify links scraped from the
   # download pages.
@@ -41,18 +41,6 @@ tapr:
     csv:  csv
     txt:  dat
     xlsx: xlsx
-  # Hard-coded fallback URLs for the year that the package is exercised
-  # against in tests (2023). These are documented here so that the
-  # offline test suite has a stable set of URLs to match against; the
-  # package never downloads or ships the underlying TEA files.
-  files_2023:
-    - { level: campus,   data_type: advanced, file_format: csv, label: "Campus Advanced (CSV)",  url: "{base}/{year_label}/download/campadv.zip" }
-    - { level: campus,   data_type: rates,    file_format: csv, label: "Campus Rates (CSV)",     url: "{base}/{year_label}/download/cs.zip" }
-    - { level: district, data_type: advanced, file_format: csv, label: "District Advanced (CSV)",url: "{base}/{year_label}/download/distadv.zip" }
-    - { level: district, data_type: rates,    file_format: csv, label: "District Rates (CSV)",   url: "{base}/{year_label}/download/dist.zip" }
-    - { level: region,   data_type: rates,    file_format: csv, label: "Region Rates (CSV)",     url: "{base}/{year_label}/download/reg.zip" }
-    - { level: state,    data_type: rates,    file_format: csv, label: "State Rates (CSV)",      url: "{base}/{year_label}/download/state.zip" }
-
 aeis:
   label: Academic Excellence Indicator System
   base: https://rptsvr1.tea.texas.gov/perfreport/aeis

@@ -59,22 +59,24 @@ test_that("scrape_tapr_download_pages parses fixture HTML when fetch is mocked",
   expect_true(length(rows) > 0)
   dtypes <- vapply(rows, function(r) r$data_type %||% NA_character_, character(1))
   expect_true("advanced" %in% dtypes)
-  expect_true("basic"    %in% dtypes)
+  expect_true("rates"    %in% dtypes)
+  expect_false("basic"   %in% dtypes)
 })
 
-test_that("txs_list_downloads uses the catalog fallback when scraping yields nothing", {
+test_that("download discovery does not fabricate file URLs when scraping yields nothing", {
   dir <- withr::local_tempdir()
   withr::local_options(txschools.cache_dir = dir)
 
   mockery::stub(discover_tapr_downloads, "scrape_tapr_download_pages",
                 function(year) list())
   rows <- discover_tapr_downloads(2023)
-  expect_true(length(rows) > 0)
-  # Catalog entries for 2023 should produce campus + district + advanced.
-  combos <- vapply(
-    rows, function(r) paste(r$level, r$data_type, sep = "/"),
-    character(1)
+  expect_equal(length(rows), 0)
+})
+
+test_that("catalog_url expands TEA end-year TAPR paths", {
+  cat <- txschools:::catalog_source("tapr")
+  expect_equal(
+    catalog_url(cat$landing, cat$base, 2023),
+    "https://rptsvr1.tea.texas.gov/perfreport/tapr/2024/index.html"
   )
-  expect_true("campus/advanced" %in% combos)
-  expect_true("district/advanced" %in% combos)
 })

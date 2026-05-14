@@ -4,13 +4,7 @@
 \alias{txs_bulk_plan}
 \title{Plan a bulk download}
 \usage{
-txs_bulk_plan(
-  years,
-  levels = c("campus", "district"),
-  data_type = "advanced",
-  file_format = "csv",
-  source = "tapr"
-)
+txs_bulk_plan(years, levels = c("campus", "district"), data_type = "advanced")
 }
 \arguments{
 \item{years}{Integer vector of beginning years.}
@@ -18,10 +12,6 @@ txs_bulk_plan(
 \item{levels}{Character vector of levels.}
 
 \item{data_type}{\code{"rates"} or \code{"advanced"}.}
-
-\item{file_format}{\code{"csv"}, \code{"txt"}, or \code{"xlsx"}.}
-
-\item{source}{\code{"tapr"}, \code{"src"}, or \code{"aeis"}.}
 }
 \value{
 A tibble plan.

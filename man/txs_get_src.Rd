@@ -6,7 +6,7 @@
 \usage{
 txs_get_src(
   year,
-  level,
+  level = c("campus", "district", "region", "state"),
   geography = NULL,
   data_type = c("rates"),
   file_format = c("csv", "txt", "xlsx"),

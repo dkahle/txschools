@@ -12,7 +12,7 @@
 #' @examples
 #' txs_cite(source = "tapr")
 #' @export
-txs_cite <- function(x = NULL, source = c("tapr", "src", "aeis")) {
+txs_cite <- function(x = NULL, source = "tapr") {
   if (!is.null(x) && !is.null(attr(x, "txschools"))) {
     meta <- attr(x, "txschools")
     return(utils::bibentry(
@@ -36,7 +36,7 @@ txs_cite <- function(x = NULL, source = c("tapr", "src", "aeis")) {
       publisher = "Texas Education Agency"
     ))
   }
-  source <- match.arg(source)
+  source <- match.arg(source, c("tapr", "src", "aeis"))
   prog <- switch(
     source,
     tapr = list(name = "Texas Academic Performance Reports",

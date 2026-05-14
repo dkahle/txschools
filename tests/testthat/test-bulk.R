@@ -22,7 +22,7 @@ test_that("txs_bulk_plan produces one row per (year, level) combo", {
   mockery::stub(txs_bulk_plan, "txs_list_downloads", fake_downloads)
 
   plan <- txs_bulk_plan(2022:2023, levels = c("campus", "district"),
-                       data_type = "advanced", file_format = "csv")
+                       data_type = "advanced")
   expect_equal(nrow(plan), 4)
   expect_setequal(plan$year, c(2022L, 2023L))
   expect_setequal(plan$level, c("campus", "district"))

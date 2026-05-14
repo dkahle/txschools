@@ -6,7 +6,7 @@
 #' @return A tibble with a `txschools` attribute.
 #' @export
 txs_get_aeis <- function(year,
-                         level,
+                         level = c("campus", "district", "region", "state"),
                          geography = NULL,
                          data_type = c("rates"),
                          file_format = c("csv", "txt", "xlsx"),
@@ -42,7 +42,14 @@ txs_get_aeis <- function(year,
 generic_get <- function(source, year, level, geography, data_type,
                         file_format, cache, refresh, output,
                         keep_raw, timeout, verbose) {
-  downloads <- txs_list_downloads(year, source = source, refresh = FALSE)
+  cache <- isTRUE(cache)
+  downloads <- if (cache) {
+    txs_list_downloads(year, source = source, refresh = refresh)
+  } else {
+    with_temporary_cache_dir(
+      txs_list_downloads(year, source = source, refresh = refresh)
+    )
+  }
   hits <- downloads[
     downloads$level == level &
       downloads$data_type == data_type &
@@ -56,10 +63,12 @@ generic_get <- function(source, year, level, geography, data_type,
     ), call. = FALSE)
   }
   url  <- hits$url[1]
+  filename <- basename(httr2::url_parse(url)$path)
   dest <- cache_path(
     source, year, level, data_type,
-    file = basename(httr2::url_parse(url)$path)
+    file = filename
   )
+  if (!cache) dest <- temp_download_path(filename)
 
   used_cache <- FALSE
   if (cache && !refresh && file.exists(dest)) {
@@ -87,7 +96,7 @@ generic_get <- function(source, year, level, geography, data_type,
       size_bytes   = info$size_bytes,
       content_type = info$content_type
     )
-    write_sidecar(dest, meta)
+    if (cache) write_sidecar(dest, meta)
   }
 
   df_raw <- read_tapr_file(dest, file_format = file_format)

@@ -6,9 +6,9 @@
 \usage{
 txs_get_tapr(
   year,
-  level,
+  level = c("campus", "district", "region", "state"),
   geography = NULL,
-  data_type = c("advanced", "rates"),
+  data_type = c("rates", "advanced"),
   file_format = c("csv", "txt", "xlsx"),
   cache = TRUE,
   refresh = FALSE,

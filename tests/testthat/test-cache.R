@@ -59,3 +59,29 @@ test_that("cache_delete with ask=FALSE removes file and sidecar", {
   expect_false(file.exists(sidecar_path(cp)))
   expect_equal(nrow(txs_cache_list()), 0)
 })
+
+test_that("cache_delete(all=TRUE) removes metadata-only cache directories", {
+  dir <- withr::local_tempdir()
+  withr::local_options(txschools.cache_dir = dir)
+  meta_dir <- file.path(dir, "_meta")
+  dir.create(meta_dir, recursive = TRUE)
+  writeLines("source: tapr", file.path(meta_dir, "years_tapr.yml"))
+
+  invisible(txs_cache_delete(all = TRUE, ask = FALSE))
+  expect_false(dir.exists(dir))
+})
+
+test_that("temporary cache helper restores the configured cache", {
+  dir <- withr::local_tempdir()
+  withr::local_options(txschools.cache_dir = dir)
+
+  tmp <- with_temporary_cache_dir({
+    active <- txs_cache_dir()
+    dir.create(file.path(active, "_meta"), recursive = TRUE)
+    writeLines("source: tapr", file.path(active, "_meta", "years_tapr.yml"))
+    active
+  })
+
+  expect_equal(txs_cache_dir(), normalizePath(dir, winslash = "/", mustWork = FALSE))
+  expect_false(dir.exists(tmp))
+})

@@ -29,7 +29,7 @@ TXS_LANDING_TAPR <- paste0(
 # `masked` flag traveling alongside.
 TXS_MASK_VALUES <- c(".", "*", "-1", "-2", "-3", "-4", "-99", "n/a", "N/A")
 
-TXS_RATE_DEFAULT     <- 10    # requests per second
+TXS_RATE_DEFAULT     <- 1     # request per second
 TXS_TIMEOUT_DEFAULT  <- 60    # seconds
 TXS_MAX_TRIES        <- 3
 TXS_FIRST_TAPR_YEAR  <- 2012
