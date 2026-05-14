@@ -7,7 +7,7 @@ test_that("txs_cite returns a generic bibentry per source", {
 test_that("txs_cite uses dataset metadata when available", {
   df <- tibble::tibble(x = 1)
   attr(df, "txschools") <- list(
-    source = "tapr", year = 2023L, school_year = "2023-24",
+    source = "tapr", year = 2024L, school_year = "2023-24",
     level = "campus", data_type = "advanced", file_format = "csv",
     source_url = "https://example.org/x.csv",
     retrieved_at = "2026-01-15T12:00:00Z",

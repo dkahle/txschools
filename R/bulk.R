@@ -4,13 +4,13 @@
 #' the resolved URL, target cache path, and a flag indicating whether
 #' the file is already cached.
 #'
-#' @param years Integer vector of beginning years.
+#' @param years Integer vector of ending years.
 #' @param levels Character vector of levels.
 #' @param data_type `"rates"` or `"advanced"`.
 #' @return A tibble plan.
 #' @examples
 #' \dontrun{
-#' plan <- txs_bulk_plan(2022:2023, levels = c("campus", "district"))
+#' plan <- txs_bulk_plan(2024:2025, levels = c("campus", "district"))
 #' }
 #' @export
 txs_bulk_plan <- function(years,

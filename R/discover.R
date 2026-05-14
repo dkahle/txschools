@@ -56,10 +56,10 @@ discover_tapr_years <- function() {
     resp <- http_get(TXS_LANDING_TAPR)
     html <- rvest::read_html(httr2::resp_body_string(resp))
     txt  <- rvest::html_text(rvest::html_elements(html, "a"))
-    # Extract beginning year from labels like "2023-24" or "2023<U+2013>24"
+    # Extract ending year from labels like "2023-24" or "2023<U+2013>24"
     # (ASCII hyphen-minus or Unicode en dash, both used on TEA pages).
     m <- stringr::str_extract(txt, "\\b(20\\d{2})\\s*[\u2013-]\\s*\\d{2}\\b")
-    yrs <- as.integer(stringr::str_extract(m, "20\\d{2}"))
+    yrs <- vapply(m[!is.na(m)], year_from_label, integer(1))
     yrs <- yrs[!is.na(yrs)]
     yrs
   }, error = function(e) integer(0))
@@ -72,8 +72,13 @@ discover_aeis_years <- function() {
     resp <- http_get(paste0(TXS_BASE_AEIS, "/"))
     html <- rvest::read_html(httr2::resp_body_string(resp))
     hrefs <- rvest::html_attr(rvest::html_elements(html, "a"), "href")
-    m <- stringr::str_extract(hrefs, "20\\d{2}-\\d{2}")
-    yrs <- as.integer(stringr::str_extract(m, "20\\d{2}"))
+    txt <- rvest::html_text(rvest::html_elements(html, "a"))
+    labels <- stringr::str_extract(txt, "\\b20\\d{2}\\s*[\u2013-]\\s*\\d{2}\\b")
+    href_years <- stringr::str_extract(hrefs, "(?<!\\d)20\\d{2}(?!\\d)")
+    yrs <- c(
+      vapply(labels[!is.na(labels)], year_from_label, integer(1)),
+      as.integer(href_years)
+    )
     yrs <- yrs[!is.na(yrs) &
                  yrs >= TXS_FIRST_AEIS_YEAR &
                  yrs <= TXS_LAST_AEIS_YEAR]
@@ -88,8 +93,13 @@ discover_src_years <- function() {
     resp <- http_get(paste0(TXS_BASE_SRC, "/"))
     html <- rvest::read_html(httr2::resp_body_string(resp))
     hrefs <- rvest::html_attr(rvest::html_elements(html, "a"), "href")
-    m <- stringr::str_extract(hrefs, "20\\d{2}-\\d{2}")
-    yrs <- as.integer(stringr::str_extract(m, "20\\d{2}"))
+    txt <- rvest::html_text(rvest::html_elements(html, "a"))
+    labels <- stringr::str_extract(txt, "\\b20\\d{2}\\s*[\u2013-]\\s*\\d{2}\\b")
+    href_years <- stringr::str_extract(hrefs, "(?<!\\d)20\\d{2}(?!\\d)")
+    yrs <- c(
+      vapply(labels[!is.na(labels)], year_from_label, integer(1)),
+      as.integer(href_years)
+    )
     yrs <- yrs[!is.na(yrs)]
     yrs
   }, error = function(e) {
@@ -107,14 +117,14 @@ discover_src_years <- function() {
 #' parsing the public HTML download pages. For TAPR this means
 #' following the year's index to its Basic and Advanced download pages.
 #'
-#' @param year Integer beginning year.
+#' @param year Integer ending year.
 #' @param source One of `"tapr"`, `"src"`, `"aeis"`.
 #' @param refresh If `TRUE`, ignore the on-disk meta cache and re-fetch.
 #' @return A tibble with columns `source`, `year`, `school_year`,
 #'   `level`, `data_type`, `file_format`, `label`, `url`.
 #' @examples
 #' \dontrun{
-#' txs_list_downloads(2023, "tapr")
+#' txs_list_downloads(2024, "tapr")
 #' }
 #' @export
 txs_list_downloads <- function(year,

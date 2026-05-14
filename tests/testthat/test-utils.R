@@ -1,5 +1,5 @@
-test_that("normalize_year accepts integer beginning years", {
-  expect_identical(normalize_year(2023), 2023L)
+test_that("normalize_year accepts integer ending years", {
+  expect_identical(normalize_year(2024), 2024L)
   expect_identical(normalize_year(2024L), 2024L)
 })
 
@@ -11,14 +11,15 @@ test_that("normalize_year rejects non-integer or out-of-range input", {
 })
 
 test_that("year_label formats YYYY-YY", {
-  expect_identical(year_label(2023), "2023-24")
-  expect_identical(year_label(1999), "1999-00")
-  expect_identical(year_label(2099), "2099-00")
+  expect_identical(year_label(2024), "2023-24")
+  expect_identical(year_label(2000), "1999-00")
+  expect_identical(year_label(2100), "2099-00")
 })
 
 test_that("year_from_label round-trips", {
-  expect_identical(year_from_label("2023-24"), 2023L)
-  expect_identical(year_from_label("2003-04"), 2003L)
+  expect_identical(year_from_label("2023-24"), 2024L)
+  expect_identical(year_from_label("2003-04"), 2004L)
+  expect_identical(year_from_label("1999-00"), 2000L)
 })
 
 test_that("ext_for_format maps correctly", {

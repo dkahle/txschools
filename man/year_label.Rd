@@ -2,17 +2,17 @@
 % Please edit documentation in R/utils.R
 \name{year_label}
 \alias{year_label}
-\title{Format a school year as "YYYY-YY"}
+\title{Format a TEA report year as "YYYY-YY"}
 \usage{
 year_label(year)
 }
 \arguments{
-\item{year}{Beginning calendar year.}
+\item{year}{Ending calendar year.}
 }
 \value{
 Character scalar like \code{"2023-24"}.
 }
 \description{
-Format a school year as "YYYY-YY"
+Format a TEA report year as "YYYY-YY"
 }
 \keyword{internal}

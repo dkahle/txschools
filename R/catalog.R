@@ -37,12 +37,12 @@ catalog_years <- function(source) {
   if (is.null(yrs)) integer(0) else as.integer(yrs)
 }
 
-# Expand a "{base}/{year_label}/..." template.
+# Expand a URL template.
 catalog_url <- function(template, base, year) {
   url <- template
   url <- gsub("\\{base\\}", base, url, fixed = FALSE)
   url <- gsub("\\{year_label\\}", year_label(year), url, fixed = FALSE)
-  url <- gsub("\\{end_year\\}", sprintf("%d", as.integer(year) + 1L), url, fixed = FALSE)
+  url <- gsub("\\{end_year\\}", sprintf("%d", as.integer(year)), url, fixed = FALSE)
   url <- gsub("\\{year\\}", sprintf("%d", as.integer(year)), url, fixed = FALSE)
   url
 }

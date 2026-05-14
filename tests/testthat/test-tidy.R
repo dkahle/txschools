@@ -1,6 +1,6 @@
 test_that("to_tidy pivots, preserves mask codes, and separates value_num", {
   df <- read_tapr_csv(fixture_path("synthetic_campus_advanced.csv"))
-  long <- to_tidy(df, year = 2023, level = "campus")
+  long <- to_tidy(df, year = 2024, level = "campus")
 
   expect_true(all(c("variable_code", "value", "value_num",
                     "masked", "mask_code") %in% names(long)))
@@ -22,7 +22,7 @@ test_that("to_raw is a passthrough", {
 
 test_that("to_wide attaches labels attribute when codebook is present", {
   df <- read_tapr_csv(fixture_path("synthetic_campus_advanced.csv"))
-  out <- to_wide(df, year = 2023, level = "campus")
+  out <- to_wide(df, year = 2024, level = "campus")
   # Same data, but with a `labels` attribute populated from the
   # bundled codebook (entries for keys not in the codebook are NA).
   expect_equal(as.data.frame(out), as.data.frame(df), ignore_attr = TRUE)

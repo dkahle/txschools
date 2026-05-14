@@ -21,10 +21,10 @@ test_that("txs_bulk_plan produces one row per (year, level) combo", {
   }
   mockery::stub(txs_bulk_plan, "txs_list_downloads", fake_downloads)
 
-  plan <- txs_bulk_plan(2022:2023, levels = c("campus", "district"),
+  plan <- txs_bulk_plan(2024:2025, levels = c("campus", "district"),
                        data_type = "advanced")
   expect_equal(nrow(plan), 4)
-  expect_setequal(plan$year, c(2022L, 2023L))
+  expect_setequal(plan$year, c(2024L, 2025L))
   expect_setequal(plan$level, c("campus", "district"))
   expect_false(any(plan$exists_in_cache))
   expect_true(all(!is.na(plan$url)))
@@ -35,14 +35,14 @@ test_that("txs_bulk_download writes sidecars and respects delay=0", {
   withr::local_options(txschools.cache_dir = dir)
 
   plan <- tibble::tibble(
-    source = rep("tapr", 2), year = c(2022L, 2023L),
+    source = rep("tapr", 2), year = c(2023L, 2024L),
     school_year = c("2022-23", "2023-24"),
     level = "campus", data_type = "advanced",
     file_format = "csv",
-    url = c("https://x/2022/c.csv", "https://x/2023/c.csv"),
+    url = c("https://x/2023/c.csv", "https://x/2024/c.csv"),
     cache_path = c(
-      cache_path("tapr", 2022, "campus", "advanced", file = "c.csv"),
-      cache_path("tapr", 2023, "campus", "advanced", file = "c.csv")
+      cache_path("tapr", 2023, "campus", "advanced", file = "c.csv"),
+      cache_path("tapr", 2024, "campus", "advanced", file = "c.csv")
     ),
     exists_in_cache = c(FALSE, FALSE)
   )
@@ -73,10 +73,10 @@ test_that("txs_bulk_download records errors without throwing when stop_on_error=
   withr::local_options(txschools.cache_dir = dir)
 
   plan <- tibble::tibble(
-    source = "tapr", year = 2023L, school_year = "2023-24",
+    source = "tapr", year = 2024L, school_year = "2023-24",
     level = "campus", data_type = "advanced", file_format = "csv",
-    url = "https://x/2023/c.csv",
-    cache_path = cache_path("tapr", 2023, "campus", "advanced", file = "c.csv"),
+    url = "https://x/2024/c.csv",
+    cache_path = cache_path("tapr", 2024, "campus", "advanced", file = "c.csv"),
     exists_in_cache = FALSE
   )
   mockery::stub(txs_bulk_download, "http_download",

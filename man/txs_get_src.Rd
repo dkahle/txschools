@@ -19,15 +19,14 @@ txs_get_src(
 )
 }
 \arguments{
-\item{year}{Integer beginning year (e.g. \code{2023} for 2023-24).}
+\item{year}{Integer ending year (e.g. \code{2024} for 2023-24).}
 
 \item{level}{One of \code{"campus"}, \code{"district"}, \code{"region"}, \code{"state"}.}
 
 \item{geography}{Optional. A character vector of campus or district
 numbers to filter the parsed file to. \code{NULL} returns all rows.}
 
-\item{data_type}{Either \code{"rates"} (basic) or \code{"advanced"}
-(numerators, denominators, and rates).}
+\item{data_type}{Currently \code{"rates"}.}
 
 \item{file_format}{\code{"csv"}, \code{"txt"}, or \code{"xlsx"}.}
 

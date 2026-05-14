@@ -24,8 +24,8 @@ test_that("parse_links_html classifies anchors from fixture HTML", {
   html <- fixture_html("tapr_2023_advanced_download.html")
   rows <- parse_links_html(
     html_str = html,
-    page_url = "https://rptsvr1.tea.texas.gov/perfreport/tapr/2023-24/xplore/Index.html",
-    year = 2023, source = "tapr", data_type = "advanced",
+    page_url = "https://rptsvr1.tea.texas.gov/perfreport/tapr/2024/xplore/Index.html",
+    year = 2024, source = "tapr", data_type = "advanced",
     level_prefixes = txschools:::catalog_source("tapr")$level_prefixes
   )
   expect_true(length(rows) > 0)
@@ -55,7 +55,7 @@ test_that("scrape_tapr_download_pages parses fixture HTML when fetch is mocked",
                     level_prefixes = level_prefixes
                   )
                 })
-  rows <- scrape_tapr_download_pages(2023)
+  rows <- scrape_tapr_download_pages(2024)
   expect_true(length(rows) > 0)
   dtypes <- vapply(rows, function(r) r$data_type %||% NA_character_, character(1))
   expect_true("advanced" %in% dtypes)
@@ -69,14 +69,14 @@ test_that("download discovery does not fabricate file URLs when scraping yields 
 
   mockery::stub(discover_tapr_downloads, "scrape_tapr_download_pages",
                 function(year) list())
-  rows <- discover_tapr_downloads(2023)
+  rows <- discover_tapr_downloads(2024)
   expect_equal(length(rows), 0)
 })
 
 test_that("catalog_url expands TEA end-year TAPR paths", {
   cat <- txschools:::catalog_source("tapr")
   expect_equal(
-    catalog_url(cat$landing, cat$base, 2023),
+    catalog_url(cat$landing, cat$base, 2024),
     "https://rptsvr1.tea.texas.gov/perfreport/tapr/2024/index.html"
   )
 })

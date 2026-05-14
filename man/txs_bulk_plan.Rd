@@ -7,7 +7,7 @@
 txs_bulk_plan(years, levels = c("campus", "district"), data_type = "advanced")
 }
 \arguments{
-\item{years}{Integer vector of beginning years.}
+\item{years}{Integer vector of ending years.}
 
 \item{levels}{Character vector of levels.}
 
@@ -23,6 +23,6 @@ the file is already cached.
 }
 \examples{
 \dontrun{
-plan <- txs_bulk_plan(2022:2023, levels = c("campus", "district"))
+plan <- txs_bulk_plan(2024:2025, levels = c("campus", "district"))
 }
 }

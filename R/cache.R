@@ -21,7 +21,7 @@ txs_cache_dir <- function() {
 }
 
 # Build a deterministic path inside the cache for a (source, year, level,
-# data_type, file) combination. `year` is the beginning integer year.
+# data_type, file) combination. `year` is the ending integer year.
 cache_path <- function(source, year = NULL, level = NULL,
                        data_type = NULL, file = NULL) {
   parts <- list(txs_cache_dir(), source)
@@ -127,7 +127,7 @@ txs_cache_list <- function() {
 #' prompted unless `ask = FALSE`. Pass `all = TRUE` to wipe the entire
 #' cache.
 #'
-#' @param year Optional beginning year filter.
+#' @param year Optional ending year filter.
 #' @param source Optional source filter (`"tapr"`, `"src"`, `"aeis"`).
 #' @param level Optional level filter (`"campus"`, `"district"`, …).
 #' @param all If `TRUE`, ignore other filters and delete the whole cache.

@@ -1,6 +1,10 @@
 #' Download an SRC (School Report Card) file
 #'
 #' @inheritParams txs_get_tapr
+#' @param geography Optional. A character vector of campus or district
+#'   numbers to filter the parsed file to. `NULL` returns all rows.
+#' @param data_type Currently `"rates"`.
+#' @param file_format `"csv"`, `"txt"`, or `"xlsx"`.
 #' @return A tibble with a `txschools` attribute.
 #' @export
 txs_get_src <- function(year,

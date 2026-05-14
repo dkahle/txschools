@@ -9,7 +9,7 @@ txs_get_tapr(
   level = c("campus", "district", "region", "state"),
   geography = NULL,
   data_type = c("rates", "advanced"),
-  file_format = c("csv", "txt", "xlsx"),
+  file_format = c("csv", "txt", "xlsx", "html"),
   cache = TRUE,
   refresh = FALSE,
   output = c("tidy", "wide", "raw"),
@@ -19,17 +19,22 @@ txs_get_tapr(
 )
 }
 \arguments{
-\item{year}{Integer beginning year (e.g. \code{2023} for 2023-24).}
+\item{year}{Integer ending year (e.g. \code{2024} for 2023-24).}
 
 \item{level}{One of \code{"campus"}, \code{"district"}, \code{"region"}, \code{"state"}.}
 
 \item{geography}{Optional. A character vector of campus or district
-numbers to filter the parsed file to. \code{NULL} returns all rows.}
+numbers to filter the parsed file to. \code{NULL} returns all rows for
+structured downloads. For \code{file_format = "html"}, supply exactly
+one campus, district, or region identifier.}
 
 \item{data_type}{Either \code{"rates"} (basic) or \code{"advanced"}
 (numerators, denominators, and rates).}
 
-\item{file_format}{\code{"csv"}, \code{"txt"}, or \code{"xlsx"}.}
+\item{file_format}{\code{"csv"}, \code{"txt"}, \code{"xlsx"}, or \code{"html"}. \code{"html"}
+requests a public TAPR/TPRS report page for one requested geography
+when TEA does not expose the current year as a structured download
+file.}
 
 \item{cache}{If \code{TRUE}, reuse a cached copy when one exists.}
 

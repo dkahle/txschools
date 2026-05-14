@@ -7,7 +7,7 @@
 txs_list_downloads(year, source = c("tapr", "src", "aeis"), refresh = FALSE)
 }
 \arguments{
-\item{year}{Integer beginning year.}
+\item{year}{Integer ending year.}
 
 \item{source}{One of \code{"tapr"}, \code{"src"}, \code{"aeis"}.}
 
@@ -24,6 +24,6 @@ following the year's index to its Basic and Advanced download pages.
 }
 \examples{
 \dontrun{
-txs_list_downloads(2023, "tapr")
+txs_list_downloads(2024, "tapr")
 }
 }

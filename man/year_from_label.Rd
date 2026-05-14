@@ -7,7 +7,6 @@
 year_from_label(label)
 }
 \description{
-Accepts \code{"2023-24"} or \code{"2023"} and returns the integer beginning
-year.
+Accepts \code{"2023-24"} or \code{"2024"} and returns the integer ending year.
 }
 \keyword{internal}

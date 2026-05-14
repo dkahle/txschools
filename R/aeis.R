@@ -1,8 +1,13 @@
 #' Download an AEIS (Academic Excellence Indicator System) file
 #'
-#' Coverage: school years 2003-04 through 2011-12.
+#' Coverage: school years 2003-04 through 2011-12, requested as ending
+#' years 2004 through 2012.
 #'
 #' @inheritParams txs_get_tapr
+#' @param geography Optional. A character vector of campus or district
+#'   numbers to filter the parsed file to. `NULL` returns all rows.
+#' @param data_type Currently `"rates"`.
+#' @param file_format `"csv"`, `"txt"`, or `"xlsx"`.
 #' @return A tibble with a `txschools` attribute.
 #' @export
 txs_get_aeis <- function(year,

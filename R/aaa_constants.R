@@ -32,9 +32,9 @@ TXS_MASK_VALUES <- c(".", "*", "-1", "-2", "-3", "-4", "-99", "n/a", "N/A")
 TXS_RATE_DEFAULT     <- 1     # request per second
 TXS_TIMEOUT_DEFAULT  <- 60    # seconds
 TXS_MAX_TRIES        <- 3
-TXS_FIRST_TAPR_YEAR  <- 2012
-TXS_FIRST_AEIS_YEAR  <- 2003
-TXS_LAST_AEIS_YEAR   <- 2011
+TXS_FIRST_TAPR_YEAR  <- 2013
+TXS_FIRST_AEIS_YEAR  <- 2004
+TXS_LAST_AEIS_YEAR   <- 2012
 
 # Static UA string. We append the installed package version at runtime in
 # zzz.R rather than calling utils::packageVersion() at parse time (which

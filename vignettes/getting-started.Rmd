@@ -30,7 +30,7 @@ txs_list_years("tapr")
 ## Find the files for one year
 
 ```{r}
-downloads <- txs_list_downloads(2023, source = "tapr")
+downloads <- txs_list_downloads(2024, source = "tapr")
 downloads
 ```
 
@@ -40,7 +40,7 @@ downloads
 
 ```{r}
 df <- txs_get_tapr(
-  year        = 2023,
+  year        = 2024,
   level       = "campus",
   data_type   = "advanced",
   file_format = "csv",
@@ -66,7 +66,7 @@ txs_cite(df)
 ## Bulk multi-year downloads
 
 ```{r}
-plan <- txs_bulk_plan(2022:2023, levels = c("campus", "district"))
+plan <- txs_bulk_plan(2024:2025, levels = c("campus", "district"))
 plan
 done <- txs_bulk_download(plan, delay = 5)
 done

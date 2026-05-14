@@ -13,7 +13,7 @@ txs_cache_delete(
 )
 }
 \arguments{
-\item{year}{Optional beginning year filter.}
+\item{year}{Optional ending year filter.}
 
 \item{source}{Optional source filter (\code{"tapr"}, \code{"src"}, \code{"aeis"}).}
 

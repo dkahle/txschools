@@ -24,7 +24,14 @@ check_robots <- function(url) {
 
   ua <- getOption("txschools.user_agent", TXS_USER_AGENT_BASE)
   allowed <- tryCatch(
-    robotstxt::paths_allowed(paths = url, bot = ua),
+    {
+      result <- TRUE
+      suppressWarnings(suppressMessages(utils::capture.output(
+        result <- robotstxt::paths_allowed(paths = url, bot = ua),
+        type = "output"
+      )))
+      result
+    },
     error = function(e) {
       # If robots.txt itself fails to load (e.g. 404 on rptsvr1),
       # default to "allowed" but throttle aggressively.

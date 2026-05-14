@@ -37,40 +37,31 @@ library(txschools)
 Here is a real public TAPR/TPRS example: China Spring Elementary School
 (`161920102`) for TEA report year 2025, which corresponds to the 2024-25
 TAPR report. The 2025 campus report is currently exposed by TEA as an
-HTML report page, so this example politely requests the public page and
-extracts the student-information table.
+HTML report page, so this example uses `txs_get_tapr()` to politely
+request the public page and parse the student-information table.
 
 ``` r
-china_spring_url <- paste0(
-  "https://rptsvr1.tea.texas.gov/cgi/sas/broker?",
-  "_debug=0&_program=perfrept.perfmast.sas&_service=marykay",
-  "&ccyy=2025&id=161920102&lev=C",
-  "&prgopt=reports/tapr/student.sas"
+china_spring <- txs_get_tapr(
+  year = 2025,
+  level = "campus",
+  geography = "161920102",
+  data_type = "rates",
+  file_format = "html",
+  output = "raw",
+  verbose = FALSE
 )
 
-response <- httr2::request(china_spring_url) |>
-  httr2::req_user_agent(getOption("txschools.user_agent")) |>
-  httr2::req_throttle(rate = 1, realm = "rptsvr1.tea.texas.gov") |>
-  httr2::req_timeout(60) |>
-  httr2::req_perform()
-
-tapr_tables <- response |>
-  httr2::resp_body_string() |>
-  rvest::read_html() |>
-  rvest::html_table(fill = TRUE, trim = TRUE)
-
-student_info <- tapr_tables[[3]]
-
-rows <- c(3, 5:7, 20, 23, 32, 38)
-
-china_spring_summary <- tibble::tibble(
-  measure = student_info[[1]][rows],
-  campus_count = student_info[[2]][rows],
-  campus_percent = student_info[[3]][rows],
-  district = student_info[[4]][rows],
-  state = student_info[[5]][rows]
+rows <- match(
+  c(
+    "Total Students", "Grade 2", "Grade 3", "Grade 4",
+    "Economically Disadvantaged", "EB Students/EL",
+    "At-Risk", "Special Education"
+  ),
+  china_spring$measure,
+  nomatch = 0L
 )
 
+china_spring_summary <- china_spring[rows, ]
 knitr::kable(china_spring_summary)
 ```
 

@@ -7,14 +7,15 @@
 normalize_year(year)
 }
 \arguments{
-\item{year}{Integer scalar; the beginning calendar year.}
+\item{year}{Integer scalar; the ending calendar year.}
 }
 \value{
 Integer scalar.
 }
 \description{
-The package uses the \emph{beginning} calendar year to identify a TEA
-school year, so \code{2023} means the 2023-24 school year. This helper
+The package uses the \emph{ending} calendar year to identify a TEA
+school year, matching TEA report URLs and \code{ccyy} parameters. For
+example, \code{2025} means the 2024-25 school year. This helper
 validates the input and returns an integer.
 }
 \keyword{internal}
