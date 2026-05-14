@@ -34,58 +34,56 @@ pak::pak("dkahle/txschools")
 library(txschools)
 ```
 
-These calls make polite requests to TEA’s public pages and cache any
-downloaded files locally:
+Here is a real public TAPR/TPRS example: China Spring Elementary School
+(`161920102`) for TEA report year 2025, which corresponds to the 2024-25
+TAPR report. The 2025 campus report is currently exposed by TEA as an
+HTML report page, so this example politely requests the public page and
+extracts the student-information table.
 
 ``` r
-txs_list_years("tapr")
-
-txs_list_downloads(2023, source = "tapr")
-
-df <- txs_get_tapr(
-  year       = 2023,
-  level      = "campus",
-  data_type  = "advanced",
-  file_format = "csv",
-  output     = "tidy"
+china_spring_url <- paste0(
+  "https://rptsvr1.tea.texas.gov/cgi/sas/broker?",
+  "_debug=0&_program=perfrept.perfmast.sas&_service=marykay",
+  "&ccyy=2025&id=161920102&lev=C",
+  "&prgopt=reports/tapr/student.sas"
 )
 
-attr(df, "txschools")
-```
+response <- httr2::request(china_spring_url) |>
+  httr2::req_user_agent(getOption("txschools.user_agent")) |>
+  httr2::req_throttle(rate = 1, realm = "rptsvr1.tea.texas.gov") |>
+  httr2::req_timeout(60) |>
+  httr2::req_perform()
 
-Examples that do not touch the network are useful for checking the
-package behavior and output shape:
+tapr_tables <- response |>
+  httr2::resp_body_string() |>
+  rvest::read_html() |>
+  rvest::html_table(fill = TRUE, trim = TRUE)
 
-``` r
-years <- txs_catalog()$tapr$years
-data.frame(
-  source = "tapr",
-  first_year = min(years),
-  latest_catalog_year = max(years)
+student_info <- tapr_tables[[3]]
+
+rows <- c(3, 5:7, 20, 23, 32, 38)
+
+china_spring_summary <- tibble::tibble(
+  measure = student_info[[1]][rows],
+  campus_count = student_info[[2]][rows],
+  campus_percent = student_info[[3]][rows],
+  district = student_info[[4]][rows],
+  state = student_info[[5]][rows]
 )
-#>   source first_year latest_catalog_year
-#> 1   tapr       2012                2024
+
+knitr::kable(china_spring_summary)
 ```
 
-``` r
-values <- c("97.2", "*", ".", "-1", "100")
-mask_strip(values)
-#> # A tibble: 5 × 3
-#>   value_num masked mask_code
-#>       <dbl> <lgl>  <chr>    
-#> 1      97.2 FALSE  <NA>     
-#> 2      NA   TRUE   *        
-#> 3      NA   TRUE   .        
-#> 4      NA   TRUE   -1       
-#> 5     100   FALSE  <NA>
-```
-
-``` r
-txs_cite(source = "tapr")
-#> Texas Education Agency (2026). "Texas Academic Performance Reports."
-#> Public data; accessed via the txschools R package.,
-#> <https://tea.texas.gov/texas-schools/accountability/academic-accountability/performance-reporting/texas-academic-performance-reports>.
-```
+| measure                    | campus_count | campus_percent | district | state     |
+|:---------------------------|:-------------|:---------------|:---------|:----------|
+| Total Students             | 613          | 100.0%         | 3,011    | 5,530,499 |
+| Grade 2                    | 181          | 29.5%          | 6.0%     | 7.0%      |
+| Grade 3                    | 203          | 33.1%          | 6.7%     | 7.3%      |
+| Grade 4                    | 229          | 37.4%          | 7.6%     | 7.3%      |
+| Economically Disadvantaged | 229          | 37.4%          | 33.8%    | 60.5%     |
+| EB Students/EL             | 22           | 3.6%           | 3.6%     | 24.3%     |
+| At-Risk                    | 146          | 23.8%          | 19.7%    | 53.5%     |
+| Special Education          | 103          | 16.8%          | 13.0%    | 15.3%     |
 
 ## How it stays polite
 
