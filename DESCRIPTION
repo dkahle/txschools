@@ -1,0 +1,51 @@
+Package: txschools
+Title: Polite, Reproducible Access to Texas Education Agency Public Performance Data
+Version: 0.0.0.9000
+Authors@R:
+    person(given = "David",
+           family = "Kahle",
+           role = c("aut", "cre"),
+           email = "david.kahle@gmail.com")
+Description: Tools for discovering, downloading, caching, parsing, and citing
+    public school-performance data published by the Texas Education Agency
+    (TEA), including the Texas Academic Performance Reports (TAPR), the
+    School Report Card (SRC), and the Academic Excellence Indicator System
+    (AEIS) archive. Downloads happen on demand against TEA's public pages;
+    files are cached locally under 'tools::R_user_dir()' with source-URL,
+    timestamp, and checksum metadata. TEA masking and suppression values
+    are preserved exactly. This package is not affiliated with TEA and does
+    not redistribute TEA datasets.
+License: MIT + file LICENSE
+URL: https://github.com/dkahle/txschools
+BugReports: https://github.com/dkahle/txschools/issues
+Encoding: UTF-8
+Roxygen: list(markdown = TRUE)
+RoxygenNote: 7.3.3
+Depends:
+    R (>= 4.1)
+Imports:
+    cli,
+    digest,
+    dplyr,
+    httr2 (>= 1.0.0),
+    readr,
+    readxl,
+    robotstxt,
+    rvest,
+    stats,
+    stringr,
+    tibble,
+    tidyr,
+    tools,
+    utils,
+    xml2,
+    yaml
+Suggests:
+    knitr,
+    mockery,
+    pkgdown,
+    rmarkdown,
+    testthat (>= 3.0.0),
+    withr
+Config/testthat/edition: 3
+VignetteBuilder: knitr

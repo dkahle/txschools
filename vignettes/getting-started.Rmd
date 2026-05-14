@@ -1,0 +1,73 @@
+---
+title: "Getting started with txschools"
+output: rmarkdown::html_vignette
+vignette: >
+  %\VignetteIndexEntry{Getting started with txschools}
+  %\VignetteEngine{knitr::rmarkdown}
+  %\VignetteEncoding{UTF-8}
+---
+
+```{r setup, include = FALSE}
+knitr::opts_chunk$set(
+  collapse = TRUE,
+  comment = "#>",
+  # Live chunks only run when TXS_LIVE=true to keep CRAN builds offline.
+  eval = identical(Sys.getenv("TXS_LIVE"), "true")
+)
+library(txschools)
+```
+
+`txschools` makes it straightforward to pull *public* school-performance
+data published by the Texas Education Agency (TEA), beginning with the
+Texas Academic Performance Reports (TAPR).
+
+## Discover available years
+
+```{r}
+txs_list_years("tapr")
+```
+
+## Find the files for one year
+
+```{r}
+downloads <- txs_list_downloads(2023, source = "tapr")
+downloads
+```
+
+`level` × `data_type` × `file_format` together identify a unique file.
+
+## Download (or use cache)
+
+```{r}
+df <- txs_get_tapr(
+  year        = 2023,
+  level       = "campus",
+  data_type   = "advanced",
+  file_format = "csv",
+  output      = "tidy"
+)
+df
+```
+
+Every call records source metadata as an attribute:
+
+```{r}
+attr(df, "txschools")
+```
+
+A re-call uses the cached copy without re-downloading.
+
+## Citation
+
+```{r}
+txs_cite(df)
+```
+
+## Bulk multi-year downloads
+
+```{r}
+plan <- txs_bulk_plan(2022:2023, levels = c("campus", "district"))
+plan
+done <- txs_bulk_download(plan, delay = 5)
+done
+```

@@ -1,0 +1,83 @@
+# txschools URL catalog.
+#
+# This file holds *only* URL templates and known year lists for the TEA
+# public-data programs that the package supports. It contains NO TEA
+# data, NO TEA-authored text beyond the program names ("Texas Academic
+# Performance Reports", etc.) which are factual identifiers.
+#
+# discover_* functions in R/discover.R prefer live HTML parsing; this
+# catalog is a fallback when the network is unavailable or HTML parsing
+# fails.
+
+tapr:
+  label: Texas Academic Performance Reports
+  base: https://rptsvr1.tea.texas.gov/perfreport/tapr
+  years:
+    - 2012
+    - 2013
+    - 2014
+    - 2015
+    - 2016
+    - 2017
+    - 2018
+    - 2019
+    - 2020
+    - 2021
+    - 2022
+    - 2023
+    - 2024
+  landing:           "{base}/{year_label}/index.html"
+  basic_download:    "{base}/{year_label}/DownloadData.html"
+  advanced_download: "{base}/{year_label}/xplore/Index.html"
+  # Filename heuristics: filenames beginning with these tokens map to
+  # the indicated level. Used to classify links scraped from the
+  # download pages.
+  level_prefixes:
+    campus:   ["cs", "camp", "ca"]
+    district: ["dis", "dist", "dt"]
+    region:   ["reg", "rg"]
+    state:    ["state", "st"]
+  formats:
+    csv:  csv
+    txt:  dat
+    xlsx: xlsx
+  # Hard-coded fallback URLs for the year that the package is exercised
+  # against in tests (2023). These are documented here so that the
+  # offline test suite has a stable set of URLs to match against; the
+  # package never downloads or ships the underlying TEA files.
+  files_2023:
+    - { level: campus,   data_type: advanced, file_format: csv, label: "Campus Advanced (CSV)",  url: "{base}/{year_label}/download/campadv.zip" }
+    - { level: campus,   data_type: rates,    file_format: csv, label: "Campus Rates (CSV)",     url: "{base}/{year_label}/download/cs.zip" }
+    - { level: district, data_type: advanced, file_format: csv, label: "District Advanced (CSV)",url: "{base}/{year_label}/download/distadv.zip" }
+    - { level: district, data_type: rates,    file_format: csv, label: "District Rates (CSV)",   url: "{base}/{year_label}/download/dist.zip" }
+    - { level: region,   data_type: rates,    file_format: csv, label: "Region Rates (CSV)",     url: "{base}/{year_label}/download/reg.zip" }
+    - { level: state,    data_type: rates,    file_format: csv, label: "State Rates (CSV)",      url: "{base}/{year_label}/download/state.zip" }
+
+aeis:
+  label: Academic Excellence Indicator System
+  base: https://rptsvr1.tea.texas.gov/perfreport/aeis
+  years:
+    - 2003
+    - 2004
+    - 2005
+    - 2006
+    - 2007
+    - 2008
+    - 2009
+    - 2010
+    - 2011
+  landing: "{base}/{year_label}/index.html"
+  level_prefixes:
+    campus:   ["cs", "camp"]
+    district: ["dis", "dist"]
+    region:   ["reg"]
+    state:    ["state", "st"]
+
+src:
+  label: School Report Card
+  base: https://rptsvr1.tea.texas.gov/perfreport/src
+  # SRC years are discovered lazily via discover_src_years(); this list
+  # is empty here so the package does not assert availability that has
+  # not been verified.
+  years: []
+  landing: "{base}/{year_label}/index.html"

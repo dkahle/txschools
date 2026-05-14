@@ -1,0 +1,7 @@
+code,label
+CAMPUS,Campus number (TEA 9-digit)
+CAMPNAME,Campus name
+DISTRICT,District number (TEA 6-digit)
+DISTNAME,District name
+REGION,Education Service Center region number
+GRDTYPE,Grade-type span

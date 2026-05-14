@@ -1,0 +1,47 @@
+---
+title: "Masking and suppression in TEA data"
+output: rmarkdown::html_vignette
+vignette: >
+  %\VignetteIndexEntry{Masking and suppression in TEA data}
+  %\VignetteEngine{knitr::rmarkdown}
+  %\VignetteEncoding{UTF-8}
+---
+
+```{r setup, include = FALSE}
+knitr::opts_chunk$set(collapse = TRUE, comment = "#>")
+library(txschools)
+```
+
+TEA masks small-cell statistics for FERPA reasons. Reported values can
+include the following sentinel codes:
+
+```{r echo = FALSE}
+txschools:::TXS_MASK_VALUES
+```
+
+* `"."` — value not applicable, e.g. campus did not test that subject.
+* `"*"` — value masked because the underlying student count is too small.
+* `"-1"`, `"-2"`, `"-3"`, `"-4"`, `"-99"` — TEA-specific suppression
+  flags; see the TAPR Glossary for the precise definition in any given
+  year.
+* `"n/a"`, `"N/A"` — explicit not-applicable string.
+
+`txschools` reads every file with all-character columns, so these codes
+**survive parsing intact**. The package never infers a value from a
+masked cell.
+
+## Helpers
+
+```{r}
+is_masked(c("12.3", "*", ".", " -1 ", "0"))
+mask_strip(c("12.3", "*", ".", "-1", "0"))
+```
+
+`mask_strip()` is the safe way to get a numeric column from a TAPR
+table: it returns three parallel vectors — `value_num` (numeric, `NA`
+for masked rows), `masked` (logical), and `mask_code` (the original
+sentinel) — so downstream code never confuses "12.3" with "*".
+
+The `txs_get_*()` family applies this transformation automatically when
+`output = "tidy"` and exposes the masking codes used via
+`attr(df, "txschools")$masking_values`.

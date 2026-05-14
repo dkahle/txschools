@@ -1,0 +1,47 @@
+url: https://dkahle.github.io/txschools/
+template:
+  bootstrap: 5
+
+reference:
+- title: Discovery
+  desc: List the years and downloads that TEA publishes.
+  contents:
+  - txs_list_years
+  - txs_list_downloads
+
+- title: Download
+  desc: Download and parse public TEA data.
+  contents:
+  - txs_get_tapr
+  - txs_get_src
+  - txs_get_aeis
+
+- title: Cache
+  desc: Manage the local file cache.
+  contents:
+  - txs_cache_dir
+  - txs_cache_list
+  - txs_cache_delete
+
+- title: Bulk
+  desc: Plan and execute multi-year, multi-level downloads.
+  contents:
+  - txs_bulk_plan
+  - txs_bulk_download
+
+- title: Masking
+  desc: Inspect TEA masking and suppression values.
+  contents:
+  - is_masked
+  - mask_strip
+
+- title: Citation
+  contents:
+  - txs_cite
+
+articles:
+- title: Articles
+  navbar: ~
+  contents:
+  - getting-started
+  - masking
