@@ -17,9 +17,11 @@ A \code{bibentry}.
 }
 \description{
 Produces a \code{\link[utils:bibentry]{utils::bibentry()}} suitable for printing or passing to
-\code{format()}. If \code{x} is a tibble returned by \code{\link[=txs_get_tapr]{txs_get_tapr()}} (or its
-sibling functions), the citation references that specific file by
-source URL, retrieval timestamp, and short SHA-256 prefix.
+\code{format()}. If \code{x} is a tibble returned by \code{\link[=txs_get_tapr_file]{txs_get_tapr_file()}} (or
+its sibling functions), the citation references that specific file by
+source URL, retrieval timestamp, and short SHA-256 prefix. If \code{x} is a
+semantic TAPR object from \code{\link[=txs_get_tapr]{txs_get_tapr()}}, the citation references the
+semantic pull and its source pages.
 }
 \examples{
 txs_cite(source = "tapr")

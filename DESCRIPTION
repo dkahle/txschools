@@ -39,6 +39,8 @@ Imports:
     xml2,
     yaml
 Suggests:
+    DBI,
+    duckdb,
     knitr,
     mockery,
     pkgdown,

@@ -36,10 +36,25 @@ downloads
 
 `level` × `data_type` × `file_format` together identify a unique file.
 
-## Download (or use cache)
+## Download semantic TAPR datasets
 
 ```{r}
-df <- txs_get_tapr(
+tapr <- txs_get_tapr(
+  year      = 2025,
+  level     = "campus",
+  geography = "161920102",
+  datasets  = c("grade", "sex")
+)
+tapr$grade
+```
+
+`txs_get_tapr()` returns a named list because a TAPR report is a
+collection of datasets, not one rectangular table.
+
+## Download a structured TAPR file
+
+```{r}
+df <- txs_get_tapr_file(
   year        = 2024,
   level       = "campus",
   data_type   = "advanced",

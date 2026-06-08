@@ -27,7 +27,9 @@ TXS_LANDING_TAPR <- paste0(
 # Codes TEA uses to mask or suppress cell values. These are preserved as
 # strings; the package will never coerce them to NA without an explicit
 # `masked` flag traveling alongside.
-TXS_MASK_VALUES <- c(".", "*", "-1", "-2", "-3", "-4", "-99", "n/a", "N/A")
+TXS_MASK_VALUES <- c(
+  ".", "*", "-", "---", "-1", "-2", "-3", "-4", "-99", "n/a", "N/A"
+)
 
 TXS_RATE_DEFAULT     <- 1     # request per second
 TXS_TIMEOUT_DEFAULT  <- 60    # seconds

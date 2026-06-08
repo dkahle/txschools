@@ -6,7 +6,7 @@
 #' silently coerced into numerics or `NA`.
 #'
 #' @section Default codes:
-#' `.`, `*`, `-1`, `-2`, `-3`, `-4`, `-99`, `n/a`, `N/A`.
+#' `.`, `*`, `-`, `---`, `-1`, `-2`, `-3`, `-4`, `-99`, `n/a`, `N/A`.
 #'
 #' @param x Character vector of values to check.
 #' @param codes Character vector of values to treat as masked. Defaults

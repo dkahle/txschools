@@ -13,8 +13,15 @@ reference:
   desc: Download and parse public TEA data.
   contents:
   - txs_get_tapr
+  - txs_get_tapr_file
   - txs_get_src
   - txs_get_aeis
+
+- title: TAPR semantic datasets
+  desc: Discover and store semantic TAPR table outputs.
+  contents:
+  - txs_list_tapr_datasets
+  - txs_write_tapr_db
 
 - title: Cache
   desc: Manage the local file cache.

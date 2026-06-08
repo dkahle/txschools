@@ -11,3 +11,6 @@ inst/doc/
 .DS_Store
 .claude/
 README.html
+
+/.quarto/
+**/*.quarto_ipynb

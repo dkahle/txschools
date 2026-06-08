@@ -1,9 +1,11 @@
 #' Build a citation
 #'
 #' Produces a [utils::bibentry()] suitable for printing or passing to
-#' `format()`. If `x` is a tibble returned by [txs_get_tapr()] (or its
-#' sibling functions), the citation references that specific file by
-#' source URL, retrieval timestamp, and short SHA-256 prefix.
+#' `format()`. If `x` is a tibble returned by [txs_get_tapr_file()] (or
+#' its sibling functions), the citation references that specific file by
+#' source URL, retrieval timestamp, and short SHA-256 prefix. If `x` is a
+#' semantic TAPR object from [txs_get_tapr()], the citation references the
+#' semantic pull and its source pages.
 #'
 #' @param x Optional. A tibble returned by `txs_get_*()`. If `NULL`,
 #'   returns a generic citation for the named `source`.
@@ -13,6 +15,35 @@
 #' txs_cite(source = "tapr")
 #' @export
 txs_cite <- function(x = NULL, source = "tapr") {
+  if (!is.null(x) && inherits(x, "tapr")) {
+    meta <- attr(x, "txschools")
+    pages <- meta$pages
+    url <- if (!is.null(pages) && nrow(pages)) {
+      pages$source_url[[1]]
+    } else {
+      TXS_LANDING_TAPR
+    }
+    retrieved <- if (!is.null(pages) && nrow(pages)) {
+      pages$retrieved_at[[1]]
+    } else {
+      NA_character_
+    }
+    return(utils::bibentry(
+      bibtype = "Misc",
+      title = sprintf(
+        "TAPR semantic datasets for %s",
+        paste(meta$school_years, collapse = ", ")
+      ),
+      author = utils::person(family = "Texas Education Agency"),
+      year = substr(retrieved %||% as.character(Sys.Date()), 1, 4),
+      url = url,
+      note = sprintf(
+        "Retrieved via the txschools R package for geography %s.",
+        paste(meta$geography, collapse = ", ")
+      ),
+      publisher = "Texas Education Agency"
+    ))
+  }
   if (!is.null(x) && !is.null(attr(x, "txschools"))) {
     meta <- attr(x, "txschools")
     return(utils::bibentry(

@@ -2,59 +2,49 @@
 % Please edit documentation in R/tapr.R
 \name{txs_get_tapr}
 \alias{txs_get_tapr}
-\title{Download a TAPR file}
+\title{Download semantic TAPR datasets}
 \usage{
 txs_get_tapr(
   year,
   level = c("campus", "district", "region", "state"),
   geography = NULL,
-  data_type = c("rates", "advanced"),
-  file_format = c("csv", "txt", "xlsx", "html"),
+  datasets = NULL,
   cache = TRUE,
   refresh = FALSE,
-  output = c("tidy", "wide", "raw"),
-  keep_raw = FALSE,
+  db = NULL,
   timeout = 60,
   verbose = TRUE
 )
 }
 \arguments{
-\item{year}{Integer ending year (e.g. \code{2024} for 2023-24).}
+\item{year}{Integer vector of ending years (e.g. \code{2025} for 2024-25).}
 
 \item{level}{One of \code{"campus"}, \code{"district"}, \code{"region"}, \code{"state"}.}
 
-\item{geography}{Optional. A character vector of campus or district
-numbers to filter the parsed file to. \code{NULL} returns all rows for
-structured downloads. For \code{file_format = "html"}, supply exactly
-one campus, district, or region identifier.}
+\item{geography}{Character vector of campus, district, region, or state
+identifiers. For \code{level = "state"}, \code{NULL} uses \code{"000000000"}.}
 
-\item{data_type}{Either \code{"rates"} (basic) or \code{"advanced"}
-(numerators, denominators, and rates).}
-
-\item{file_format}{\code{"csv"}, \code{"txt"}, \code{"xlsx"}, or \code{"html"}. \code{"html"}
-requests a public TAPR/TPRS report page for one requested geography
-when TEA does not expose the current year as a structured download
-file.}
+\item{datasets}{Optional character vector of dataset keys from
+\code{\link[=txs_list_tapr_datasets]{txs_list_tapr_datasets()}}. \code{NULL} requests all known keys.}
 
 \item{cache}{If \code{TRUE}, reuse a cached copy when one exists.}
 
 \item{refresh}{If \code{TRUE}, re-download even if cached.}
 
-\item{output}{\code{"tidy"} (long, masking-aware), \code{"wide"} (raw with
-human-readable labels attached), or \code{"raw"} (as parsed).}
-
-\item{keep_raw}{If \code{TRUE}, attach the raw parsed frame as
-\code{attr(out, "raw")}.}
+\item{db}{Optional DuckDB path or DBI connection. If supplied, the
+returned semantic tables are written to the database.}
 
 \item{timeout}{HTTP timeout in seconds.}
 
 \item{verbose}{Print progress messages.}
 }
 \value{
-A tibble with a \code{txschools} attribute carrying source/metadata.
+A \code{tapr} named list of tibbles.
 }
 \description{
-Downloads (or returns the cached copy of) a single Texas Academic
-Performance Reports file for a given school year, level, data type,
-and file format.
+Downloads public TAPR/TPRS HTML reports for one or more years and
+geographies, then returns the report as a named list of semantic
+datasets such as student grade distribution, ethnicity, sex, and
+other cohorts. Use \code{\link[=txs_get_tapr_file]{txs_get_tapr_file()}} for the lower-level
+structured TAPR downloads.
 }

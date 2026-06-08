@@ -1,8 +1,87 @@
+#' Download semantic TAPR datasets
+#'
+#' Downloads public TAPR/TPRS HTML reports for one or more years and
+#' geographies, then returns the report as a named list of semantic
+#' datasets such as student grade distribution, ethnicity, sex, and
+#' other cohorts. Use [txs_get_tapr_file()] for the lower-level
+#' structured TAPR downloads.
+#'
+#' @param year Integer vector of ending years (e.g. `2025` for 2024-25).
+#' @param level One of `"campus"`, `"district"`, `"region"`, `"state"`.
+#' @param geography Character vector of campus, district, region, or state
+#'   identifiers. For `level = "state"`, `NULL` uses `"000000000"`.
+#' @param datasets Optional character vector of dataset keys from
+#'   [txs_list_tapr_datasets()]. `NULL` requests all known keys.
+#' @param cache If `TRUE`, reuse a cached copy when one exists.
+#' @param refresh If `TRUE`, re-download even if cached.
+#' @param db Optional DuckDB path or DBI connection. If supplied, the
+#'   returned semantic tables are written to the database.
+#' @param timeout HTTP timeout in seconds.
+#' @param verbose Print progress messages.
+#' @return A `tapr` named list of tibbles.
+#' @export
+txs_get_tapr <- function(year,
+                         level = c("campus", "district", "region", "state"),
+                         geography = NULL,
+                         datasets = NULL,
+                         cache = TRUE,
+                         refresh = FALSE,
+                         db = NULL,
+                         timeout = 60,
+                         verbose = TRUE) {
+  level <- match.arg(level, c("campus", "district", "region", "state"))
+  years <- vapply(year, normalize_year, integer(1))
+  years <- sort(unique(years))
+
+  if (is.null(geography)) {
+    if (identical(level, "state")) {
+      geography <- "000000000"
+    } else {
+      stop("`geography` is required for campus, district, and region TAPR pulls.",
+           call. = FALSE)
+    }
+  }
+  geography <- as.character(geography)
+  geography <- geography[!is.na(geography) & nzchar(geography)]
+  if (!length(geography)) {
+    stop("`geography` must contain at least one non-missing identifier.",
+         call. = FALSE)
+  }
+
+  catalog <- txs_list_tapr_datasets()
+  if (is.null(datasets)) {
+    datasets <- catalog$key
+  } else {
+    datasets <- unique(as.character(datasets))
+    bad <- setdiff(datasets, catalog$key)
+    if (length(bad)) {
+      stop(
+        if (length(bad) == 1L) "Unknown TAPR dataset key: " else "Unknown TAPR dataset keys: ",
+        paste(bad, collapse = ", "),
+        call. = FALSE
+      )
+    }
+  }
+
+  out <- collect_tapr_semantic(
+    years = years, level = level, geography = geography,
+    datasets = datasets, cache = isTRUE(cache), refresh = refresh,
+    timeout = timeout, verbose = verbose
+  )
+
+  if (!is.null(db)) {
+    txs_write_tapr_db(out, db = db, overwrite = TRUE)
+  }
+  out
+}
+
 #' Download a TAPR file
 #'
 #' Downloads (or returns the cached copy of) a single Texas Academic
 #' Performance Reports file for a given school year, level, data type,
-#' and file format.
+#' and file format. This is the lower-level file-oriented API retained
+#' for TAPR statewide structured downloads and legacy single-page HTML
+#' parsing. Use [txs_get_tapr()] for semantic TAPR datasets.
 #'
 #' @param year Integer ending year (e.g. `2024` for 2023-24).
 #' @param level One of `"campus"`, `"district"`, `"region"`, `"state"`.
@@ -26,17 +105,17 @@
 #' @param verbose Print progress messages.
 #' @return A tibble with a `txschools` attribute carrying source/metadata.
 #' @export
-txs_get_tapr <- function(year,
-                         level = c("campus", "district", "region", "state"),
-                         geography = NULL,
-                         data_type = c("rates", "advanced"),
-                         file_format = c("csv", "txt", "xlsx", "html"),
-                         cache = TRUE,
-                         refresh = FALSE,
-                         output = c("tidy", "wide", "raw"),
-                         keep_raw = FALSE,
-                         timeout = 60,
-                         verbose = TRUE) {
+txs_get_tapr_file <- function(year,
+                              level = c("campus", "district", "region", "state"),
+                              geography = NULL,
+                              data_type = c("rates", "advanced"),
+                              file_format = c("csv", "txt", "xlsx", "html"),
+                              cache = TRUE,
+                              refresh = FALSE,
+                              output = c("tidy", "wide", "raw"),
+                              keep_raw = FALSE,
+                              timeout = 60,
+                              verbose = TRUE) {
   year        <- normalize_year(year)
   data_type   <- match.arg(data_type)
   file_format <- match.arg(file_format)
@@ -237,7 +316,8 @@ txs_get_tapr_html_report <- function(year, level, geography, data_type,
   out
 }
 
-tapr_html_report_url <- function(year, level, geography) {
+tapr_html_report_url <- function(year, level, geography,
+                                 prgopt = "reports/tapr/student.sas") {
   lev <- switch(
     level,
     campus   = "C",
@@ -251,13 +331,14 @@ tapr_html_report_url <- function(year, level, geography) {
     "&ccyy=", as.integer(year),
     "&id=", utils::URLencode(as.character(geography), reserved = TRUE),
     "&lev=", lev,
-    "&prgopt=reports/tapr/student.sas"
+    "&prgopt=", utils::URLencode(prgopt, reserved = TRUE)
   )
 }
 
-tapr_html_report_filename <- function(level, geography) {
+tapr_html_report_filename <- function(level, geography, page_source = "student") {
   id <- gsub("[^A-Za-z0-9_-]+", "_", as.character(geography))
-  sprintf("tapr_%s_%s_student.html", level, id)
+  page_source <- gsub("[^A-Za-z0-9_-]+", "_", as.character(page_source))
+  sprintf("tapr_%s_%s_%s.html", level, id, page_source)
 }
 
 read_tapr_html_report <- function(path, level) {

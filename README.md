@@ -8,7 +8,8 @@
 `txschools` provides reproducible, polite, on-demand access to
 **public** school-performance data published by the Texas Education
 Agency (TEA), including the Texas Academic Performance Reports (TAPR),
-the School Report Card (SRC), and the AEIS archive.
+the School Report Card (SRC), and the Academic Excellence Indicator
+System (AEIS) archive.
 
 ## Disclaimer
 
@@ -31,50 +32,44 @@ pak::pak("dkahle/txschools")
 ## Quick start
 
 ``` r
-library(txschools)
+library("txschools")
 ```
 
 Here is a real public TAPR/TPRS example: China Spring Elementary School
 (`161920102`) for TEA report year 2025, which corresponds to the 2024-25
 TAPR report. The 2025 campus report is currently exposed by TEA as an
 HTML report page, so this example uses `txs_get_tapr()` to politely
-request the public page and parse the student-information table.
+request the public page and parse its student-information datasets.
+
+The `geography` value is TEA’s organization identifier, not something
+`txschools` infers from a school name. For a campus, this is the
+nine-digit county-district-campus number listed in
+[AskTED](https://tea.texas.gov/AskTED), TEA’s public school directory:
+the first six digits identify the district and the last three identify
+the campus. China Spring Elementary School is campus `102` in China
+Spring ISD (`161920`), so its TAPR campus `geography` is `"161920102"`.
+Keep these identifiers quoted in R so leading zeros, where present, are
+preserved.
+
+`txs_get_tapr()` returns a named list of semantic datasets. This
+reflects the structure of TAPR itself: the report is not one table, but
+a collection of related tables.
 
 ``` r
-china_spring <- txs_get_tapr(
+china_spring_elem_2025 <- txs_get_tapr(
   year = 2025,
   level = "campus",
   geography = "161920102",
-  data_type = "rates",
-  file_format = "html",
-  output = "raw",
-  verbose = FALSE
+  datasets = c("grade", "sex", "cohorts")
 )
 
-rows <- match(
-  c(
-    "Total Students", "Grade 2", "Grade 3", "Grade 4",
-    "Economically Disadvantaged", "EB Students/EL",
-    "At-Risk", "Special Education"
-  ),
-  china_spring$measure,
-  nomatch = 0L
-)
-
-china_spring_summary <- china_spring[rows, ]
-knitr::kable(china_spring_summary)
+china_spring_elem_2025$grade
+china_spring_elem_2025$sex
 ```
 
-| measure                    | campus_count | campus_percent | district | state     |
-|:---------------------------|:-------------|:---------------|:---------|:----------|
-| Total Students             | 613          | 100.0%         | 3,011    | 5,530,499 |
-| Grade 2                    | 181          | 29.5%          | 6.0%     | 7.0%      |
-| Grade 3                    | 203          | 33.1%          | 6.7%     | 7.3%      |
-| Grade 4                    | 229          | 37.4%          | 7.6%     | 7.3%      |
-| Economically Disadvantaged | 229          | 37.4%          | 33.8%    | 60.5%     |
-| EB Students/EL             | 22           | 3.6%           | 3.6%     | 24.3%     |
-| At-Risk                    | 146          | 23.8%          | 19.7%    | 53.5%     |
-| Special Education          | 103          | 16.8%          | 13.0%    | 15.3%     |
+Use `txs_list_tapr_datasets()` to see the currently supported semantic
+dataset keys. Use `txs_get_tapr_file()` when you need the lower-level
+statewide TAPR download files in raw, wide, or tidy form.
 
 ## How it stays polite
 

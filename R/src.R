@@ -1,6 +1,6 @@
 #' Download an SRC (School Report Card) file
 #'
-#' @inheritParams txs_get_tapr
+#' @inheritParams txs_get_tapr_file
 #' @param geography Optional. A character vector of campus or district
 #'   numbers to filter the parsed file to. `NULL` returns all rows.
 #' @param data_type Currently `"rates"`.

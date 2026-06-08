@@ -3,7 +3,7 @@
 #' Coverage: school years 2003-04 through 2011-12, requested as ending
 #' years 2004 through 2012.
 #'
-#' @inheritParams txs_get_tapr
+#' @inheritParams txs_get_tapr_file
 #' @param geography Optional. A character vector of campus or district
 #'   numbers to filter the parsed file to. `NULL` returns all rows.
 #' @param data_type Currently `"rates"`.
