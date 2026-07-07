@@ -51,17 +51,30 @@ to `97` (as printed, not divided by 100) and `"$4,668"` to `4668`:
 mask_strip(c("97%", "$4,668"))
 ```
 
+This is the package-wide convention: **numeric values are kept at the
+scale TEA printed them**. The one exception is the semantic TAPR
+student datasets from `txs_get_tapr()`, whose columns explicitly named
+`*_percent` are proportions (`"49.6%"` becomes `0.496`) — the column
+name declares the unit.
+
 TEA occasionally prints suppression markers beyond the sentinel list,
-such as `"< 1%"`. Any non-empty, non-textual value that fails numeric
-parsing is flagged as masked with the original marker preserved in
-`mask_code` — it is **never silently degraded to an unmasked `NA`**:
+such as `"< 1%"`. Values that fail numeric parsing are flagged as
+masked **only when they look like suppression markers** — comparison
+markers (`"< 1%"`, `">99%"`) or symbol-only tokens (`"*"`, `"."`,
+`"?"`, `"--"`) — with the original marker preserved in `mask_code`,
+never silently degraded to an unmasked `NA`:
 
 ```{r}
 mask_strip(c("< 1%", "?"))
 ```
 
-Ordinary text (names, grade spans) is left unmasked; its numeric slot
-is simply `NA`.
+Everything else that fails numeric parsing — year labels like
+`"2019-20"`, grade spans like `"02 - 04"`, names — is ordinary text,
+left unmasked with an `NA` numeric slot:
+
+```{r}
+mask_strip(c("2019-20", "02 - 04", "MCLENNAN"))
+```
 
 The `txs_get_*()` family applies this transformation automatically when
 `output = "tidy"` and exposes the masking codes used via

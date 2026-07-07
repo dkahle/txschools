@@ -122,6 +122,56 @@ china_spring_elem_2025 |> pluck("staar_performance") |> head()
 china_spring_elem_2025 |> pluck("staff") |> print(n = Inf)
 ```
 
+Here is a small longitudinal visualization using the same campus. This pulls
+the semantic STAAR performance table for several report years, keeps one
+Grade 3 reading measure, and compares the campus to its district and the
+state. TEA's report tables nest measures under section headings ("Grade 3
+Reading" > "At Meets Grade Level or Above"), which the parsed data exposes
+as `section` and `row_label`; each page also repeats the prior year's row,
+so we keep the row whose `SchoolYear` matches the report year.
+
+```{r cses-staar-over-time}
+china_spring_elem_staar <- txs_get_tapr(
+  year = 2023:2025,
+  level = "campus",
+  geography = "161920102",
+  datasets = "staar_performance"
+)
+
+staar_grade3_reading <- china_spring_elem_staar$staar_performance |>
+  filter(
+    section == "Grade 3 Reading",
+    row_label == "At Meets Grade Level or Above",
+    column %in% c("SchoolYear", "Campus", "District", "State")
+  ) |>
+  select(year, row_index, column, value_num) |>
+  pivot_wider(names_from = column, values_from = value_num) |>
+  filter(SchoolYear == year) |>
+  select(year, Campus, District, State) |>
+  pivot_longer(-year, names_to = "comparison", values_to = "rate") |>
+  mutate(
+    comparison = factor(comparison, levels = c("Campus", "District", "State")),
+    rate = rate / 100
+  ) |>
+  drop_na(rate)
+
+ggplot(
+  staar_grade3_reading,
+  aes(x = year, y = rate, color = comparison, group = comparison)
+) +
+  geom_line(linewidth = 0.8) +
+  geom_point(size = 2.5) +
+  scale_x_continuous(breaks = 2023:2025) +
+  scale_y_continuous(labels = percent, limits = c(0, NA)) +
+  labs(
+    x = NULL,
+    y = "At Meets Grade Level or Above",
+    color = NULL,
+    title = "Grade 3 reading STAAR performance",
+    subtitle = "China Spring Elementary School, TAPR report years 2023-2025"
+  )
+```
+
 ## Statewide data files
 
 TEA publishes the statewide TAPR data through its "Advanced Download"
@@ -173,7 +223,9 @@ aeis_2011 <- txs_get_aeis(2011, "district", dataset = "ref",
 
 TEA masks small-cell statistics for FERPA reasons. `txschools` parses
 every value as character first and **never coerces masked codes to
-numeric**. Values that fail numeric parsing (like `"< 1%"`) are flagged
-as masked with the original marker preserved, never silently degraded
-to `NA`. See `vignette("masking", package = "txschools")` for the full
-list of mask codes and helper functions.
+numeric**. Suppression markers that fail numeric parsing (like
+`"< 1%"`) are flagged as masked with the original marker preserved,
+never silently degraded to `NA`. Numeric values are kept at the scale
+TEA printed them (`"90%"` parses to `90`); only the semantic student
+datasets' `*_percent` columns are proportions. See
+`vignette("masking", package = "txschools")` for details.

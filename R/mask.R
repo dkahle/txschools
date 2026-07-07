@@ -42,13 +42,13 @@ mask_strip <- function(x, codes = mask_codes()) {
   num_input[!is.na(num_input) & !nzchar(trimws(num_input))] <- NA_character_
   num <- suppressWarnings(as.numeric(num_input))
 
-  # Any non-empty, non-textual value that is neither a known code nor
-  # parseable as a number (e.g. "< 1%", "?") is still a suppression
-  # marker: flag it rather than silently degrading to an unmasked NA.
-  # Values containing letters (names, grade spans) are ordinary text,
-  # not masks; their numeric slot is NA and `masked` stays FALSE.
+  # Values that fail numeric parsing but look like suppression markers
+  # (e.g. "< 1%", "?") are flagged rather than silently degraded to an
+  # unmasked NA. Anything else unparseable -- year labels ("2019-20"),
+  # grade spans ("02 - 04"), names -- is ordinary text: numeric slot NA,
+  # `masked` stays FALSE.
   unparsed <- !masked & is.na(num) & !is.na(trimmed) & nzchar(trimmed) &
-    !grepl("[A-Za-z]", trimmed)
+    is_suppression_marker(trimmed)
   masked <- masked | unparsed
   mask_code <- ifelse(masked, trimmed, NA_character_)
 
@@ -68,4 +68,14 @@ mask_strip <- function(x, codes = mask_codes()) {
 #' @export
 mask_codes <- function() {
   getOption("txschools.mask_values", default = TXS_MASK_VALUES)
+}
+
+# Does a (trimmed, non-empty) string look like a TEA suppression marker
+# beyond the exact mask_codes() list? Two shapes cover what TEA prints:
+# comparison markers ("< 1%", ">99%", "<5") and symbol-only tokens
+# ("*", ".", "?", "--"). Deliberately narrow so year labels ("2019-20")
+# and grade spans ("02 - 04") are never mistaken for masks.
+is_suppression_marker <- function(x) {
+  grepl("^[<>]=?\\s*\\$?[0-9][0-9.,]*\\s*%?$", x) |
+    grepl("^[-*.?]+$", x)
 }

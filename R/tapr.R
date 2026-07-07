@@ -122,6 +122,7 @@ txs_get_tapr_file <- function(year,
                               timeout = 60,
                               verbose = TRUE) {
   year        <- normalize_year(year, source = "tapr")
+  data_type_supplied <- !missing(data_type)
   data_type   <- match.arg(data_type)
   file_format <- match.arg(file_format)
   output      <- match.arg(output)
@@ -129,6 +130,17 @@ txs_get_tapr_file <- function(year,
   cache       <- isTRUE(cache)
 
   if (identical(file_format, "html")) {
+    # HTML report pages carry rates only. `data_type` defaults to
+    # "advanced" via match.arg, so only an *explicit* advanced request
+    # is a contradiction worth stopping for.
+    if (data_type_supplied && identical(data_type, "advanced")) {
+      stop(
+        "`file_format = \"html\"` serves TEA's rates-only report pages; ",
+        "advanced data is not published as HTML. Use `file_format = \"csv\"` ",
+        "with a `dataset` code for advanced downloads.",
+        call. = FALSE
+      )
+    }
     return(txs_get_tapr_html_report(
       year = year, level = level, geography = geography,
       data_type = "rates", cache = cache, refresh = refresh,

@@ -2,6 +2,12 @@
 #'
 #' Returns the stable dataset keys that [txs_get_tapr()] can return.
 #'
+#' @section Numeric conventions:
+#' Columns named `*_percent` hold proportions (`"49.6%"` parses to
+#' `0.496`). Every other numeric column -- including the generic
+#' datasets' `value_num` -- holds the number as printed by TEA
+#' (`"90%"` parses to `90`, `"$4,668"` to `4668`).
+#'
 #' @return A tibble with columns `key`, `label`, `page_source`, `grain`,
 #'   and `columns`.
 #' @export
@@ -94,8 +100,8 @@ txs_list_tapr_datasets <- function() {
         paste(
           c(
             "year", "school_year", "level", "geography", "page_source",
-            "table_index", "row_label", "column", "value", "value_num",
-            "masked", "mask_code"
+            "table_index", "row_index", "section", "row_label", "column",
+            "value", "value_num", "masked", "mask_code"
           ),
           collapse = ", "
         ),
@@ -112,20 +118,24 @@ collect_tapr_semantic <- function(years, level, geography, datasets,
 
   for (yr in years) {
     for (geo in geography) {
-      pages <- fetch_tapr_semantic_pages(
+      fetched <- fetch_tapr_semantic_pages(
         year = yr, level = level, geography = geo,
         datasets = datasets, cache = cache, refresh = refresh,
         timeout = timeout, verbose = verbose
       )
+      warn_failed_tapr_pages(
+        fetched$failed, datasets = datasets, year = yr, geography = geo
+      )
       extracted <- extract_tapr_semantic_pages(
-        pages = pages, year = yr, level = level,
+        pages = fetched$pages, year = yr, level = level,
         geography = geo, datasets = datasets
       )
       for (key in names(out)) {
         out[[key]] <- dplyr::bind_rows(out[[key]], extracted[[key]])
       }
       manifest[[length(manifest) + 1L]] <- tapr_pages_manifest(
-        pages, year = yr, level = level, geography = geo
+        fetched$pages, year = yr, level = level, geography = geo,
+        failed = fetched$failed
       )
     }
   }
@@ -151,6 +161,8 @@ fetch_tapr_semantic_pages <- function(year, level, geography, datasets,
     dataset_catalog$key %in% datasets
   ])
 
+  # The student page is the seed for navigation discovery; nothing works
+  # without it, so its failure propagates.
   seed <- download_tapr_semantic_page(
     year = year, level = level, geography = geography,
     page_source = "student", prgopt = "reports/tapr/student.sas",
@@ -158,17 +170,31 @@ fetch_tapr_semantic_pages <- function(year, level, geography, datasets,
   )
 
   pages <- list(student = seed)
+  failed <- character(0)
+  try_page <- function(src, prgopt) {
+    page <- tryCatch(
+      download_tapr_semantic_page(
+        year = year, level = level, geography = geography,
+        page_source = src, prgopt = prgopt,
+        cache = cache, refresh = refresh, timeout = timeout,
+        verbose = verbose
+      ),
+      error = function(e) conditionMessage(e)
+    )
+    if (is.character(page)) {
+      failed[[src]] <<- page
+    } else {
+      pages[[src]] <<- page
+      failed <<- failed[names(failed) != src]
+    }
+  }
+
   discovered <- discover_tapr_page_sources(seed)
   if (nrow(discovered)) {
     for (i in seq_len(nrow(discovered))) {
       src <- discovered$page_source[[i]]
       if (identical(src, "student") || !src %in% requested_sources) next
-      pages[[src]] <- download_tapr_semantic_page(
-        year = year, level = level, geography = geography,
-        page_source = src, prgopt = discovered$prgopt[[i]],
-        cache = cache, refresh = refresh, timeout = timeout,
-        verbose = verbose
-      )
+      try_page(src, discovered$prgopt[[i]])
     }
   }
 
@@ -179,20 +205,16 @@ fetch_tapr_semantic_pages <- function(year, level, geography, datasets,
   missing <- setdiff(requested_sources, names(pages))
   for (src in missing) {
     hit <- fallback[fallback$page_source == src, , drop = FALSE]
-    if (!nrow(hit)) next
-    page <- tryCatch(
-      download_tapr_semantic_page(
-        year = year, level = level, geography = geography,
-        page_source = src, prgopt = hit$prgopt[[1]],
-        cache = cache, refresh = refresh, timeout = timeout,
-        verbose = verbose
-      ),
-      error = function(e) NULL
-    )
-    if (!is.null(page)) pages[[src]] <- page
+    if (!nrow(hit)) {
+      failed[[src]] <- failed[[src]] %||%
+        "page not discovered on the TEA report navigation"
+      next
+    }
+    try_page(src, hit$prgopt[[1]])
   }
+  failed <- failed[setdiff(names(failed), names(pages))]
 
-  pages
+  list(pages = pages, failed = failed)
 }
 
 tapr_page_catalog <- function() {
@@ -702,9 +724,21 @@ extract_generic_page_dataset <- function(page, key, year, level, geography) {
     names(tab) <- nms
     row_label_col <- names(tab)[[1]]
     value_cols <- setdiff(names(tab), row_label_col)
+    section <- NA_character_
     for (i in seq_len(nrow(tab))) {
       row_label <- clean_tapr_text(tab[[row_label_col]][[i]])
       if (!nzchar(row_label)) next
+      cells <- vapply(value_cols, function(col) {
+        clean_tapr_text(tab[[col]][[i]])
+      }, character(1))
+      cells <- cells[nzchar(cells)]
+      # Section rows are colspan headings: every (non-empty) cell
+      # repeats the label, or the row has no value cells at all. Track
+      # them as context instead of emitting duplicated records.
+      if (!length(cells) || all(cells == row_label)) {
+        section <- row_label
+        next
+      }
       for (col in value_cols) {
         value <- clean_tapr_text(tab[[col]][[i]])
         if (!nzchar(value)) next
@@ -720,6 +754,8 @@ extract_generic_page_dataset <- function(page, key, year, level, geography) {
           retrieved_at = page$meta$retrieved_at %||% NA_character_,
           page_source = page$page_source %||% key,
           table_index = as.integer(table_index),
+          row_index = as.integer(i),
+          section = section,
           row_label = row_label,
           column = clean_tapr_text(col),
           value = value
@@ -752,7 +788,10 @@ coerce_tapr_student_values <- function(df, cols,
 coerce_tapr_generic_value <- function(df) {
   # Generic report tables can hold legitimate text; keep the raw string
   # in `value` and put the numeric interpretation in `value_num`.
-  parsed <- parse_tapr_values(df$value, percent = grepl("%", df$value))
+  # Convention: value_num is the number as printed ("90%" -> 90); only
+  # the student datasets' explicitly named *_percent columns are
+  # proportions.
+  parsed <- parse_tapr_values(df$value, percent = FALSE)
   df$value_num <- parsed$value
   df$masked <- parsed$masked
   df$mask_code <- parsed$mask_code
@@ -763,22 +802,22 @@ parse_tapr_values <- function(x, percent = FALSE, integer = FALSE) {
   x_chr <- clean_tapr_text(x)
   masked <- x_chr %in% mask_codes()
   numeric_input <- ifelse(masked, NA_character_, x_chr)
-  has_percent <- grepl("%", numeric_input, fixed = TRUE)
-  has_percent[is.na(has_percent)] <- FALSE
   numeric_input <- gsub("[%$,]", "", numeric_input)
   numeric_input[!is.na(numeric_input) & !nzchar(numeric_input)] <- NA_character_
   value <- suppressWarnings(as.numeric(numeric_input))
-  percent <- rep_len(percent, length(value)) | has_percent
+  # Divide by 100 only where the caller declares the column a percent
+  # (the student datasets' *_percent columns); elsewhere value_num
+  # stays as printed.
+  percent <- rep_len(percent, length(value))
   value[percent & !is.na(value)] <- value[percent & !is.na(value)] / 100
   if (isTRUE(integer)) {
     value <- as.integer(round(value))
   }
-  # Non-empty, non-textual values that are neither known mask codes nor
-  # parseable numbers (e.g. "< 1%") are suppression markers; never let
-  # them degrade into a silent unmasked NA. Values containing letters
-  # are ordinary text, not masks.
+  # Values that fail numeric parsing but look like suppression markers
+  # (e.g. "< 1%") are flagged; year labels, grade spans, and other text
+  # stay unmasked with a NA numeric slot.
   unparsed <- !masked & is.na(value) & nzchar(x_chr) &
-    !grepl("[A-Za-z]", x_chr)
+    is_suppression_marker(x_chr)
   masked <- masked | unparsed
   tibble::tibble(
     value = value,
@@ -842,6 +881,8 @@ tapr_empty_generic_dataset <- function(key) {
     retrieved_at = character(),
     page_source = character(),
     table_index = integer(),
+    row_index = integer(),
+    section = character(),
     row_label = character(),
     column = character(),
     value = character(),
@@ -851,22 +892,46 @@ tapr_empty_generic_dataset <- function(key) {
   )
 }
 
-tapr_pages_manifest <- function(pages, year, level, geography) {
-  if (!length(pages)) {
-    return(tibble::tibble(
-      year = integer(), school_year = character(), level = character(),
-      geography = character(), page_source = character(), source_url = character(),
-      retrieved_at = character(), sha256 = character(), cache_path = character(),
-      used_cache = logical(), table_count = integer()
+# Warn, once per failed page, naming the requested dataset keys that
+# came back empty because of it -- so zero rows is distinguishable from
+# "TEA published nothing".
+warn_failed_tapr_pages <- function(failed, datasets, year, geography) {
+  if (!length(failed)) return(invisible(NULL))
+  catalog <- txs_list_tapr_datasets()
+  for (src in names(failed)) {
+    affected <- catalog$key[catalog$page_source == src &
+                              catalog$key %in% datasets]
+    if (!length(affected)) next
+    cli::cli_warn(c(
+      "!" = paste0(
+        "TAPR {tapr_page_message_label(src)} page unavailable for ",
+        "{geography} ({year}); dataset{?s} {.val {affected}} returned empty."
+      ),
+      "i" = "Reason: {failed[[src]]}"
     ))
   }
-  dplyr::bind_rows(lapply(pages, function(page) {
+  invisible(NULL)
+}
+
+tapr_pages_manifest <- function(pages, year, level, geography,
+                                failed = character(0)) {
+  empty <- tibble::tibble(
+    year = integer(), school_year = character(), level = character(),
+    geography = character(), page_source = character(), status = character(),
+    error = character(), source_url = character(),
+    retrieved_at = character(), sha256 = character(), cache_path = character(),
+    used_cache = logical(), table_count = integer()
+  )
+  if (!length(pages) && !length(failed)) return(empty)
+  ok <- dplyr::bind_rows(lapply(pages, function(page) {
     tibble::tibble(
       year = as.integer(year),
       school_year = year_label(year),
       level = level,
       geography = as.character(geography),
       page_source = page$page_source %||% NA_character_,
+      status = "ok",
+      error = NA_character_,
       source_url = page$meta$source_url %||% NA_character_,
       retrieved_at = page$meta$retrieved_at %||% NA_character_,
       sha256 = page$meta$sha256 %||% NA_character_,
@@ -875,6 +940,24 @@ tapr_pages_manifest <- function(pages, year, level, geography) {
       table_count = length(page$tables %||% list())
     )
   }))
+  bad <- dplyr::bind_rows(lapply(names(failed), function(src) {
+    tibble::tibble(
+      year = as.integer(year),
+      school_year = year_label(year),
+      level = level,
+      geography = as.character(geography),
+      page_source = src,
+      status = "failed",
+      error = unname(failed[[src]]),
+      source_url = NA_character_,
+      retrieved_at = NA_character_,
+      sha256 = NA_character_,
+      cache_path = NA_character_,
+      used_cache = FALSE,
+      table_count = 0L
+    )
+  }))
+  dplyr::bind_rows(empty, ok, bad)
 }
 
 #' Write semantic TAPR datasets to DuckDB

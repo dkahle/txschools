@@ -19,11 +19,18 @@ test_that("mask_strip strips display formatting before parsing", {
   expect_false(any(out$masked))
 })
 
-test_that("mask_strip flags unparseable non-text values instead of silent NA", {
-  out <- mask_strip(c("< 1%", "?", "12.3"))
-  expect_identical(out$masked, c(TRUE, TRUE, FALSE))
-  expect_identical(out$mask_code, c("< 1%", "?", NA))
-  expect_equal(out$value_num, c(NA, NA, 12.3))
+test_that("mask_strip flags suppression-shaped markers instead of silent NA", {
+  out <- mask_strip(c("< 1%", ">99%", "<5", "?", "--", "12.3"))
+  expect_identical(out$masked, c(TRUE, TRUE, TRUE, TRUE, TRUE, FALSE))
+  expect_identical(out$mask_code, c("< 1%", ">99%", "<5", "?", "--", NA))
+  expect_equal(out$value_num, c(NA, NA, NA, NA, NA, 12.3))
+})
+
+test_that("mask_strip never mistakes year labels or spans for masks", {
+  out <- mask_strip(c("2019-20", "02 - 04", "9-12"))
+  expect_false(any(out$masked))
+  expect_true(all(is.na(out$mask_code)))
+  expect_true(all(is.na(out$value_num)))
 })
 
 test_that("mask_strip leaves ordinary text unmasked", {

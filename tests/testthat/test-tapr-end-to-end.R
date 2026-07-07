@@ -191,6 +191,110 @@ test_that("txs_get_tapr_file cache=FALSE leaves no files behind", {
   expect_length(list.files(dir, all.files = TRUE, no.. = TRUE), 0)
 })
 
+test_that("explicit advanced data_type with html format errors instead of coercing", {
+  expect_error(
+    txs_get_tapr_file(
+      2025, level = "campus", geography = "161920102",
+      data_type = "advanced", file_format = "html", verbose = FALSE
+    ),
+    "rates-only report pages"
+  )
+})
+
+test_that("parse_tapr_values keeps generic values as printed and text unmasked", {
+  # value_num as printed unless the caller declares a percent column.
+  out <- parse_tapr_values(c("90%", "$4,668", "12.3"), percent = FALSE)
+  expect_equal(out$value, c(90, 4668, 12.3))
+  expect_false(any(out$masked))
+
+  out <- parse_tapr_values("49.6%", percent = TRUE)
+  expect_equal(out$value, 0.496)
+
+  # Year labels are text, not suppression markers.
+  out <- parse_tapr_values(c("2019-20", "< 1%"))
+  expect_identical(out$masked, c(FALSE, TRUE))
+  expect_identical(out$mask_code, c(NA, "< 1%"))
+})
+
+test_that("generic semantic datasets carry as-printed value_num and honest masking", {
+  page <- list(
+    tables = list(tibble::tibble(
+      # First row mimics TEA's colspan section headings: the label
+      # repeated across every cell.
+      `Indicator` = c("Longitudinal Rates", "Graduation Rate", "Class of",
+                      "Spending"),
+      `Campus` = c("Longitudinal Rates", "90%", "2019-20", "$4,668")
+    )),
+    links = tibble::tibble(),
+    entity = list(),
+    page_source = "graduation",
+    meta = list(source_url = "x", retrieved_at = "t")
+  )
+  out <- extract_generic_page_dataset(page, key = "graduation", year = 2024,
+                                      level = "campus", geography = "161920102")
+  # The section row is context, not data.
+  expect_false("Longitudinal Rates" %in% out$row_label)
+  expect_true(all(out$section == "Longitudinal Rates"))
+  expect_true(all(c("row_index", "section") %in% names(out)))
+
+  grad <- out[out$row_label == "Graduation Rate", ]
+  expect_equal(grad$value, "90%")
+  expect_equal(grad$value_num, 90)
+  class_of <- out[out$row_label == "Class of", ]
+  expect_equal(class_of$value, "2019-20")
+  expect_false(class_of$masked)
+  expect_true(is.na(class_of$value_num))
+  spend <- out[out$row_label == "Spending", ]
+  expect_equal(spend$value_num, 4668)
+})
+
+test_that("failed semantic pages warn and yield empty datasets, not errors", {
+  dir <- withr::local_tempdir()
+  withr::local_options(txschools.cache_dir = dir)
+
+  student_page <- parse_tapr_semantic_page(fixture_path("tapr_student_report.html"))
+  student_page$page_source <- "student"
+  student_page$prgopt <- "reports/tapr/student.sas"
+  student_page$path <- "cached"
+  student_page$meta <- list(source_url = "x", retrieved_at = "t",
+                            sha256 = "s", used_cache = TRUE)
+
+  mockery::stub(
+    fetch_tapr_semantic_pages, "download_tapr_semantic_page",
+    function(year, level, geography, page_source, prgopt, ...) {
+      if (identical(page_source, "student")) return(student_page)
+      stop("TEA route moved")
+    }
+  )
+  fetched <- fetch_tapr_semantic_pages(
+    year = 2025, level = "campus", geography = "161920102",
+    datasets = c("grade", "staar_performance"),
+    cache = TRUE, refresh = FALSE, timeout = 60, verbose = FALSE
+  )
+  expect_named(fetched$pages, "student")
+  expect_true("staar_performance" %in% names(fetched$failed))
+  expect_match(fetched$failed[["staar_performance"]], "TEA route moved")
+
+  # collect-level: the failure surfaces as a warning naming the dataset,
+  # and the manifest records it.
+  mockery::stub(collect_tapr_semantic, "fetch_tapr_semantic_pages",
+                function(...) fetched)
+  expect_warning(
+    x <- collect_tapr_semantic(
+      years = 2025, level = "campus", geography = "161920102",
+      datasets = c("grade", "staar_performance"),
+      cache = TRUE, refresh = FALSE, timeout = 60, verbose = FALSE
+    ),
+    "staar_performance"
+  )
+  expect_gt(nrow(x$grade), 0)
+  expect_equal(nrow(x$staar_performance), 0)
+  pages <- attr(x, "txschools")$pages
+  failed_row <- pages[pages$status == "failed", ]
+  expect_equal(failed_row$page_source, "staar_performance")
+  expect_match(failed_row$error, "TEA route moved")
+})
+
 test_that("txs_get_tapr_file parses cached public HTML report pages", {
   dir <- withr::local_tempdir()
   withr::local_options(txschools.cache_dir = dir)

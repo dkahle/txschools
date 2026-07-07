@@ -41,3 +41,23 @@
   2004-2019).
 * Live smoke tests gated behind `TXS_LIVE=true` guard against TEA page
   drift.
+
+## Review fixes (2026-07, after external code review)
+
+* Masking fallback narrowed: only suppression-shaped markers
+  (`"< 1%"`, `">99%"`, `"*"`, `"?"`, `"--"`) are flagged; year labels
+  (`"2019-20"`) and grade spans (`"02 - 04"`) are ordinary text again.
+* Numeric convention standardized and documented: `value_num` is always
+  the number as printed (`"90%"` is 90); only the semantic student
+  datasets' `*_percent` columns are proportions.
+* Generic semantic datasets gain `section` and `row_index` columns:
+  TEA's colspan section headings ("Grade 3 Reading") are now context on
+  each row instead of duplicated pseudo-records.
+* `txs_get_tapr()` warns (and records in the pages manifest) when a
+  requested page cannot be retrieved, instead of returning silently
+  empty datasets; one bad page no longer aborts a multi-page pull.
+* `txs_get_tapr_file()` errors on the contradictory request
+  `file_format = "html"` with an explicit `data_type = "advanced"`.
+* The getting-started vignette no longer tangles live network/cache
+  code, so `R CMD check` stays offline and never touches the user
+  cache.

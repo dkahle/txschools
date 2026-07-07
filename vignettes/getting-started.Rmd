@@ -8,12 +8,18 @@ vignette: >
 ---
 
 ```{r setup, include = FALSE}
+live <- identical(Sys.getenv("TXS_LIVE"), "true")
 knitr::opts_chunk$set(
   collapse = TRUE,
   comment = "#>",
   # Live chunks only run when TXS_LIVE=true to keep CRAN builds offline.
-  eval = identical(Sys.getenv("TXS_LIVE"), "true")
+  # `purl` must be gated too: R CMD check tangles and *runs* vignette
+  # code regardless of `eval`, so offline the tangled file must be empty.
+  eval = live,
+  purl = live
 )
+# Never write the user's real cache from a vignette build.
+options(txschools.cache_dir = file.path(tempdir(), "txschools-vignette"))
 library(txschools)
 ```
 
@@ -28,13 +34,13 @@ Performance Reports (TAPR, 2013-present), the School Report Card (SRC,
 TEA identifies campuses by nine-digit county-district-campus numbers
 and districts by six-digit numbers. Look them up by name:
 
-```{r}
+```{r, purl = identical(Sys.getenv("TXS_LIVE"), "true")}
 txs_find_campus("china spring")
 ```
 
 ## Discover available years and downloads
 
-```{r}
+```{r, purl = identical(Sys.getenv("TXS_LIVE"), "true")}
 txs_list_years("tapr")
 
 downloads <- txs_list_downloads(2024, source = "tapr")
@@ -49,7 +55,7 @@ Excel" are variable dictionaries, exposed here as
 
 ## Download semantic TAPR datasets
 
-```{r}
+```{r, purl = identical(Sys.getenv("TXS_LIVE"), "true")}
 tapr <- txs_get_tapr(
   year      = 2025,
   level     = "campus",
@@ -64,7 +70,7 @@ collection of datasets, not one rectangular table.
 
 ## Download a statewide TAPR data file
 
-```{r}
+```{r, purl = identical(Sys.getenv("TXS_LIVE"), "true")}
 df <- txs_get_tapr_file(
   year        = 2024,
   level       = "campus",
@@ -77,14 +83,14 @@ df
 
 Variable codes are documented in the per-year dictionary:
 
-```{r}
+```{r, purl = identical(Sys.getenv("TXS_LIVE"), "true")}
 dict <- txs_get_tapr_dictionary(2024, "campus")
 dict
 ```
 
 Every call records source metadata as an attribute:
 
-```{r}
+```{r, purl = identical(Sys.getenv("TXS_LIVE"), "true")}
 attr(df, "txschools")
 ```
 
@@ -96,7 +102,7 @@ TEA publishes SRC as per-campus reports. 2004-2012 campus reports are
 HTML and parse into a tidy tibble; 2013-2019 reports are PDF and are
 downloaded to the cache:
 
-```{r}
+```{r, purl = identical(Sys.getenv("TXS_LIVE"), "true")}
 src <- txs_get_src(2011, "campus", "161920102")
 src
 ```
@@ -105,7 +111,7 @@ src
 
 Statewide AEIS files (2004-2012) are keyed by level and dataset code:
 
-```{r}
+```{r, purl = identical(Sys.getenv("TXS_LIVE"), "true")}
 aeis <- txs_get_aeis(2011, "district", dataset = "ref",
                      geography = "161920")
 aeis
@@ -113,13 +119,13 @@ aeis
 
 ## Citation
 
-```{r}
+```{r, purl = identical(Sys.getenv("TXS_LIVE"), "true")}
 txs_cite(df)
 ```
 
 ## Bulk multi-year downloads
 
-```{r}
+```{r, purl = identical(Sys.getenv("TXS_LIVE"), "true")}
 plan <- txs_bulk_plan(2023:2024, levels = "campus", datasets = c("REF", "GRAD"))
 plan
 done <- txs_bulk_download(plan, delay = 5)

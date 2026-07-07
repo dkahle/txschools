@@ -13,3 +13,11 @@ and \code{columns}.
 \description{
 Returns the stable dataset keys that \code{\link[=txs_get_tapr]{txs_get_tapr()}} can return.
 }
+\section{Numeric conventions}{
+
+Columns named \verb{*_percent} hold proportions (\code{"49.6\%"} parses to
+\code{0.496}). Every other numeric column -- including the generic
+datasets' \code{value_num} -- holds the number as printed by TEA
+(\code{"90\%"} parses to \code{90}, \code{"$4,668"} to \code{4668}).
+}
+
