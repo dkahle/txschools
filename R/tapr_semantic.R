@@ -94,7 +94,7 @@ txs_list_tapr_datasets <- function() {
         paste(
           c(
             "year", "school_year", "level", "geography", "page_source",
-            "table_index", "row_label", "column", "value",
+            "table_index", "row_label", "column", "value", "value_num",
             "masked", "mask_code"
           ),
           collapse = ", "
@@ -341,7 +341,13 @@ clean_tapr_text <- function(x) {
 }
 
 parse_tapr_entity <- function(html) {
+  # Live TAPR report pages carry the entity line in a table cell of
+  # class "systemtitle3" ("CHINA SPRING EL (161920102) - CHINA SPRING
+  # ISD - MCLENNAN COUNTY"); older markup used headings.
   candidates <- clean_tapr_text(c(
+    rvest::html_text(rvest::html_elements(
+      html, "[class*='systemtitle']"
+    )),
     rvest::html_text(rvest::html_elements(html, "h1, h2, h3")),
     rvest::html_text(rvest::html_elements(html, "title"))
   ))
@@ -744,8 +750,10 @@ coerce_tapr_student_values <- function(df, cols,
 }
 
 coerce_tapr_generic_value <- function(df) {
+  # Generic report tables can hold legitimate text; keep the raw string
+  # in `value` and put the numeric interpretation in `value_num`.
   parsed <- parse_tapr_values(df$value, percent = grepl("%", df$value))
-  df$value <- parsed$value
+  df$value_num <- parsed$value
   df$masked <- parsed$masked
   df$mask_code <- parsed$mask_code
   df
@@ -756,15 +764,22 @@ parse_tapr_values <- function(x, percent = FALSE, integer = FALSE) {
   masked <- x_chr %in% mask_codes()
   numeric_input <- ifelse(masked, NA_character_, x_chr)
   has_percent <- grepl("%", numeric_input, fixed = TRUE)
-  numeric_input <- gsub("%", "", numeric_input, fixed = TRUE)
-  numeric_input <- gsub(",", "", numeric_input, fixed = TRUE)
-  numeric_input[!nzchar(numeric_input)] <- NA_character_
+  has_percent[is.na(has_percent)] <- FALSE
+  numeric_input <- gsub("[%$,]", "", numeric_input)
+  numeric_input[!is.na(numeric_input) & !nzchar(numeric_input)] <- NA_character_
   value <- suppressWarnings(as.numeric(numeric_input))
   percent <- rep_len(percent, length(value)) | has_percent
   value[percent & !is.na(value)] <- value[percent & !is.na(value)] / 100
   if (isTRUE(integer)) {
     value <- as.integer(round(value))
   }
+  # Non-empty, non-textual values that are neither known mask codes nor
+  # parseable numbers (e.g. "< 1%") are suppression markers; never let
+  # them degrade into a silent unmasked NA. Values containing letters
+  # are ordinary text, not masks.
+  unparsed <- !masked & is.na(value) & nzchar(x_chr) &
+    !grepl("[A-Za-z]", x_chr)
+  masked <- masked | unparsed
   tibble::tibble(
     value = value,
     masked = masked,
@@ -829,7 +844,8 @@ tapr_empty_generic_dataset <- function(key) {
     table_index = integer(),
     row_label = character(),
     column = character(),
-    value = numeric(),
+    value = character(),
+    value_num = numeric(),
     masked = logical(),
     mask_code = character()
   )

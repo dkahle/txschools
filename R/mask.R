@@ -34,9 +34,24 @@ mask_strip <- function(x, codes = mask_codes()) {
   x_chr <- as.character(x)
   trimmed <- trimws(x_chr)
   masked <- trimmed %in% codes
-  mask_code <- ifelse(masked, trimmed, NA_character_)
+
+  # Strip display formatting ("97%", "$4,668") before numeric parsing.
+  # The number is kept as printed: "97%" parses to 97, not 0.97.
   num_input <- ifelse(masked, NA_character_, trimmed)
+  num_input <- gsub("[%$,]", "", num_input)
+  num_input[!is.na(num_input) & !nzchar(trimws(num_input))] <- NA_character_
   num <- suppressWarnings(as.numeric(num_input))
+
+  # Any non-empty, non-textual value that is neither a known code nor
+  # parseable as a number (e.g. "< 1%", "?") is still a suppression
+  # marker: flag it rather than silently degrading to an unmasked NA.
+  # Values containing letters (names, grade spans) are ordinary text,
+  # not masks; their numeric slot is NA and `masked` stays FALSE.
+  unparsed <- !masked & is.na(num) & !is.na(trimmed) & nzchar(trimmed) &
+    !grepl("[A-Za-z]", trimmed)
+  masked <- masked | unparsed
+  mask_code <- ifelse(masked, trimmed, NA_character_)
+
   tibble::tibble(
     value_num = num,
     masked    = masked,

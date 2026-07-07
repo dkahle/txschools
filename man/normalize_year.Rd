@@ -4,10 +4,13 @@
 \alias{normalize_year}
 \title{Normalize a TEA "school year" argument}
 \usage{
-normalize_year(year)
+normalize_year(year, source = NULL)
 }
 \arguments{
 \item{year}{Integer scalar; the ending calendar year.}
+
+\item{source}{Optional TEA program (\code{"tapr"}, \code{"aeis"}, \code{"src"});
+when given, the year is validated against that program's coverage.}
 }
 \value{
 Integer scalar.

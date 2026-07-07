@@ -11,7 +11,14 @@ http_request(url, timeout = NULL, max_tries = NULL)
 
 http_get(url, timeout = NULL, max_tries = NULL)
 
-http_download(url, dest, timeout = NULL, max_tries = NULL)
+http_download(
+  url,
+  dest,
+  timeout = NULL,
+  max_tries = NULL,
+  method = c("get", "post"),
+  params = NULL
+)
 }
 \description{
 Thin wrappers around \code{httr2} that enforce:
@@ -22,5 +29,10 @@ Thin wrappers around \code{httr2} that enforce:
 \item configurable timeout (\code{options("txschools.timeout")}),
 \item a \code{robots.txt} check before each request.
 }
+
+\code{method = "post"} sends \code{params} as a URL-encoded form body (used for
+TEA's SAS broker and AEIS CGI endpoints); \code{method = "get"} appends
+\code{params} to the query string. \code{params} may also be a single
+pre-encoded query string like \code{"sumlev=C&setpick=REF"}.
 }
 \keyword{internal}

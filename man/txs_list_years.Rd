@@ -15,9 +15,9 @@ txs_list_years(source = c("tapr", "src", "aeis"), refresh = FALSE)
 A tibble with columns \code{source}, \code{year}, \code{school_year}.
 }
 \description{
-For TAPR, scrapes the public TEA TAPR landing page; for AEIS,
-scrapes the archive index; for SRC, attempts the archive index and
-falls back to the bundled catalog.
+For TAPR, scrapes the public TEA TAPR landing page; for AEIS and SRC,
+returns the archive years documented in the bundled catalog (verified
+against TEA's site), augmented by live scraping where possible.
 }
 \details{
 Results are cached per session under \verb{txs_cache_dir()/_meta/}. Pass

@@ -1,66 +1,74 @@
 #' Plan a bulk download
 #'
-#' Builds a tibble row per `(year, level, data_type)` combination, with
-#' the resolved URL, target cache path, and a flag indicating whether
-#' the file is already cached.
+#' Builds a tibble row per `(year, level, dataset)` combination, with
+#' the resolved URL/request, target cache path, and a flag indicating
+#' whether the file is already cached.
 #'
 #' @param years Integer vector of ending years.
 #' @param levels Character vector of levels.
-#' @param data_type `"rates"` or `"advanced"`.
+#' @param datasets Character vector of TAPR advanced dataset codes
+#'   (e.g. `c("REF", "STAAR1")`). `NULL` plans every dataset TEA
+#'   publishes for the year/level.
+#' @param data_type `"advanced"` (the statewide data files).
 #' @return A tibble plan.
 #' @examples
 #' \dontrun{
-#' plan <- txs_bulk_plan(2024:2025, levels = c("campus", "district"))
+#' plan <- txs_bulk_plan(2024, levels = "campus", datasets = c("REF", "GRAD"))
 #' }
 #' @export
 txs_bulk_plan <- function(years,
                           levels = c("campus", "district"),
+                          datasets = NULL,
                           data_type = "advanced") {
-  years <- vapply(years, normalize_year, integer(1))
+  years <- vapply(years, normalize_year, integer(1), source = "tapr")
   file_format <- "csv"
   source <- "tapr"
-  grid <- expand.grid(
-    year = years, level = levels, data_type = data_type,
-    file_format = file_format, source = source,
-    stringsAsFactors = FALSE, KEEP.OUT.ATTRS = FALSE
-  )
+  if (!is.null(datasets)) datasets <- toupper(as.character(datasets))
 
-  rows <- lapply(seq_len(nrow(grid)), function(i) {
-    g <- grid[i, , drop = FALSE]
+  rows <- list()
+  for (yr in years) {
     downloads <- tryCatch(
-      txs_list_downloads(g$year, g$source, refresh = FALSE),
+      txs_list_downloads(yr, source, refresh = FALSE),
       error = function(e) NULL
     )
-    if (is.null(downloads) || !nrow(downloads)) {
-      return(tibble::tibble(
-        source = g$source, year = g$year,
-        school_year = year_label(g$year),
-        level = g$level, data_type = g$data_type,
-        file_format = g$file_format,
-        url = NA_character_, cache_path = NA_character_,
-        exists_in_cache = FALSE
-      ))
+    for (lvl in levels) {
+      hit <- if (is.null(downloads) || !nrow(downloads)) {
+        downloads_tibble(list())
+      } else {
+        downloads[
+          downloads$level == lvl &
+            downloads$data_type == data_type &
+            downloads$file_format == file_format,
+          , drop = FALSE
+        ]
+      }
+      if (!is.null(datasets)) {
+        hit <- hit[toupper(hit$dataset) %in% datasets, , drop = FALSE]
+      }
+      if (!nrow(hit)) {
+        rows[[length(rows) + 1L]] <- tibble::tibble(
+          source = source, year = yr, school_year = year_label(yr),
+          level = lvl, data_type = data_type, dataset = NA_character_,
+          file_format = file_format, method = NA_character_,
+          url = NA_character_, params = NA_character_,
+          cache_path = NA_character_, exists_in_cache = FALSE
+        )
+        next
+      }
+      for (i in seq_len(nrow(hit))) {
+        h <- hit[i, , drop = FALSE]
+        cp <- cache_path(source, yr, lvl, data_type,
+                         file = download_filename(h))
+        rows[[length(rows) + 1L]] <- tibble::tibble(
+          source = source, year = yr, school_year = year_label(yr),
+          level = lvl, data_type = data_type, dataset = h$dataset,
+          file_format = file_format, method = h$method,
+          url = h$url, params = h$params,
+          cache_path = cp, exists_in_cache = file.exists(cp)
+        )
+      }
     }
-    hit <- downloads[
-      downloads$level == g$level &
-        downloads$data_type == g$data_type &
-        downloads$file_format == g$file_format,
-      , drop = FALSE
-    ]
-    url <- if (nrow(hit)) hit$url[1] else NA_character_
-    cp  <- if (!is.na(url)) {
-      cache_path(g$source, g$year, g$level, g$data_type,
-                 file = basename(httr2::url_parse(url)$path))
-    } else NA_character_
-    tibble::tibble(
-      source = g$source, year = g$year,
-      school_year = year_label(g$year),
-      level = g$level, data_type = g$data_type,
-      file_format = g$file_format,
-      url = url, cache_path = cp,
-      exists_in_cache = !is.na(cp) && file.exists(cp)
-    )
-  })
+  }
   do.call(rbind, rows)
 }
 
@@ -109,15 +117,22 @@ txs_bulk_download <- function(plan,
     t0 <- Sys.time()
     result <- tryCatch({
       dir.create(dirname(row$cache_path), recursive = TRUE, showWarnings = FALSE)
-      info <- http_download(row$url, row$cache_path, max_tries = max_tries)
+      info <- http_download(
+        row$url, row$cache_path, max_tries = max_tries,
+        method = row$method %||% "get", params = row$params
+      )
+      check_broker_data_response(row$cache_path, row)
       write_sidecar(row$cache_path, list(
         source       = row$source,
         year         = row$year,
         school_year  = row$school_year,
         level        = row$level,
         data_type    = row$data_type,
+        dataset      = row$dataset,
         file_format  = row$file_format,
         source_url   = row$url,
+        method       = row$method,
+        params       = row$params,
         retrieved_at = info$retrieved_at,
         sha256       = info$sha256,
         size_bytes   = info$size_bytes,

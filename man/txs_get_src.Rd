@@ -2,18 +2,16 @@
 % Please edit documentation in R/src.R
 \name{txs_get_src}
 \alias{txs_get_src}
-\title{Download an SRC (School Report Card) file}
+\title{Download an SRC (School Report Card) report}
 \usage{
 txs_get_src(
   year,
-  level = c("campus", "district", "region", "state"),
+  level = c("campus", "district"),
   geography = NULL,
-  data_type = c("rates"),
-  file_format = c("csv", "txt", "xlsx"),
+  format = c("auto", "html", "pdf"),
   cache = TRUE,
   refresh = FALSE,
-  output = c("tidy", "wide", "raw"),
-  keep_raw = FALSE,
+  output = c("tidy", "raw"),
   timeout = 60,
   verbose = TRUE
 )
@@ -21,32 +19,54 @@ txs_get_src(
 \arguments{
 \item{year}{Integer ending year (e.g. \code{2024} for 2023-24).}
 
-\item{level}{One of \code{"campus"}, \code{"district"}, \code{"region"}, \code{"state"}.}
+\item{level}{\code{"campus"} or \code{"district"}.}
 
-\item{geography}{Optional. A character vector of campus or district
-numbers to filter the parsed file to. \code{NULL} returns all rows.}
+\item{geography}{A single campus (9-digit) or district (6-digit)
+number, quoted to preserve leading zeros.}
 
-\item{data_type}{Currently \code{"rates"}.}
-
-\item{file_format}{\code{"csv"}, \code{"txt"}, or \code{"xlsx"}.}
+\item{format}{\code{"auto"} (HTML when TEA offers it, else PDF), \code{"html"},
+or \code{"pdf"}.}
 
 \item{cache}{If \code{TRUE}, reuse a cached copy when one exists.}
 
 \item{refresh}{If \code{TRUE}, re-download even if cached.}
 
-\item{output}{\code{"tidy"} (long, masking-aware), \code{"wide"} (raw with
-human-readable labels attached), or \code{"raw"} (as parsed).}
-
-\item{keep_raw}{If \code{TRUE}, attach the raw parsed frame as
-\code{attr(out, "raw")}.}
+\item{output}{For HTML reports: \code{"tidy"} (long, masking-aware) or
+\code{"raw"} (the report's text lines, one row per line).}
 
 \item{timeout}{HTTP timeout in seconds.}
 
 \item{verbose}{Print progress messages.}
 }
 \value{
-A tibble with a \code{txschools} attribute.
+For HTML reports, a tibble with columns \code{year},
+\code{school_year}, \code{level}, \code{geography}, \code{school_name},
+\code{district_name}, \code{page}, \code{section}, \code{measure}, \code{row_label},
+\code{column}, \code{value}, \code{value_num}, \code{masked}, \code{mask_code}. For PDF
+reports, a one-row tibble with the cached file's path and
+provenance. Both carry a \code{txschools} attribute.
 }
 \description{
-Download an SRC (School Report Card) file
+TEA publishes the School Report Card as \emph{per-campus (or district)
+reports}, not as bulk data files. This function downloads one report
+through TEA's public SAS-broker interface and, where TEA serves an
+HTML report, parses it into a tidy masking-aware tibble.
+}
+\section{Coverage}{
+
+\itemize{
+\item \strong{2004-2012 campus reports} are available as HTML and are parsed
+into a tidy long tibble.
+\item \strong{2004-2012 district reports and all 2013-2019 reports} are
+published by TEA as PDF only. These are downloaded to the cache and
+returned as a one-row tibble describing the file (see \code{Value}).
+\item \strong{2020 and later} SRC reports live at \url{https://txschools.gov},
+which this package does not scrape.
+}
+}
+
+\examples{
+\dontrun{
+src_2011 <- txs_get_src(2011, "campus", "161920102")
+}
 }

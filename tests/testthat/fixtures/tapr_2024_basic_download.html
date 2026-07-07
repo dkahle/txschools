@@ -1,0 +1,424 @@
+<!DOCTYPE html>
+<html lang="en">
+<script>
+    window.location.href = "/perfreport/tapr/tapr_dd_download.html?year=2024";
+</script>
+
+<head id="Head1">
+    <!-- ENTER PAGE NAME FOR EACH PAGE -->
+    <title>
+        2023-24 TAPR Download of Selected Data
+    </title>
+
+    
+<meta name="viewport" content="width=device-width, initial-scale=1.0" />
+<!-- CSS -->
+<link href="/templates/css/bootstrap.min-2024.css" rel="stylesheet" media="screen" /> 
+<link href="/templates/css/tea-2024.css" rel="stylesheet" media="screen" />
+<link href="/templates/css/print.css" rel="stylesheet" media="print" />
+<link href="//netdna.bootstrapcdn.com/font-awesome/4.1.0/css/font-awesome.min.css" rel="stylesheet" />
+
+<!-- JAVASCRIPT -->
+<script src="//code.jquery.com/jquery-1.10.1.min.js"></script>
+<script src="/public/templates/js/jquery-accessibleMegaMenu.js"></script>
+<script src="/public/templates/js/jquery.sidr.js"></script>
+<script src="/public/templates/js/bootstrap.min.js"></script>
+<script src="/public/templates/js/tea.js"></script>
+
+<SCRIPT LANGUAGE="JavaScript">
+    function validate() {
+        if (document.joe.form.value == "0") {
+            window.alert("You must select a data format.");
+            document.joe.form.focus();
+            return false;
+        }
+        if (document.joe.level.value == "0") {
+            window.alert("You must select an aggregate level.");
+            document.joe.level.focus();
+            return false;
+        }
+        if (document.joe.type.value == "0") {
+            window.alert("You must select test type.");
+            document.joe.type.focus();
+            return false;
+        }
+        if (document.joe.grade.value == "0") {
+            window.alert("You must select a grade level.");
+            document.joe.grade.focus();
+            return false;
+        }
+        if (document.joe.file.value == "0") {
+            window.alert("You must select year.");
+            document.joe.file.focus();
+            return false;
+        }
+        if (document.joe.type.value == "s") {
+            var yr = document.joe.file.value
+            yr = yr.replace('fy', '20')
+            yr = parseInt(yr)
+            //window.alert(yr);
+
+            if ((yr > 2009) && (document.joe.grade.value > 5)) {
+                window.alert("For year 2010 and after, Spanish files are only available for grades 3 through 5.");
+                return false;
+            }
+            else if (document.joe.grade.value > 6) {
+                window.alert("For year 2009 and earlier, Spanish files are only available for grades 3 through 6.");
+                return false;
+            }
+            else {
+                return true;
+            }
+        }//end check spanish files
+    }
+</SCRIPT>
+<script type="text/javascript">
+    function Search() {
+        $("#searchForm").submit();
+    }
+</script>
+</head>
+<body class="template_grid">
+
+    <!-- SKIP TO CONTENT LINK FOR SCREEN READERS -->
+    <a href="#main-content" class="skip">Skip to content</a>
+    <!-- BRAND BAR and HEADER -->
+    <!-- BRAND BAR -->
+    <nav id="brand-bar">
+        <div class="brand-bar">
+            <div class="container">
+                <div class="row">
+                <div class="span12">
+                    <p style="font-weight:bold; float:left; font-size:10pt;">
+                        Popular Applications
+                        <a href="https://tealprod.tea.state.tx.us/tea.askted.web/Forms/Home.aspx">AskTED</a>
+                        <a href="https://tea.texas.gov/texas-educators/certification/educator-certification-online-system">ECOS for Educators</a>
+                        <a href="https://tealprod.tea.state.tx.us/GrantOpportunities/forms/GrantProgramSearch.aspx">Grant Opportunities</a>
+                        <a href="https://tea.texas.gov/about-tea/other-services/secure-applications/tea-secure-applications-information">Secure Applications</a>
+                        <a href="https://tealprod.tea.state.tx.us/">TEAL Login</a>
+                        <a href="https://www.texasstudentdatasystem.org/">TSDS</a>
+                    </p>
+                    <a href="https://helpdesk.tea.texas.gov/" style="float:right; padding-top:5px;" title="Help Desk"><img src="/templates/img/helpdeskwhite.png" alt="Help Desk logo" /></a>
+                </div>
+            </div>
+            <!--</div>-->
+        </div>
+    </nav>
+
+    <!-- PAGE HEADER -->
+    <header id="header"style="box-shadow: 0 15px 15px -15px #444;">
+        <div class="header" >
+            <div class="container">
+                <div class="row">
+                    <div class="span12 header-wrapper">
+                        <!--<div class="mobile-menu-toggle">
+                            <i class="fa fa-bars fa-3x"></i>
+                        </div>-->
+                        <div class="logo">
+                            <a href="http://tea.texas.gov/" title="Home"><img src="/templates/img/tea-logo-header-2_0.png" alt="Texas Education Agency logo" /></a>
+                        </div>
+                        <div class="search-form hide-mobile">
+                            <div class="input-append">
+                                <form action="https://tea.texas.gov/search" method="get" id="views-exposed-form-acquia-search-page" accept-charset="UTF-8">
+                                    <div class="form--inline form-inline clearfix" style="float:right; width: 100%;">
+                                        <div class="form-item js-form-item form-type-textfield js-form-type-textfield form-item-s js-form-item-s form-group" style="float:right;">
+                                            <label for="edit-s">Search</label>
+                                            <p style="float: left; height: 24px; font-weight:bold; padding-top: 4px;">Search&nbsp;</p>
+                                            <input placeholder="Enter Keywords" data-drupal-selector="edit-s" class="form-text form-control" type="text" id="edit-s" name="s" value="" size="30" maxlength="128" 
+                                                   style="height:24px; padding-left: 10px; padding-top: 3px; border-color: lightgray; border-width:1px;">
+                                            <button class="btn btn-search" type="submit" onclick="Search();"><i class="fa fa-search fa-lg"></i></button>
+                                        </div>
+                                    </div>
+                                    <div style="float:right;">
+                                        <ul style="list-style-type: none; padding-top: 0 ; margin-top: 0; ">
+                                            <li>
+                                                <a class="menu-two" href="https://tea.texas.gov/about-tea/welcome-and-overview/a-z-index">A-Z Index</a>
+                                                <a class="menu-two" href="https://tea.texas.gov/about-tea/contact-us">Contact</a>
+                                                <a class="menu-two" href="https://tea.texas.gov/about-tea/welcome-and-overview/employment">Employment</a>
+                                                <a class="menu-two" href="https://sboe.texas.gov">State Board of Education</a>
+                                                <a class="menu-two" href="https://public.govdelivery.com/accounts/TXTEA/subscriber/new">Sign Up for Updates</a>
+                                                <a class="menu-two" href="https://tea.texas.gov/about-tea/news-and-multimedia/correspondence">TEA Correspondence</a>
+                                            </li>
+                                        </ul>
+                                    </div>
+                                </form>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+    </header>
+
+
+    <div class="page_body">
+        <div class="container">
+            <div class="row-fluid">
+
+                <div class="span12">
+                    <nav id="breadcrumbs">
+                        <!-- ADD BREADCRUMB LINKS-->
+                        <p class="breadcrumb"><a href="http://tea.texas.gov">Home</a> <span class="divider">&gt;</span> <a href="http://tea.texas.gov/perfreport/">Performance Reporting Division</a> <span class="divider">&gt;</span> <a href="../../index.html">Texas Academic Performance Reports</a> <span class="divider">&gt;</span> <a href="../index.html">2023-24 TAPR</a> <span class="divider">&gt;</span> <a href="../download.html">2023-24 TAPR Download</a> <span class="divider">&gt;</span><span class="active"> 2023-24 TAPR Download of Selected Data</span></p>
+                    </nav>
+                    <main id="main-content">
+                        <div class="main-content">
+                            <!--ADD PAGE TITLE -->
+                            <h2>2023-24 TAPR Download of Selected Data</h2>
+                            <!-- ADD MAIN CONTENT -->
+                            <p>
+
+
+                            <p>
+                                The 2023-24 Texas Academic Performance Report (TAPR) is available for download
+                                as an Excel spreadsheet or a comma-delimited text file. <br>
+                                See <a href="taprhelp.html">Additional Download Information</a> for student group naming conventions, download formats, and general information.
+                            </p>
+                            <p>
+                                <strong>TAPR Download Master Reference of Data Elements:</strong><br>
+                                (1) <a href="taprref.html"> Master Reference (HTML)</a><br>
+                                (2) Master Reference (Excel format): <a href="./xplore/TAPR_campus_2024.xlsx"> campus</a>,
+                                <a href="./xplore/TAPR_district_2024.xlsx"> district</a>,
+                                <a href="./xplore/TAPR_region_2024.xlsx"> region</a>, and
+                                <a href="./xplore/TAPR_state_2024.xlsx"> state</a>. <br>
+                            </p>
+                            <!--
+                                    <P>Please note that all reports, including these download applications,
+                                   employ significant masking of performance data in order to comply with
+                                   the <em>Family Educational Rights and Privacy Act (FERPA)</em>. In the
+                                   download files, masked values are represented with various negative
+                                   values (-1, -2, -3, -4, -99) indicating the source data are unavailable.
+                                   For detailed information, please see the <a href="/perfreport/tapr/2024/masking.html"><strong>Explanation
+                                   of Masking</strong></a>.</p>-->
+                            <br>
+
+                            <P align="center">
+                                <strong>
+                                    Subset the campus and district data by selecting one of the following categories:
+                                </strong>
+                            </P>
+
+
+                            <P align="center">
+                                <a href="CampByRegion.html">Campuses by Region</a><br>
+                                <a href="CampByCounty.html">Campuses by County</a><br>
+                                <a href="CampByCountyDist.html">Campuses by District within County</a><br>
+                                <br>
+                                <a href="DistByRegion.html">Districts by Region</a><br>
+                                <a href="DistByCounty.html">Districts by County</a><br>
+                            </P>
+                            <P align="center">
+                                <STRONG>Download all records for whole state:</STRONG>
+                            </P>
+                            <P align="center">
+                                <a href="/cgi/sas/broker?_service=marykay&prgopt=2024/tapr/Basic Download/xplore/setcamps.sas&year4=2024&_debug=0&_program=perfrept.perfmast.sas&sumlev=C&steps=2">Campus Download</a><br>
+                                <a href="/cgi/sas/broker?_service=marykay&prgopt=2024/tapr/Basic Download/xplore/setdists.sas&year4=2024&_debug=0&_program=perfrept.perfmast.sas&sumlev=D&steps=2">District Download</a><br>
+                                <a href="/cgi/sas/broker?_service=marykay&prgopt=2024/tapr/Basic Download/xplore/setregion.sas&year4=2024&_debug=0&_program=perfrept.perfmast.sas&sumlev=R&steps=2">Region Download</a><br>
+                                <a href="/cgi/sas/broker?_service=marykay&prgopt=2024/tapr/Basic Download/xplore/setstate.sas&year4=2024&_program=perfrept.perfmast.sas&sumlev=S&steps=2">State Download</a>
+                            </P>
+
+                            <!--
+                            <P ><br>
+                            <a href="/index2.aspx?id=2147494789&menu_id=645&menu_id2=789"><STRONG>Data Download for Summarized PEIMS Actual Financial Data:</STRONG></a> PEIMS actual financial data from 1999-2000 school year to 2012-2014 school year. <em>Source: Office of School Finance. </em></p>
+                             -->
+
+                            <P>
+                                <br>
+                                <a href="http://tea.texas.gov/index2.aspx?id=25769817583">Data Download for Summarized PEIMS Actual Financial Data:</a> PEIMS actual financial data from 1999-2000 school year to 2021-2022 school year. <em>Source: Division of State Funding. </em>
+                            </P>
+
+
+
+                            <p></p>
+                            <HR>
+                            <P align="center">
+                                <A href="../masking.html">Explanation of Masking</A>
+                                | <A href="../glossary.pdf">TAPR Glossary</A>
+                                | <A href="../index.html">2023-24 TAPR</A> |
+                                <a href="http://tea.texas.gov/perfreport/">Performance Reporting</a>
+                                <hr>
+
+                                <!-- END OF YOUR CONTENT -->
+                                <!-- PAGE FOOTER and MOBILE BRAND BAR -->
+                                                   </div>
+                    </main>
+                </div>
+            </div>
+        </div>
+    </div>
+
+<footer id="footer">
+    <div class="footer" style="-webkit-border-radius: 0 0 10px 10px; -moz-border-radius: 0 0 10px 10px; border-radius: 0 0 10px 10px;">
+        <div class="container">
+            <div class="social-icons">
+                <a class="icon" href="http://www.facebook.com/pages/Texas-Education-Agency/136486219721300" title="Facebook" target="_blank" rel="nofollow"><img class="img-social" src="/templates/img/363386" alt="Facebook Icon" /></a>
+                <a class="icon" href="https://x.com/teainfo" title="X" target="_blank" rel="nofollow"><img class="img-social" src="/templates/img/363401" alt="X Icon" /></a>
+                <a class="icon" href="http://www.youtube.com/user/TxEdAgency" title="YouTube" target="_blank" rel="nofollow"><img class="img-social" src="/templates/img/363406" alt="YouTube Icon" /></a>
+                <a class="icon" href="https://instagram.com/texaseducationagency/" title="Instagram" target="_blank" rel="nofollow"><img class="img-social" src="/templates/img/363391" alt="Instagram Icon" /></a>
+                <a class="icon" href="https://www.threads.net/texaseducationagency" title="Threads" target="_blank" rel="nofollow"><img class="img-social" src="/templates/img/363396" alt="Threads Icon" /></a>
+            </div>
+
+            <div class="span12">
+                <div class="nav-contact-main" style="float:left;">
+                    <nav class="nav-contact" style="text-align:center;">
+                        <a title="Texas State Seal" href="http://www.tea.state.tx.us/"><img src="/templates/img/tea-seal.png" alt="Texas State Seal" /></a>
+                    </nav>
+
+                    <!-- TEA Contact Info -->
+                    <nav class="nav-contact">
+                        <ul>
+                            <li><a title="Texas Education Agency" href="http://tea.texas.gov/">Texas Education Agency</a></li>
+                            <li>1701 N. Congress Avenue</li>
+                            <li>Austin, Texas, 78701</li>
+                            <li>(512) 463-9734</li>
+                            <li><a href="https://www.google.com/maps/place/Texas+Education+Agency/@30.2791716,-97.740167,17z/data=!3m1!4b1!4m5!3m4!1s0x8644b59f00e74c6f:0x888e03ba197a06c3!8m2!3d30.279167!4d-97.7379783" title="Map" target="_blank">Map <span class="fa fa-external-link" data-extlink-placement="append"></span></a> | <a data-entity-substitution="canonical" data-entity-type="node" data-entity-uuid="d6a6ad84-23b1-41e7-9a7c-bfddb75913ca" href="https://tea.texas.gov/about-tea/welcome-and-overview/site-policies" title="Site Policies">Site Policies</a> | <a href="https://tea.texas.gov/sitemap" title="Sitemap">Sitemap</a></li>
+                        </ul>
+                    </nav>
+                </div>
+                
+                <!-- menuFooter -->
+                <nav class="nav-ul">
+                    <ul>
+                        <li><a href="http://tea.texas.gov/interiorpage.aspx?id=8060">Compact with Texans</a></li>
+                        <li><a href="http://tea.texas.gov/interiorpage.aspx?id=25769817700">Complaints</a></li>
+                        <li><a href="http://tea.texas.gov/interiorpage.aspx?id=2147503292">ESC's</a></li>
+                        <li><a href="http://tea.texas.gov/interiorpage.aspx?id=25769815941">Equal Educational Opportunity</a></li>
+                    </ul>
+                </nav>
+
+                <nav class="nav-ul">
+                    <ul>
+                        <li><a href="http://tea.texas.gov/interiorpage.aspx?id=4857">Fraud Hotline</a></li>
+                        <li><a href="http://tea.texas.gov/interiorpage.aspx?id=25769805784">Frequently Asked Questions</a></li>
+                        <li><a href="https://gov.texas.gov/organization/disabilities">Governor&#39;s Committee on<br />People with Disabilities</a></li>
+                        <li><a href="https://gov.texas.gov/organization/hsgd">Homeland Security</a></li>
+                        <li><a href="http://tea.texas.gov/interiorpage.aspx?id=7995">Military Families</a></li>
+                    </ul>
+                </nav>
+
+                <nav class="nav-ul">
+                    <ul>
+                        <li><a href="http://tea.texas.gov/interiorpage.aspx?id=25769805784">Public Information Requests</a></li>
+                        <li><a href="http://www.texas.gov/">State of Texas</a></li>
+                        <li><a href="https://www.tsl.texas.gov/trail/index.html">TRAIL</a></li>
+                        <li><a href="http://www.capitol.state.tx.us/">Texas Legislature</a></li>
+                        <li><a href="https://veterans.portal.texas.gov/">Texas Veterans Portal</a></li>
+                        <li><a href="http://www.texastransparency.org/">Where Our Money Goes</a></li>
+                    </ul><br /><br />
+                </nav>
+            </div>
+        </div>
+        <p class="copyright">&copy; Copyright 2007-<span id="cr_year"></span> Texas Education Agency (TEA). All Rights Reserved.</p>
+    </div>
+</footer>
+
+<!-- MOBILE NAVIGATION -->
+<div id="sidr-left" class="sidr left">
+    <ul>
+        <li><a href="http://tea.texas.gov" title="TEA Home Page">TEA Website</a> </li>
+        <li><a href="http://tea.texas.gov/About_TEA/Contact/" title="Contact TEA">Contact TEA</a> </li>
+        <li><a href="https://public.govdelivery.com/accounts/TXTEA/subscriber/new">Sign Up For Updates</a> </li>
+    </ul>
+</div>
+<!-- MOBILE BRAND BAR -->
+<!--<div id="sidr-right" class="sidr right">
+    <ul>
+        <li><a href="http://tea.texas.gov" title="TEA Home Page">TEA Website</a> </li>
+        <li><a href="http://tea.texas.gov/About_TEA/Contact/" title="Contact TEA">Contact TEA</a> </li>
+        <li><a href="" title="https://public.govdelivery.com/accounts/TXTEA/subscriber/new" title="Sign Up For Updates">Sign Up For Updates</a> </li>
+    </ul>
+</div> -->
+
+    <script type="text/javascript">
+        // Updates the copyright year.  
+        function copyright_year() {
+            document.getElementById('cr_year').innerHTML = new Date().getFullYear();
+        }
+
+        copyright_year();
+        var _gaq = _gaq || [];
+        _gaq.push(['_setAccount', 'UA-43890902-2']);
+        _gaq.push(['_trackPageview']);
+
+        (function () {
+            var ga = document.createElement('script'); ga.type = 'text/javascript'; ga.async = true;
+            ga.src = ('https:' == document.location.protocol ? 'https://ssl' : 'http://www') + '.google-analytics.com/ga.js';
+            var s = document.getElementsByTagName('script')[0]; s.parentNode.insertBefore(ga, s);
+        })();
+
+        /*<![CDATA[*/
+        (function () {
+            var sz = document.createElement('script'); sz.type = 'text/javascript'; sz.async = true;
+            sz.src = '//us2.siteimprove.com/js/siteanalyze_77443.js';
+            var s = document.getElementsByTagName('script')[0]; s.parentNode.insertBefore(sz, s);
+        })();
+            /*]]>*/
+    </script>
+
+    <style>
+        .social-icons {
+            margin-top: 1em;
+            margin-bottom: 1em;
+            width: 100%;
+            height: 30px;
+            text-align: right;
+        }
+
+        .icon {
+            margin-right: 30px;
+        }
+
+        .img-social {
+            height: 28px;
+        }
+
+        li {
+            line-height: 20px;
+        }
+
+        .nav-contact-main {
+            width: 450px;
+            height: 150px;
+            float: left;
+        }
+
+        .nav-contact {
+            margin-left: 5px;
+            width: 220px;
+            height: 150px;
+            float: left;
+        }
+
+        .nav-ul {
+            margin-left: 5px;
+            width: 220px;
+            height: 150px;
+            float: left;
+        }
+
+        .copyright-li {
+            font-size: 14pt;
+        }
+
+        @media (400px <= width <= 700px) {
+            .nav-contact-main {
+                margin-left: 5px;
+                width: 100%;
+                height: fit-content;
+                float: left;
+            }
+
+            .nav-contact {
+                margin-left: 5px;
+                width: 48%;
+                float: left;
+            }
+
+            .nav-ul {
+                margin-left: 5px;
+                width: 90%;
+                float: left;
+                height: fit-content;
+            }
+        }
+    </style>
+    </body>
+</html>
+

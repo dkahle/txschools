@@ -30,7 +30,7 @@ txs_get_tapr <- function(year,
                          timeout = 60,
                          verbose = TRUE) {
   level <- match.arg(level, c("campus", "district", "region", "state"))
-  years <- vapply(year, normalize_year, integer(1))
+  years <- vapply(year, normalize_year, integer(1), source = "tapr")
   years <- sort(unique(years))
 
   if (is.null(geography)) {
@@ -75,26 +75,30 @@ txs_get_tapr <- function(year,
   out
 }
 
-#' Download a TAPR file
+#' Download a TAPR data file
 #'
 #' Downloads (or returns the cached copy of) a single Texas Academic
-#' Performance Reports file for a given school year, level, data type,
-#' and file format. This is the lower-level file-oriented API retained
-#' for TAPR statewide structured downloads and legacy single-page HTML
-#' parsing. Use [txs_get_tapr()] for semantic TAPR datasets.
+#' Performance Reports statewide data file. TEA serves these through its
+#' SAS-broker "Advanced Download" interface: one CSV per year, level,
+#' and dataset code (e.g. `"REF"` for campus/district reference
+#' information, `"STAAR1"` for STAAR performance). Use
+#' [txs_list_downloads()] to see the codes available for a year, and
+#' [txs_get_tapr()] for per-campus semantic datasets.
 #'
 #' @param year Integer ending year (e.g. `2024` for 2023-24).
 #' @param level One of `"campus"`, `"district"`, `"region"`, `"state"`.
 #' @param geography Optional. A character vector of campus or district
 #'   numbers to filter the parsed file to. `NULL` returns all rows for
-#'   structured downloads. For `file_format = "html"`, supply exactly
+#'   statewide downloads. For `file_format = "html"`, supply exactly
 #'   one campus, district, or region identifier.
-#' @param data_type Either `"rates"` (basic) or `"advanced"`
-#'   (numerators, denominators, and rates).
-#' @param file_format `"csv"`, `"txt"`, `"xlsx"`, or `"html"`. `"html"`
-#'   requests a public TAPR/TPRS report page for one requested geography
-#'   when TEA does not expose the current year as a structured download
-#'   file.
+#' @param dataset Dataset code for `data_type = "advanced"`, e.g.
+#'   `"REF"`, `"STAAR1"`, `"GRAD"`. Case-insensitive. Required for
+#'   advanced downloads; see [txs_list_downloads()].
+#' @param data_type `"advanced"` (the statewide data files: numerators,
+#'   denominators, and rates) or `"rates"` (legacy static rates-only
+#'   files, when TEA publishes them).
+#' @param file_format `"csv"` (statewide files) or `"html"` (a public
+#'   TAPR/TPRS report page for one requested geography).
 #' @param cache If `TRUE`, reuse a cached copy when one exists.
 #' @param refresh If `TRUE`, re-download even if cached.
 #' @param output `"tidy"` (long, masking-aware), `"wide"` (raw with
@@ -108,7 +112,8 @@ txs_get_tapr <- function(year,
 txs_get_tapr_file <- function(year,
                               level = c("campus", "district", "region", "state"),
                               geography = NULL,
-                              data_type = c("rates", "advanced"),
+                              dataset = NULL,
+                              data_type = c("advanced", "rates"),
                               file_format = c("csv", "txt", "xlsx", "html"),
                               cache = TRUE,
                               refresh = FALSE,
@@ -116,7 +121,7 @@ txs_get_tapr_file <- function(year,
                               keep_raw = FALSE,
                               timeout = 60,
                               verbose = TRUE) {
-  year        <- normalize_year(year)
+  year        <- normalize_year(year, source = "tapr")
   data_type   <- match.arg(data_type)
   file_format <- match.arg(file_format)
   output      <- match.arg(output)
@@ -126,7 +131,7 @@ txs_get_tapr_file <- function(year,
   if (identical(file_format, "html")) {
     return(txs_get_tapr_html_report(
       year = year, level = level, geography = geography,
-      data_type = data_type, cache = cache, refresh = refresh,
+      data_type = "rates", cache = cache, refresh = refresh,
       output = output, keep_raw = keep_raw, timeout = timeout,
       verbose = verbose
     ))
@@ -145,11 +150,44 @@ txs_get_tapr_file <- function(year,
       downloads$file_format == file_format,
     , drop = FALSE
   ]
+
+  if (identical(data_type, "advanced")) {
+    available <- sort(unique(hits$dataset))
+    if (is.null(dataset)) {
+      stop(
+        "Advanced TAPR downloads are split into datasets; supply `dataset`.\n",
+        "Available for ", year, " ", level, ": ",
+        paste(available, collapse = ", "),
+        call. = FALSE
+      )
+    }
+    dataset <- toupper(as.character(dataset)[1])
+    hits <- hits[!is.na(hits$dataset) & toupper(hits$dataset) == dataset,
+                 , drop = FALSE]
+    if (!nrow(hits)) {
+      stop(
+        sprintf("Unknown TAPR dataset code %s for year=%d, level=%s.\n",
+                dataset, year, level),
+        "Available: ", paste(available, collapse = ", "),
+        call. = FALSE
+      )
+    }
+  }
+
   if (!nrow(hits)) {
-    stop(sprintf(
+    msg <- sprintf(
       "No TAPR download matched year=%d, level=%s, data_type=%s, file_format=%s.",
       year, level, data_type, file_format
-    ), call. = FALSE)
+    )
+    if (identical(data_type, "rates")) {
+      msg <- paste0(
+        msg,
+        "\nTEA does not publish static rates-only files for most years; ",
+        "use `data_type = \"advanced\"` with a `dataset` code, or ",
+        "`txs_get_tapr()` for per-campus reports."
+      )
+    }
+    stop(msg, call. = FALSE)
   }
   if (nrow(hits) > 1L) {
     # Take the first; emit a warning identifying the alternatives.
@@ -158,8 +196,9 @@ txs_get_tapr_file <- function(year,
     )
     hits <- hits[1L, , drop = FALSE]
   }
+
   url <- hits$url
-  filename <- basename(httr2::url_parse(url)$path)
+  filename <- download_filename(hits)
   dest <- cache_path(
     "tapr", year, level, data_type,
     file = filename
@@ -178,15 +217,22 @@ txs_get_tapr_file <- function(year,
   } else {
     if (verbose) cli::cli_alert_info("Downloading: {url}")
     dir.create(dirname(dest), recursive = TRUE, showWarnings = FALSE)
-    info <- http_download(url, dest, timeout = timeout)
+    info <- http_download(
+      url, dest, timeout = timeout,
+      method = hits$method %||% "get", params = hits$params
+    )
+    check_broker_data_response(dest, hits)
     meta <- list(
       source       = "tapr",
       year         = year,
       school_year  = year_label(year),
       level        = level,
       data_type    = data_type,
+      dataset      = hits$dataset,
       file_format  = file_format,
       source_url   = url,
+      method       = hits$method,
+      params       = hits$params,
       retrieved_at = info$retrieved_at,
       sha256       = info$sha256,
       size_bytes   = info$size_bytes,
@@ -214,6 +260,7 @@ txs_get_tapr_file <- function(year,
     school_year  = year_label(year),
     level        = level,
     data_type    = data_type,
+    dataset      = hits$dataset,
     file_format  = file_format,
     source_url   = url,
     retrieved_at = meta$retrieved_at,
@@ -225,6 +272,49 @@ txs_get_tapr_file <- function(year,
   )
   if (isTRUE(keep_raw)) attr(out, "raw") <- df_raw
   out
+}
+
+# Synthesize a cache filename for a downloads row. Broker rows have no
+# meaningful basename in the URL.
+download_filename <- function(row) {
+  bn <- basename(httr2::url_parse(row$url)$path)
+  if (grepl("\\.(csv|txt|dat|xls|xlsx|zip)$", bn, ignore.case = TRUE)) {
+    return(bn)
+  }
+  ds <- if (!is.na(row$dataset %||% NA_character_)) {
+    paste0("_", tolower(row$dataset))
+  } else {
+    ""
+  }
+  ext <- switch(row$file_format, csv = "csv", txt = "dat", xlsx = "xlsx", "dat")
+  sprintf("%s_%s_%d%s.%s", row$source, row$level, row$year, ds, ext)
+}
+
+# TEA's SAS broker signals "no such dataset for this level" (and other
+# soft failures) by returning an HTML page instead of data. Detect it
+# and fail loudly rather than caching junk.
+check_broker_data_response <- function(dest, row) {
+  head_bytes <- read_head_bytes(dest)
+  if (grepl("^\\s*(<!DOCTYPE|<html|<HTML)", head_bytes, useBytes = TRUE) ||
+      grepl("SAS Output", head_bytes, fixed = TRUE, useBytes = TRUE)) {
+    msg <- tryCatch({
+      html <- rvest::read_html(dest)
+      txt <- rvest::html_text2(html)
+      txt <- trimws(gsub("\\s+", " ", txt))
+      hit <- stringr::str_extract(txt, "[^.]*not available[^.]*\\.")
+      hit %||% NA_character_
+    }, error = function(e) NA_character_)
+    unlink(dest)
+    unlink(sidecar_path(dest))
+    stop(
+      "TEA returned a report page instead of data for ",
+      sprintf("year=%d, level=%s, dataset=%s.", row$year, row$level,
+              row$dataset %||% "<none>"),
+      if (!is.na(msg)) paste0("\nTEA says: ", msg),
+      call. = FALSE
+    )
+  }
+  invisible(TRUE)
 }
 
 txs_get_tapr_html_report <- function(year, level, geography, data_type,
@@ -431,5 +521,8 @@ filter_by_geography <- function(df, level, ids) {
     )
     return(df)
   }
-  df[as.character(df[[col]]) %in% as.character(ids), , drop = FALSE]
+  # TEA prefixes identifiers with an apostrophe in data files so
+  # spreadsheets keep leading zeros; compare without it.
+  strip_quote <- function(x) sub("^'", "", trimws(as.character(x)))
+  df[strip_quote(df[[col]]) %in% strip_quote(ids), , drop = FALSE]
 }

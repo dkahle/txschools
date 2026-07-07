@@ -6,9 +6,11 @@
 #' validates the input and returns an integer.
 #'
 #' @param year Integer scalar; the ending calendar year.
+#' @param source Optional TEA program (`"tapr"`, `"aeis"`, `"src"`);
+#'   when given, the year is validated against that program's coverage.
 #' @return Integer scalar.
 #' @keywords internal
-normalize_year <- function(year) {
+normalize_year <- function(year, source = NULL) {
   if (length(year) != 1L) {
     stop("`year` must be a single value.", call. = FALSE)
   }
@@ -22,11 +24,19 @@ normalize_year <- function(year) {
   y <- suppressWarnings(as.integer(year))
   if (is.na(y)) stop("`year` could not be coerced to integer.", call. = FALSE)
   current <- as.integer(format(Sys.Date(), "%Y"))
-  if (y < TXS_FIRST_AEIS_YEAR || y > current) {
+  bounds <- switch(
+    source %||% "any",
+    tapr = c(TXS_FIRST_TAPR_YEAR, current),
+    aeis = c(TXS_FIRST_AEIS_YEAR, TXS_LAST_AEIS_YEAR),
+    src  = c(TXS_FIRST_SRC_YEAR, TXS_LAST_SRC_YEAR),
+    c(TXS_FIRST_AEIS_YEAR, current)
+  )
+  if (y < bounds[1] || y > bounds[2]) {
+    label <- if (is.null(source)) "`year`" else sprintf("%s `year`", toupper(source))
     stop(
       sprintf(
-        "`year` = %d is out of range (%d..%d).",
-        y, TXS_FIRST_AEIS_YEAR, current
+        "%s = %d is out of range (%d..%d).",
+        label, y, bounds[1], bounds[2]
       ),
       call. = FALSE
     )
@@ -70,28 +80,15 @@ sha256_file <- function(path) {
   digest::digest(file = path, algo = "sha256")
 }
 
-#' Map a file_format argument to a filename extension
-#' @keywords internal
-ext_for_format <- function(file_format) {
-  switch(
-    file_format,
-    csv  = "csv",
-    txt  = "dat",
-    xlsx = "xlsx",
-    file_format
-  )
-}
-
 #' ISO-8601 UTC timestamp
 #' @keywords internal
 iso8601_now <- function() {
   format(Sys.time(), "%Y-%m-%dT%H:%M:%SZ", tz = "UTC")
 }
 
-#' Combine a sequence of path parts, skipping NULLs
+#' First bytes of a file as a character scalar (nul-safe)
 #' @keywords internal
-path_join <- function(...) {
-  parts <- unlist(list(...), use.names = FALSE)
-  parts <- parts[!is.null(parts) & nzchar(parts)]
-  do.call(file.path, as.list(parts))
+read_head_bytes <- function(path, n = 512L) {
+  raw <- readBin(path, "raw", n = n)
+  rawToChar(raw[raw != as.raw(0)])
 }

@@ -9,7 +9,7 @@
 NULL
 
 #' @rdname txs-constants
-TXS_BASE_TAPR <- "https://rptsvr1.tea.texas.gov/perfreport/tapr"
+TXS_BROKER_URL <- "https://rptsvr1.tea.texas.gov/cgi/sas/broker"
 
 #' @rdname txs-constants
 TXS_BASE_AEIS <- "https://rptsvr1.tea.texas.gov/perfreport/aeis"
@@ -37,6 +37,9 @@ TXS_MAX_TRIES        <- 3
 TXS_FIRST_TAPR_YEAR  <- 2013
 TXS_FIRST_AEIS_YEAR  <- 2004
 TXS_LAST_AEIS_YEAR   <- 2012
+TXS_FIRST_SRC_YEAR   <- 2004
+TXS_LAST_SRC_HTML_YEAR <- 2012
+TXS_LAST_SRC_YEAR    <- 2019
 
 # Static UA string. We append the installed package version at runtime in
 # zzz.R rather than calling utils::packageVersion() at parse time (which

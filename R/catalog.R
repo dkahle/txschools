@@ -33,16 +33,22 @@ catalog_source <- function(source = c("tapr", "src", "aeis")) {
 }
 
 catalog_years <- function(source) {
-  yrs <- catalog_source(source)$years
-  if (is.null(yrs)) integer(0) else as.integer(yrs)
+  cat <- catalog_source(source)
+  yrs <- c(cat$years, cat$years_html, cat$years_pdf)
+  if (is.null(yrs)) integer(0) else sort(unique(as.integer(unlist(yrs))))
 }
 
-# Expand a URL template.
+catalog_broker_url <- function() {
+  txs_catalog()$broker %||% TXS_BROKER_URL
+}
+
+# Expand a URL template. Spaces are percent-encoded (TEA's "Basic
+# Download" paths contain literal spaces).
 catalog_url <- function(template, base, year) {
   url <- template
   url <- gsub("\\{base\\}", base, url, fixed = FALSE)
   url <- gsub("\\{year_label\\}", year_label(year), url, fixed = FALSE)
   url <- gsub("\\{end_year\\}", sprintf("%d", as.integer(year)), url, fixed = FALSE)
   url <- gsub("\\{year\\}", sprintf("%d", as.integer(year)), url, fixed = FALSE)
-  url
+  gsub(" ", "%20", url, fixed = TRUE)
 }

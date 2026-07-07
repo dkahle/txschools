@@ -4,25 +4,34 @@
 \alias{txs_bulk_plan}
 \title{Plan a bulk download}
 \usage{
-txs_bulk_plan(years, levels = c("campus", "district"), data_type = "advanced")
+txs_bulk_plan(
+  years,
+  levels = c("campus", "district"),
+  datasets = NULL,
+  data_type = "advanced"
+)
 }
 \arguments{
 \item{years}{Integer vector of ending years.}
 
 \item{levels}{Character vector of levels.}
 
-\item{data_type}{\code{"rates"} or \code{"advanced"}.}
+\item{datasets}{Character vector of TAPR advanced dataset codes
+(e.g. \code{c("REF", "STAAR1")}). \code{NULL} plans every dataset TEA
+publishes for the year/level.}
+
+\item{data_type}{\code{"advanced"} (the statewide data files).}
 }
 \value{
 A tibble plan.
 }
 \description{
-Builds a tibble row per \verb{(year, level, data_type)} combination, with
-the resolved URL, target cache path, and a flag indicating whether
-the file is already cached.
+Builds a tibble row per \verb{(year, level, dataset)} combination, with
+the resolved URL/request, target cache path, and a flag indicating
+whether the file is already cached.
 }
 \examples{
 \dontrun{
-plan <- txs_bulk_plan(2024:2025, levels = c("campus", "district"))
+plan <- txs_bulk_plan(2024, levels = "campus", datasets = c("REF", "GRAD"))
 }
 }

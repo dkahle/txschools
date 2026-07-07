@@ -1,0 +1,533 @@
+<!DOCTYPE html>
+<html lang="en">
+<head id="Head1"><!-- ENTER PAGE NAME FOR EACH PAGE --><title> 
+	2022-23 TAPR Advanced Data Download
+</title>
+	
+
+<meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    
+    <!-- CSS -->
+    <link href="/templates/css/bootstrap.min.css" rel="stylesheet" media="screen" />
+    <link href="/templates/css/tea.css" rel="stylesheet" media="screen" />
+    <link href="/templates/css/print.css" rel="stylesheet" media="print" />
+    <link href="//netdna.bootstrapcdn.com/font-awesome/4.1.0/css/font-awesome.min.css" rel="stylesheet" />
+    
+    <!-- JAVASCRIPT -->
+    <script src="//code.jquery.com/jquery-1.10.1.min.js"></script>
+    <script src="/templates/js/jquery-accessibleMegaMenu.js"></script>
+    <script src="/templates/js/jquery.sidr.js"></script>
+    <script src="/templates/js/bootstrap.min.js"></script>
+    <script src="/templates/js/tea.js"></script>
+
+                            
+<SCRIPT LANGUAGE="JavaScript">
+
+function validate() {
+	if (document.joe.form.value=="0") {
+		window.alert ("You must select a data format.");
+		document.joe.form.focus();
+		return false;
+	}
+	if (document.joe.level.value=="0") {
+		window.alert ("You must select an aggregate level.");
+		document.joe.level.focus();
+		return false;
+	}
+	if (document.joe.type.value=="0") {
+		window.alert ("You must select test type.");
+		document.joe.type.focus();
+		return false;
+	}
+	if (document.joe.grade.value=="0") {
+		window.alert ("You must select a grade level.");
+		document.joe.grade.focus();
+		return false;
+	}
+	if (document.joe.file.value=="0") {
+		window.alert ("You must select year.");
+		document.joe.file.focus();
+		return false;
+	}
+	if (document.joe.type.value=="s") {
+		var yr = document.joe.file.value
+		yr = yr.replace('fy', '20')
+		yr = parseInt(yr)
+		//window.alert(yr);
+		
+		if ((yr > 2009) && (document.joe.grade.value > 5)) {
+			window.alert ("For year 2010 and after, Spanish files are only available for grades 3 through 5.");
+			return false;		
+		} 
+		else if (document.joe.grade.value > 6) {
+			window.alert ("For year 2009 and earlier, Spanish files are only available for grades 3 through 6.");
+			return false;
+		}
+		else {
+			return true;
+		}
+	}//end check spanish files	
+}
+</SCRIPT>
+
+<script type="text/javascript">
+
+function Search(){
+ $( "#searchForm" ).submit();
+}
+
+
+</script>
+
+
+
+</head>
+<body class="template_grid">
+
+
+     <!-- SKIP TO CONTENT LINK FOR SCREEN READERS -->
+    <a href="#main-content" class="skip">Skip to content</a>
+ <!-- BRAND BAR and HEADER -->   
+<!-- BRAND BAR -->
+	<nav id="brand-bar">
+		<div class="brand-bar">
+			<div class="container">
+				<div class="row">
+					<div class="span12">
+              
+
+						<p>
+							<a href="http://tea.texas.gov">TEA Website</a> 
+                            <a href="http://tea.texas.gov/interiorpage.aspx?id=25769815059">A-Z Index</a> <a href="http://tea.texas.gov/About_TEA/Contact/" >Contact TEA</a> 
+							<a href="https://public.govdelivery.com/accounts/TXTEA/subscriber/new/" >Sign Up For Updates</a> 
+						</p>
+					</div>
+				</div>
+			</div>
+		</div>
+	</nav>
+
+    <!-- TABLET BAR -->
+<!--    <div class="mobile-bar">
+        <div class="container">
+            <div class="row">
+                <div class="span12">
+                    <p><a href="" title="A-Z Index">A-Z Index</a> <a href="" title="Applications">Applications</a> <a href="" title="Contact">Contact</a></p>
+                </div>
+            </div>
+        </div>
+    </div> -->
+    
+    <!-- TABLET BAR -->
+<!--    <div class="tablet-bar">
+        <div class="container">
+            <div class="row">
+                <div class="span12">
+                    <a id="right-menu" href="#sidr-right">Applications <i class="fa fa-bars fa-lg"></i></a>
+                    <a id="left-menu" href="#sidr-left"><i class="fa fa-bars fa-lg"></i> Menu</a>
+                </div>
+            </div>
+        </div>
+    </div> -->
+    
+    <!-- PAGE HEADER -->
+    <header id="header">
+    	<div class="header">
+            <div class="container">
+                <div class="row">
+                    <div class="span12 header-wrapper">
+                        <div class="mobile-menu-toggle"><i class="fa fa-bars fa-3x"></i></div>
+                        <div class="logo"><a href="http://tea.texas.gov/" title="TEA Homepage"><img src="/templates/img/tea-logo-header-2.png" alt="Texas Education Agency" /></a></div>
+                    	<div class="search-form hide-mobile">
+                            	<div class="input-append">
+                                  <form action="https://tea.texas.gov/search" method="get" id="views-exposed-form-acquia-search-page" accept-charset="UTF-8">
+  <div class="form--inline form-inline clearfix">
+  <div class="form-item js-form-item form-type-textfield js-form-type-textfield form-item-s js-form-item-s form-group">
+      <label for="edit-s" class="control-label">Search</label>
+  
+  
+  <input placeholder="Search tea.texas.gov" data-drupal-selector="edit-s" class="form-text form-control" type="text" id="edit-s" name="s" value="" size="30" maxlength="128">
+
+  
+  <button class="btn btn-search" type="submit" onclick="Search();"><i class="fa fa-search fa-lg"></i></button>
+  </div>
+
+
+</div>
+
+</form>
+
+                        <!--<div class="utility-nav hide-mobile">
+                        	<p><a href="http://tea.texas.gov/interiorpage.aspx?id=25769815059" title="A-Z Index">A-Z Index</a> <a href="" title="Calendars">Calendars</a> <a href="" title="TEA Jobs">TEA Jobs</a> <a href="" title="Sign up for Updates">Sign Up for Updates</a> <a href="" title="Contact">Contact</a></p>
+                        </div> -->
+                    </div>
+                </div>
+            </div>
+        </div>
+   </header>
+
+<div class="page_body">
+    <div class="container">
+      <div class="row-fluid">
+                
+                <div class="span12">
+                       <nav id="breadcrumbs">
+                       <!-- ADD BREADCRUMB LINKS-->
+                    	<p class="breadcrumb"><a href="http://tea.texas.gov">Home</a> <span class="divider">&gt;</span> <a href="http://tea.texas.gov/perfreport/">Performance Reporting Division</a> <span class="divider">&gt;</span> <a href="../../index.html">Texas Academic Performance Reports</a> <span class="divider">&gt;</span> <a href="../index.html">2022-23 TAPR</a> <span class="divider">&gt;</span> <a href="../download.html">2022-23 TAPR Download</a> <span class="divider">&gt;</span><span class="active"> 2022-23 TAPR Advanced Data Download</span></p>
+                    </nav>
+                    <main id="main-content">
+                    	<div class="main-content">
+                        <!--ADD PAGE TITLE -->
+                            <h2>2022-23 TAPR Advanced Data Download</h2>
+                            <!-- ADD MAIN CONTENT -->
+							<p>
+</div>
+
+
+<!-- search start -->
+<!-- search end -->
+
+          <td> 
+            <!-- START OF YOUR CONTENT -->
+<FORM METHOD="POST" ACTION="/cgi/sas/broker">
+      <input type=hidden name=_service value="marykay">
+      <input type=hidden name=prgopt value="2023/tapr/tapr_download.sas">      
+      <input type=hidden name=year4 value="2023">
+      <input type=hidden name=year2 value="23">
+      <input type=hidden name=topic value="acct">
+      <input type=hidden name=_debug   value="0">
+      <input type=hidden name=title value="Data Download">
+      <input type=hidden name=_program value="perfrept.perfmast.sas">
+	
+      <p>This advanced download includes <strong>Numerators, Denominators & Rates</strong> used in the 2022-23 Texas Academic Performance Report and additional data on the TPRS system. The only download format available is comma-delimited (*.csv) due to the large size of the files. The data download<strong> can exceed 2000 columns</strong>. See <a href="../../2023/download/taprhelp.html" target="_blank" title="link to new window Additional Download Information">
+      Additional Download Information</a> for student group naming conventions, download formats, and general information.</p>
+	  
+<!--	  <p>For information on the data elements, see the 
+      <a href="../../2023/xplore/taprref.html" target="_blank" title="link to new window Master Reference for Data Elements">Master Reference of TAPR Data Elements</a> as well as the <a href="/perfreport/tapr/2023/datadict.pdf">TAPR Data Dictionary</a> (statutorily-required data) and <a href="/perfreport/tapr/2021/datadict_addl.pdf">Additional TAPR Data</a> found on the comprehensive TAPR HTML system.</p>
+
+	<p>The data elements can also be found in an Excel format for  <a href="/perfreport/tapr/2023/TAPR_campus_adv_2023.xlsx"> campus</a> and <a href="/perfreport/tapr/2023/TAPR_district_adv_2023.xlsx"> district</a>.  
+    </p>   -->
+
+ <p><strong>TAPR Advanced Download Master Reference of Data Elements:</strong><br>
+ (1) <a href="../../2023/download/taprref.html" > Master Reference (HTML)</a><br>
+ (2) Master Reference (Excel format): 
+ <a href="/perfreport/tapr/2023/download/TAPR_campus_adv_2023.xlsx"> campus</a>, 
+ <a href="/perfreport/tapr/2023/download/TAPR_district_adv_2023.xlsx"> district</a>,  
+ <a href="/perfreport/tapr/2023/download/TAPR_region_adv_2023.xlsx"> region</a>, and  
+ <a href="/perfreport/tapr/2023/download/TAPR_state_adv_2023.xlsx"> state</a> <br> 
+ (3) <a href="/perfreport/tapr/2023/datadict.pdf"> TAPR Data Dictionary</a> (PDF) statutorily-required data and <br>&nbsp;&nbsp; &nbsp; 
+ <a href="/perfreport/tapr/2023/datadict_addl.pdf">Additional TPRS Data</a> found on the comprehensive TPRS HTML system.<br> 
+ </p>
+  	  
+      <p><strong> What 
+      type of data would you like to download?</strong></p>
+    <blockquote>
+      <p>
+        <label><input type=radio name="sumlev" value="C" checked>
+        Campus</label><br>
+        <label><input type=radio name="sumlev" value="D" >
+        District</label><br>
+		<label><input type=radio name="sumlev" value="R">
+        Region</label><br>
+		<label><input type=radio name="sumlev" value="S">
+        State</label><br>
+        </p>
+    </blockquote>
+    <p><strong>Select the category of information you wish to download (select one).</strong></p>
+    <blockquote>
+  
+    <p>
+	
+	Reference Information for Campus, District or Region<br>
+	<label><input type=radio name="setpick" value="REF" checked>
+        Reference Information <!--, Accountability Rating and Special Education Determination Status--> <br>
+        <br>
+        </label>
+		
+	STAAR Assessment Data: <em>Primary Student Groups</em> * <br>
+        <label><input type=radio name="setpick" value="STAAR1" >
+        Approaches, Meets, and Masters Grade Level (Grades 3 to 8)<br>
+        </label>
+	<label><input type=radio name="setpick" value="STAAR2"  >
+        Approaches, Meets, and Masters Grade Level  (EOC, SAT/ACT Accelerated Testers, All Grades)<br>
+        </label>
+	<label><input type=radio name="setpick" value="STAAR3"  >
+        Academic Growth and Accelerated Learning <!--Progress Measure --> <br>
+        </label>
+        <label><input type=radio name="setpick" value="PART1"  >
+        Participation <br><br>
+        </label>
+<!--
+	<label><input type=radio name="setpick" value="PART1A"  >
+        Participation (2023)<br><br>
+        </label><br>
+-->
+		
+    STAAR Assessment Data: <em>Additional Student Groups</em> *<br>
+        <label><input type=radio name="setpick" value="STAAR4" >
+        Approaches, Meets, and Masters Grade Level (Grades 3 to 8)<br>
+        </label>
+	<label><input type=radio name="setpick" value="STAAR5"  >
+        Approaches, Meets, and Masters Grade Level  (EOC, All Grades)<br>
+        </label>
+	<label><input type=radio name="setpick" value="STAAR6"  >
+        Academic Growth and Accelerated Learning <!--Progress Measure --> <br>
+        </label>
+	<label><input type=radio name="setpick" value="PART2"  >
+        Participation <br><br>
+        </label>
+	Additional STAAR Assessment Data <em>(TPRS Only)</em><br>
+        <label><input type=radio name="setpick" value="STAAR_ADD1" >
+        Rate by Enrolled Grade at Meets Grade Level or Above<br><br>
+        </label>
+
+<!--  
+		<label><input type=radio name="setpick" value="STAAR_ADD2"  >
+        Progress�Measure�Percent�at�Expected�or�Accelerated�Growth�by�Grade�and�Subject<br>
+        </label>
+		<label><input type=radio name="setpick" value="STAAR_ADD3"  >
+        Progress�Measure�Percent�at�Accelerated�Growth�by�Grade�and�Subject<br>
+        </label>
+		<label><input type=radio name="setpick" value="STAAR_ADD4"  >
+        Students�Maintaining�or�Improving�Compared�to�Prior�Year�Performance�Level (Grades 4-8)<br>
+        </label>
+        <label><input type=radio name="setpick" value="STAAR_ADD5"  >
+        Students�Maintaining�or�Improving�Compared�to�Prior�Year�Performance�Level (EOC & All Grades)<br><br>
+        </label>
+	  -->
+ 
+		
+   Attendance and Graduation<br>
+        <label><input type=radio name="setpick" value="GRAD">
+        Attendance, Chronic Absenteeism, Graduation (RHSP/DAP & FHSP), and Dropout Rates<br>
+        </label>
+
+        <label><input type=radio name="setpick" value="COMP">
+        Longitudinal Rate (4-Year, 5-Year, & 6-Year)<br>
+        </label><BR>
+		
+		Postsecondary Indicators<br>
+        <label><input type=radio name="setpick" value="PERF1">
+        College, Career, and Military Readiness (CCMR), TSIA, College Prep <br>
+        </label>
+		<label><input type=radio name="setpick" value="PERF2">
+        AP/IB, SAT/ACT<br>
+        </label>
+		<label><input type=radio name="setpick" value="PERF3">
+        Advanced Courses, TX IHE <br>
+        </label>
+		<BR>
+		 Profile <br>
+        <label><input type=radio name="setpick" value="PROF">
+        Staff, Student, and Annual Graduates<br>
+        </label><BR>
+             
+        Kindergarten Readiness <em>(TPRS Only)</em><br>
+        <label>
+	 <input type=radio name="setpick" value="KG" > 
+          Kindergarten Readiness<br>
+          </label>
+          <label>
+          <input type=radio name="setpick" value="PKEFF" > 
+          Prekindergarten Effectiveness<br><br>
+          </label>
+		  <label>
+<!--		  <input type=radio name="setpick" value="OG" > 
+		  Postsecondary Outcomes<br><br>
+		  </label>-->	      
+        <p><strong> 
+      <input type=submit value="Continue">
+      &nbsp;&nbsp; 
+      <input type=reset value="Reset">
+      </strong>
+     
+	
+  <p><em>* For Student Groups data elements see <a href="../../2023/download/taprhelp.html" target="_blank" title="link to new window Additional Download Information">Additional Download Information</a>.</em></p> 
+  <blockquote> </blockquote>
+</form>
+            <P ><br>
+<a href="http://tea.texas.gov/index2.aspx?id=25769817583" target="_blank" title="link to PEIMS Financial Data">Data Download for Summarized PEIMS Actual Financial Data:</a> PEIMS actual financial data from 1999-2000 school year to 2022-2023 school year. <em>Source: Office of School Finance. </em></p>
+            <hr> 
+            <p align="center">
+     		 <a href="../../2023/masking.html">Explanation of Masking</a>  
+			  | <A href="../../2023/glossary.pdf">TAPR Glossary</a>
+			  | <a href="../../2023/index.html">2022-23 TAPR</a> | 
+			 <a href="http://tea.texas.gov/perfreport/">Performance Reporting</a>			</p>
+            <!-- END OF YOUR CONTENT --></div>
+          </td>
+        </tr> 
+		</td>	
+	</tr>
+ 
+
+
+                   </div>
+                    </main>
+                </div>
+            </div>
+        </div>
+    </div>
+	<footer id="footer">
+		<div class="footer">
+			<div class="container">
+				<div class="row-fluid">
+					<div class="span2">
+						<div class="row-fluid">
+							<div class="span12 hide-mobile">
+								<a title="Texas Education Agency"
+									href="http://www.tea.state.tx.us/"><img
+									src="/templates/img/tea-seal.png"
+									alt="Texas Education Agency Seal" /></a>
+							</div>
+						</div>
+					</div>
+					<div class="span10">
+						<div class="row-fluid">
+							<div class="span3">
+								<ul>
+									<li><a title="Texas Education Agency" href="http://tea.texas.gov/">Texas
+											Education Agency</a></li>
+									<li>1701 N. Congress Avenue</li>
+									<li>Austin, Texas, 78701</li>
+									<li>(512) 463-9734</li>
+									<li><a title="TEA Map"
+										href="http://www.bing.com/maps/#JnE9LjE3MDErTm9ydGgrQ29uZ3Jlc3MrQXZlbnVlJTJjK0F1c3RpbiUyYytUZXhhcyUyYys3ODcwMSU3ZXNzdC4wJTdlcGcuMSZiYj01OS40NTI1NjcwODM4OTgzJTdlLTY5LjEyNDA2MjUlN2UyMi41MjYxNzIxNzMxMTc0JTdlLTEzMC4yOTU5Mzc1"
+										target="_blank">Map</a> | <a title="Site Policies"
+										href="http://tea.texas.gov/interiorpage.aspx?id=25769818374">Site Policies</a> | <a
+										href="http://tea.texas.gov/sitemap/">Site Map</a></li>
+								</ul>
+
+							</div>
+
+							<!-- menuFooter -->
+
+
+							<div class="span3 hide-mobile">
+								<nav id="footer-nav-3">
+									<ul class="footer-menu">
+
+										<li><a
+											href="http://tea.texas.gov/interiorpage.aspx?id=25769817700">Complaints</a></li>
+
+										<li><a
+											href="http://tea.texas.gov/interiorpage.aspx?id=4857">Fraud
+											  Hotline</a></li>
+
+										<li><a
+											href="http://tea.texas.gov/interiorpage.aspx?id=8060">Compact
+											  with Texans</a></li>
+
+										<li><a
+											href="http://tea.texas.gov/interiorpage.aspx?id=25769805784">Public
+											  Information Requests</a></li>
+
+										<li><a
+											href="http://tea.texas.gov/interiorpage.aspx?id=25769805784">Frequently
+												Asked Questions</a></li>
+
+									</ul>
+								</nav>
+							</div>
+
+
+							<div class="span3 hide-mobile">
+								<nav id="footer-nav-3">
+									<ul class="footer-menu">
+
+										<li><a
+											href="http://tea.texas.gov/interiorpage.aspx?id=2147503292">ESCs</a></li>
+
+										<li><a href="http://www.texas.gov/">State of Texas</a></li>
+
+										<li><a href="http://www.capitol.state.tx.us/">Texas
+												Legislature</a></li>
+
+										<li><a href="http://governor.state.tx.us/homeland">Homeland
+												Security</a></li>
+
+									</ul>
+								</nav>
+							</div>
+
+
+							<div class="span3 hide-mobile">
+								<nav id="footer-nav-3">
+									<ul class="footer-menu">
+
+										<li><a href="https://www.tsl.texas.gov/trail/index.html">Trail</a></li>
+
+										<li><a
+											href="http://tea.texas.gov/interiorpage.aspx?id=7995">Military
+											  Families</a></li>
+
+										<li><a href="http://www.texastransparency.org/">Where
+												Our Money Goes</a></li>
+
+										<li><a
+											href="http://tea.texas.gov/interiorpage.aspx?id=25769815941">Equal
+											  Educational Opportunity</a></li>
+
+										<li><a
+											href="http://www.governor.state.tx.us/disabilities/">Governor&#39;s
+												Committee on People with Disabilities</a></li>
+
+									</ul>
+								</nav>
+							</div>
+						</div>
+					</div>
+				</div>
+				<p class="copyright">&copy; Copyright 2007-2020 Texas Education
+					Agency (TEA). All Rights Reserved.</p>
+			</div>
+		</div>
+	</footer>
+
+	<!-- MOBILE NAVIGATION -->
+<!--	<div id="sidr-left" class="sidr left">
+		<ul>
+		<li><a href="http://tea.texas.gov" title="TEA Home Page">TEA Website</a> </li>
+		<li><a href="http://tea.texas.gov/About_TEA/Contact/" title="Contact TEA">Contact TEA</a> </li>
+		<li><a href="https://public.govdelivery.com/accounts/TXTEA/subscriber/new" >Sign Up For Updates</a> </li>
+		</ul>
+	</div> -->
+	<!-- MOBILE BRAND BAR -->
+	<!--<div id="sidr-right" class="sidr right">
+		<ul>
+			<li><a href="http://tea.texas.gov" title="TEA Home Page">TEA Website</a> </li>
+		<li><a href="http://tea.texas.gov/About_TEA/Contact/" title="Contact TEA">Contact TEA</a> </li>
+		<li><a href="" title="https://public.govdelivery.com/accounts/TXTEA/subscriber/new" title="Sign Up For Updates">Sign Up For Updates</a> </li>
+		</ul>
+	</div> -->
+
+<script type="text/javascript">
+
+  var _gaq = _gaq || [];
+  _gaq.push(['_setAccount', 'UA-43890902-2']);
+  _gaq.push(['_trackPageview']);
+
+  (function() {
+    var ga = document.createElement('script'); ga.type = 'text/javascript'; ga.async = true;
+    ga.src = ('https:' == document.location.protocol ? 'https://ssl' : 'http://www') + '.google-analytics.com/ga.js';
+    var s = document.getElementsByTagName('script')[0]; s.parentNode.insertBefore(ga, s);
+  })();
+
+</script>
+<script type="text/javascript">
+/*<![CDATA[*/
+(function() {
+var sz = document.createElement('script'); sz.type = 'text/javascript'; sz.async = true;
+sz.src = '//us2.siteimprove.com/js/siteanalyze_77443.js';
+var s = document.getElementsByTagName('script')[0]; s.parentNode.insertBefore(sz, s);
+})();
+/*]]>*/
+</script>
+
+</body>
+</html>
+ 
+
+
+</body>
+
+</html>

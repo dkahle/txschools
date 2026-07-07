@@ -17,10 +17,19 @@ knitr::opts_chunk$set(
 <!-- badges: end -->
 
 `txschools` provides reproducible, polite, on-demand access to **public**
-school-performance data published by the Texas Education Agency (TEA),
-including the Texas Academic Performance Reports (TAPR), the School
-Report Card (SRC), and the Academic Excellence Indicator System (AEIS)
-archive.
+school-performance data published by the Texas Education Agency (TEA):
+
+* **TAPR** (Texas Academic Performance Reports, 2013-present): per-campus
+  semantic datasets via `txs_get_tapr()`, statewide data files via
+  `txs_get_tapr_file()`, and the variable dictionary via
+  `txs_get_tapr_dictionary()`.
+* **SRC** (School Report Card, 2004-2019): per-campus reports via
+  `txs_get_src()` -- parsed into tidy data for the 2004-2012 HTML era,
+  cached as PDFs for 2013-2019. (2020+ SRC lives at
+  [txschools.gov](https://txschools.gov), which this package does not
+  scrape.)
+* **AEIS** (Academic Excellence Indicator System, 2004-2012): statewide
+  data files via `txs_get_aeis()`.
 
 ## Disclaimer
 
@@ -54,15 +63,21 @@ TAPR report. The 2025 campus report is currently exposed by TEA as an
 HTML report page, so this example uses `txs_get_tapr()` to politely
 request the public page and parse its student-information datasets.
 
-The `geography` value is TEA's organization identifier, not something
-`txschools` infers from a school name. For a campus, this is the
-nine-digit county-district-campus number listed in
-[AskTED](https://tea.texas.gov/AskTED), TEA's public school directory:
-the first six digits identify the district and the last three identify
-the campus. China Spring Elementary School is campus `102` in China
-Spring ISD (`161920`), so its TAPR campus `geography` is `"161920102"`.
-Keep these identifiers quoted in R so leading zeros, where present, are
-preserved.
+The `geography` value is TEA's organization identifier: for a campus,
+the nine-digit county-district-campus number (the first six digits
+identify the district, the last three the campus). Keep these
+identifiers quoted in R so leading zeros, where present, are preserved.
+
+You don't need to know the number in advance -- look it up by name with
+`txs_find_campus()` (or `txs_find_district()`), which searches a
+directory built from TEA's public statewide reference data:
+
+```{r find-campus}
+txs_find_campus("china spring")
+```
+
+China Spring Elementary School is campus `102` in China Spring ISD
+(`161920`), so its TAPR campus `geography` is `"161920102"`.
 
 `txs_get_tapr()` returns a named list of semantic datasets. This reflects
 the structure of TAPR itself: the report is not one table, but a
@@ -107,8 +122,40 @@ china_spring_elem_2025 |> pluck("staar_performance") |> head()
 china_spring_elem_2025 |> pluck("staff") |> print(n = Inf)
 ```
 
-Use `txs_get_tapr_file()` when you need the lower-level
-statewide TAPR download files in raw, wide, or tidy form.
+## Statewide data files
+
+TEA publishes the statewide TAPR data through its "Advanced Download"
+interface as one file per level and dataset code (`"REF"` for reference
+information, `"STAAR1"` for STAAR performance, `"GRAD"` for graduation,
+...). `txs_get_tapr_file()` downloads one of these files; use
+`txs_list_downloads()` to see the codes TEA publishes for a year, and
+`txs_get_tapr_dictionary()` for the variable-code dictionary.
+
+```{r tapr-file, eval = FALSE}
+# Every Texas campus's reference row, one call:
+ref_2024 <- txs_get_tapr_file(2024, "campus", dataset = "REF", output = "raw")
+
+# What do those variable codes mean?
+dict_2024 <- txs_get_tapr_dictionary(2024, "campus")
+```
+
+## School Report Cards and AEIS
+
+`txs_get_src()` pulls one campus's School Report Card: parsed into a
+tidy masking-aware tibble for 2004-2012 (TEA's HTML era), downloaded
+and cached as the official PDF for 2013-2019.
+
+```{r src, eval = FALSE}
+src_2011 <- txs_get_src(2011, "campus", "161920102")
+```
+
+`txs_get_aeis()` pulls statewide AEIS data files (2004-2012) by level
+and dataset code:
+
+```{r aeis, eval = FALSE}
+aeis_2011 <- txs_get_aeis(2011, "district", dataset = "ref",
+                          geography = "161920")
+```
 
 ## How it stays polite
 
@@ -126,5 +173,7 @@ statewide TAPR download files in raw, wide, or tidy form.
 
 TEA masks small-cell statistics for FERPA reasons. `txschools` parses
 every value as character first and **never coerces masked codes to
-numeric**. See `vignette("masking", package = "txschools")` for the full
+numeric**. Values that fail numeric parsing (like `"< 1%"`) are flagged
+as masked with the original marker preserved, never silently degraded
+to `NA`. See `vignette("masking", package = "txschools")` for the full
 list of mask codes and helper functions.

@@ -49,10 +49,25 @@ http_get <- function(url, timeout = NULL, max_tries = NULL) {
 
 #' Download a URL to a file, returning metadata.
 #'
+#' `method = "post"` sends `params` as a URL-encoded form body (used for
+#' TEA's SAS broker and AEIS CGI endpoints); `method = "get"` appends
+#' `params` to the query string. `params` may also be a single
+#' pre-encoded query string like `"sumlev=C&setpick=REF"`.
+#'
 #' @rdname txs-http
-http_download <- function(url, dest, timeout = NULL, max_tries = NULL) {
+http_download <- function(url, dest, timeout = NULL, max_tries = NULL,
+                          method = c("get", "post"), params = NULL) {
+  method <- match.arg(method)
   dir.create(dirname(dest), recursive = TRUE, showWarnings = FALSE)
   req <- http_request(url, timeout = timeout, max_tries = max_tries)
+  params <- decode_query_params(params)
+  if (length(params)) {
+    if (identical(method, "post")) {
+      req <- do.call(httr2::req_body_form, c(list(req), params))
+    } else {
+      req <- do.call(httr2::req_url_query, c(list(req), params))
+    }
+  }
   resp <- httr2::req_perform(req, path = dest)
   list(
     path         = dest,
@@ -60,6 +75,40 @@ http_download <- function(url, dest, timeout = NULL, max_tries = NULL) {
     size_bytes   = file.size(dest),
     content_type = httr2::resp_header(resp, "Content-Type") %||% NA_character_,
     retrieved_at = iso8601_now(),
-    source_url   = url
+    source_url   = url,
+    method       = method,
+    params       = encode_query_params(params)
+  )
+}
+
+# Query-parameter helpers: downloads metadata stores form parameters as
+# a single URL-encoded string (YAML- and tibble-friendly); requests need
+# them as a named list.
+decode_query_params <- function(params) {
+  if (is.null(params) || (length(params) == 1L && is.na(params))) {
+    return(list())
+  }
+  if (is.character(params) && length(params) == 1L && is.null(names(params))) {
+    if (!nzchar(params)) return(list())
+    pairs <- strsplit(params, "&", fixed = TRUE)[[1]]
+    parts <- strsplit(pairs, "=", fixed = TRUE)
+    out <- lapply(parts, function(p) utils::URLdecode(paste(p[-1], collapse = "=")))
+    names(out) <- vapply(parts, function(p) utils::URLdecode(p[[1]]), character(1))
+    return(out)
+  }
+  as.list(params)
+}
+
+encode_query_params <- function(params) {
+  params <- decode_query_params(params)
+  if (!length(params)) return(NA_character_)
+  paste(
+    vapply(seq_along(params), function(i) {
+      paste0(
+        utils::URLencode(names(params)[i], reserved = TRUE), "=",
+        utils::URLencode(as.character(params[[i]]), reserved = TRUE)
+      )
+    }, character(1)),
+    collapse = "&"
   )
 }

@@ -42,6 +42,27 @@ table: it returns three parallel vectors — `value_num` (numeric, `NA`
 for masked rows), `masked` (logical), and `mask_code` (the original
 sentinel) — so downstream code never confuses "12.3" with "*".
 
+## Formatting and unrecognized markers
+
+Display formatting is stripped before numeric parsing — `"97%"` parses
+to `97` (as printed, not divided by 100) and `"$4,668"` to `4668`:
+
+```{r}
+mask_strip(c("97%", "$4,668"))
+```
+
+TEA occasionally prints suppression markers beyond the sentinel list,
+such as `"< 1%"`. Any non-empty, non-textual value that fails numeric
+parsing is flagged as masked with the original marker preserved in
+`mask_code` — it is **never silently degraded to an unmasked `NA`**:
+
+```{r}
+mask_strip(c("< 1%", "?"))
+```
+
+Ordinary text (names, grade spans) is left unmasked; its numeric slot
+is simply `NA`.
+
 The `txs_get_*()` family applies this transformation automatically when
 `output = "tidy"` and exposes the masking codes used via
 `attr(df, "txschools")$masking_values`.

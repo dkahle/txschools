@@ -3,6 +3,13 @@ template:
   bootstrap: 5
 
 reference:
+- title: Find schools and districts
+  desc: Resolve names to TEA identifiers.
+  contents:
+  - txs_directory
+  - txs_find_campus
+  - txs_find_district
+
 - title: Discovery
   desc: List the years and downloads that TEA publishes.
   contents:
@@ -14,6 +21,7 @@ reference:
   contents:
   - txs_get_tapr
   - txs_get_tapr_file
+  - txs_get_tapr_dictionary
   - txs_get_src
   - txs_get_aeis
 

@@ -8,17 +8,19 @@ Authors@R:
            email = "david.kahle@gmail.com")
 Description: Tools for discovering, downloading, caching, parsing, and citing
     public school-performance data published by the Texas Education Agency
-    (TEA), including the Texas Academic Performance Reports (TAPR), the
-    School Report Card (SRC), and the Academic Excellence Indicator System
-    (AEIS) archive. Downloads happen on demand against TEA's public pages;
-    files are cached locally under 'tools::R_user_dir()' with source-URL,
-    timestamp, and checksum metadata. TEA masking and suppression values
-    are preserved exactly. This package is not affiliated with TEA and does
-    not redistribute TEA datasets.
+    (TEA): the Texas Academic Performance Reports (TAPR, 2013 onward,
+    including the statewide advanced-download data files and variable
+    dictionaries), per-campus School Report Cards (SRC, 2004-2019), and the
+    Academic Excellence Indicator System (AEIS, 2004-2012), plus a
+    name-to-identifier directory of Texas campuses and districts. Downloads
+    happen on demand against TEA's public pages; files are cached locally
+    under 'tools::R_user_dir()' with source-URL, timestamp, and checksum
+    metadata. TEA masking and suppression values are preserved exactly.
+    This package is not affiliated with TEA and does not redistribute TEA
+    datasets.
 License: MIT + file LICENSE
 Encoding: UTF-8
 Roxygen: list(markdown = TRUE)
-RoxygenNote: 7.3.3
 Depends:
     R (>= 4.1)
 Imports:
@@ -49,3 +51,4 @@ Suggests:
     withr
 Config/testthat/edition: 3
 VignetteBuilder: knitr
+Config/roxygen2/version: 8.0.0

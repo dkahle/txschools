@@ -13,6 +13,25 @@ test_that("mask_strip never coerces masked values to numbers", {
   expect_identical(out$mask_code, c(NA, "*", ".", "-1", NA))
 })
 
+test_that("mask_strip strips display formatting before parsing", {
+  out <- mask_strip(c("97%", "$4,668", "1,234.5"))
+  expect_equal(out$value_num, c(97, 4668, 1234.5))
+  expect_false(any(out$masked))
+})
+
+test_that("mask_strip flags unparseable non-text values instead of silent NA", {
+  out <- mask_strip(c("< 1%", "?", "12.3"))
+  expect_identical(out$masked, c(TRUE, TRUE, FALSE))
+  expect_identical(out$mask_code, c("< 1%", "?", NA))
+  expect_equal(out$value_num, c(NA, NA, 12.3))
+})
+
+test_that("mask_strip leaves ordinary text unmasked", {
+  out <- mask_strip(c("MCLENNAN", "EE - 03", ""))
+  expect_false(any(out$masked))
+  expect_true(all(is.na(out$value_num)))
+})
+
 test_that("custom codes parameter is honored", {
   expect_true(is_masked("X", codes = "X"))
   expect_false(is_masked("X"))

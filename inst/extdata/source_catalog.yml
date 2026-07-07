@@ -1,13 +1,17 @@
 # txschools URL catalog.
 #
-# This file holds *only* URL templates and known year lists for the TEA
-# public-data programs that the package supports. It contains NO TEA
-# data, NO TEA-authored text beyond the program names ("Texas Academic
-# Performance Reports", etc.) which are factual identifiers.
+# This file holds *only* URL templates, known year lists, and known form
+# vocabularies for the TEA public-data programs that the package
+# supports. It contains NO TEA data, NO TEA-authored text beyond the
+# program names ("Texas Academic Performance Reports", etc.) which are
+# factual identifiers.
 #
-# discover_* functions in R/discover.R prefer live HTML parsing; this
-# catalog is a fallback when the network is unavailable or HTML parsing
-# fails.
+# discover_* functions in R/discover.R prefer live HTML parsing; the
+# vocabularies below are fallbacks used when live form parsing fails.
+#
+# Verified against TEA's live pages on 2026-07-07.
+
+broker: https://rptsvr1.tea.texas.gov/cgi/sas/broker
 
 tapr:
   label: Texas Academic Performance Reports
@@ -26,21 +30,45 @@ tapr:
     - 2023
     - 2024
     - 2025
-  landing:           "{base}/{end_year}/index.html"
-  basic_download:    "{base}/{end_year}/Basic%20Download/DownloadSelData.html"
-  advanced_download: "{base}/{end_year}/Advance%20Download/download-data-adv.html"
-  # Filename heuristics: filenames beginning with these tokens map to
-  # the indicated level. Used to classify links scraped from the
-  # download pages.
-  level_prefixes:
-    campus:   ["cs", "camp", "ca"]
-    district: ["dis", "dist", "dt"]
-    region:   ["reg", "rg"]
-    state:    ["state", "st"]
-  formats:
-    csv:  csv
-    txt:  dat
-    xlsx: xlsx
+  landing: "{base}/{year}/index.html"
+  # TEA reorganized the download pages for report year 2024. Candidates
+  # are tried in order; the first page that parses wins.
+  basic_pages:
+    - "{base}/{year}/Basic Download/DownloadSelData.html"
+    - "{base}/{year}/xplore/DownloadSelData.html"
+  advanced_pages:
+    - "{base}/{year}/Advance Download/download-data-adv.html"
+    - "{base}/{year}/download/DownloadData.html"
+  # Filename tokens mapping statewide dictionary workbooks
+  # (TAPR_campus_2024.xlsx, ...) and any static files to a level.
+  level_tokens:
+    campus:   ["campus", "camp", "cs"]
+    district: ["district", "dist", "dis"]
+    region:   ["region", "reg"]
+    state:    ["state"]
+  # Known advanced-download dataset codes (`setpick`), used only as a
+  # fallback when the live form cannot be parsed. The live form is
+  # authoritative; vocabularies drift across years.
+  setpick_fallback:
+    - REF
+    - STAAR1
+    - STAAR2
+    - STAAR3
+    - STAAR4
+    - STAAR5
+    - STAAR6
+    - STAAR_ADD1
+    - PART1
+    - PART2
+    - GRAD
+    - COMP
+    - PERF1
+    - PERF2
+    - PERF3
+    - PROF
+    - KG
+    - PKEFF
+
 aeis:
   label: Academic Excellence Indicator System
   base: https://rptsvr1.tea.texas.gov/perfreport/aeis
@@ -55,17 +83,28 @@ aeis:
     - 2011
     - 2012
   landing: "{base}/{year}/index.html"
-  level_prefixes:
-    campus:   ["cs", "camp"]
-    district: ["dis", "dist"]
-    region:   ["reg"]
-    state:    ["state", "st"]
+  # AEIS data files are served by a per-year CGI behind a POST form on
+  # DownloadData.html; there are no static file links.
+  download_form: "{base}/{year}/DownloadData.html"
+  cgi: "https://rptsvr1.tea.texas.gov/cgi/perfreport/{year}aeis.cgi"
+  # Fallback `file` vocabulary (2011); the live form is authoritative.
+  file_fallback:
+    - ref
+    - fin
+    - staf
+    - stud
+    - othr
 
 src:
   label: School Report Card
   base: https://rptsvr1.tea.texas.gov/perfreport/src
-  # SRC years are discovered lazily via discover_src_years(); this list
-  # is empty here so the package does not assert availability that has
-  # not been verified.
-  years: []
-  landing: "{base}/{year}/index.html"
+  # SRC is published as per-campus reports, not bulk data files.
+  # 2004-2012: HTML (fixed-width text) via broker prgopt
+  #   "{year}/src/alltypec.sas" (POST; search=campnum, namenum=<id>,
+  #   ptype=HTML).
+  # 2013-2019: PDF only via broker prgopt "{year}/src/src.sas" (GET;
+  #   cyr=<year>, level=campus|district, campus=<id>|district=<id>).
+  # 2020+: published on https://txschools.gov, out of package scope.
+  years_html: [2004, 2005, 2006, 2007, 2008, 2009, 2010, 2011, 2012]
+  years_pdf: [2013, 2014, 2015, 2016, 2017, 2018, 2019]
+  search_page: "{base}/{year}/campus.srch.html"

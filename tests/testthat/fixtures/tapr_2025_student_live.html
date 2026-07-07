@@ -1,0 +1,3197 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN">
+<html>
+<head>
+<title>TPRS</title><meta name='keywords' contents = '5040'> 
+<meta name="Generator" content="SAS Software Version 9.4, see www.sas.com">
+<meta http-equiv="Content-type" content="text/html; charset=iso-8859-1">
+<title>SAS Output</title>
+<style type="text/css">
+<!--
+.accessiblecaption
+{
+  background-color: transparent;
+  border: 0px solid #000000;
+  border-spacing: 0px;
+  color: #000000;
+  font-family: Arial, 'Albany AMT', sans-serif;
+  font-size: 12pt;
+  font-style: normal;
+  font-weight: bold;
+  margin: 0px;
+  padding: 0px;
+}
+.aligncontents
+{
+  background-color: transparent;
+  border: 0px solid #000000;
+  border-spacing: 0px;
+  color: #000000;
+  font-family: 'Trebuchet MS', Helvetica, Arial, 'Albany AMT', sans-serif;
+  font-size: 12pt;
+  font-style: normal;
+  font-weight: normal;
+  margin: 0px;
+  padding: 5px;
+  text-align: left;
+  vertical-align: middle;
+}
+.batch
+{
+  background-color: #FFFFFF;
+  border: 1px solid #7F9DB9;
+  border-spacing: 0px;
+  color: #000000;
+  font-family: 'Courier New', Courier, fixed;
+  font-size: 9pt;
+  font-style: normal;
+  font-weight: bold;
+  margin: 0px;
+  padding: 3px;
+  vertical-align: middle;
+}
+.body
+{
+  background-color: #FFFFFF;
+  border: 0px solid #000000;
+  border-spacing: 0px;
+  color: #000000;
+  font-family: 'Trebuchet MS', Helvetica, Arial, 'Albany AMT', sans-serif;
+  font-size: 9pt;
+  font-style: normal;
+  font-weight: normal;
+  margin: 0px;
+  padding: 5px;
+}
+.bodytext
+{
+  color: #000000;
+  font-family: Arial, 'Albany AMT', sans-serif;
+  font-size: 9pt;
+  font-weight: bold;
+  padding: 0px;
+}
+.bold_text
+{
+  font-family: Arial;
+  font-size: 9pt;
+  font-weight: bold;
+}
+.byline
+{
+  font-family: Arial;
+  font-size: 10pt;
+  font-weight: bold;
+}
+.cell
+{
+  background-color: transparent;
+  border: 0px solid #000000;
+  border-spacing: 0px;
+  color: #000000;
+  font-family: 'Trebuchet MS', Helvetica, Arial, 'Albany AMT', sans-serif;
+  font-size: 12pt;
+  font-style: normal;
+  font-weight: normal;
+  margin: 0px;
+  padding: 5px;
+}
+.column
+{
+  background-color: #FFFFFF;
+  border: 1px solid #7F9DB9;
+  border-spacing: 0px;
+  color: #000000;
+  font-family: Arial, 'Albany AMT', sans-serif;
+  font-size: 9pt;
+  font-style: normal;
+  font-weight: bold;
+  margin: 0px;
+  padding: 3px;
+  vertical-align: middle;
+}
+.container
+{
+  background-color: transparent;
+  border: 0px solid #000000;
+  border-spacing: 0px;
+  color: #000000;
+  font-family: 'Trebuchet MS', Helvetica, Arial, 'Albany AMT', sans-serif;
+  font-size: 12pt;
+  font-style: normal;
+  font-weight: normal;
+  margin: 0px;
+  padding: 5px;
+}
+.contentitem
+{
+  font-family: 'Trebuchet MS', Helvetica, Arial, 'Albany AMT', sans-serif;
+  font-size: 10pt;
+}
+.contentproclabel
+{
+  background-color: transparent;
+  border: 0px solid #000000;
+  border-spacing: 0px;
+  color: #000000;
+  font-family: 'Trebuchet MS', Helvetica, Arial, 'Albany AMT', sans-serif;
+  font-size: 12pt;
+  font-style: normal;
+  font-weight: normal;
+  margin: 0px;
+  padding: 5px;
+}
+.contentprocname
+{
+  background-color: transparent;
+  border: 0px solid #000000;
+  border-spacing: 0px;
+  color: #000000;
+  font-family: 'Trebuchet MS', Helvetica, Arial, 'Albany AMT', sans-serif;
+  font-size: 12pt;
+  font-style: normal;
+  font-weight: normal;
+  margin: 0px;
+  padding: 5px;
+}
+.contents
+{
+  background-color: #F5F5F5;
+  color: #000000;
+  list-style-type: decimal;
+  margin-left: 8px;
+  margin-right: 8px;
+}
+.contentsdate
+{
+  background-color: #FFFFFF;
+  border: 0px solid #000000;
+  border-spacing: 0px;
+  color: #000000;
+  font-family: 'Trebuchet MS', Helvetica, Arial, 'Albany AMT', sans-serif;
+  font-size: 12pt;
+  font-style: normal;
+  font-weight: normal;
+  margin: 0px;
+  padding: 5px;
+  width: 100%;
+}
+.contenttitle
+{
+  background-color: transparent;
+  border: 0px solid #000000;
+  border-spacing: 0px;
+  color: #000000;
+  font-family: 'Trebuchet MS', Helvetica, Arial, 'Albany AMT', sans-serif;
+  font-size: 12pt;
+  font-style: italic;
+  font-weight: normal;
+  margin: 0px;
+  padding: 5px;
+}
+.continued
+{
+  background-color: transparent;
+  border: 0px solid #000000;
+  border-spacing: 0px;
+  color: #000000;
+  font-family: 'Trebuchet MS', Helvetica, Arial, 'Albany AMT', sans-serif;
+  font-size: 12pt;
+  font-style: normal;
+  font-weight: normal;
+  margin: 0px;
+  padding: 5px;
+}
+.data
+{
+  background-color: #FFFFFF;
+  border-bottom-width: 1px;
+  border-color: #CEDAE4;
+  border-left-width: 0px;
+  border-right-width: 1px;
+  border-spacing: 0px;
+  border-style: solid;
+  border-top-width: 0px;
+  color: #000000;
+  font-family: Arial, 'Albany AMT', Helvetica, sans-serif;
+  font-size: 9pt;
+  font-style: normal;
+  font-weight: normal;
+  margin: 0px;
+  padding: 3px;
+  vertical-align: top;
+}
+.dataemphasis
+{
+  background-color: #56B7E6;
+  border-bottom-width: 1px;
+  border-color: #CEDAE4;
+  border-left-width: 0px;
+  border-right-width: 1px;
+  border-spacing: 0px;
+  border-style: solid;
+  border-top-width: 0px;
+  color: #000000;
+  font-family: Arial, 'Albany AMT', Helvetica, sans-serif;
+  font-size: 9pt;
+  font-style: normal;
+  font-weight: bold;
+  margin: 0px;
+  padding: 3px;
+  vertical-align: top;
+}
+.dataemphasisfixed
+{
+  background-color: #56B7E6;
+  border-bottom-width: 1px;
+  border-color: #CEDAE4;
+  border-left-width: 0px;
+  border-right-width: 1px;
+  border-spacing: 0px;
+  border-style: solid;
+  border-top-width: 0px;
+  color: #000000;
+  font-family: Arial, 'Albany AMT', Helvetica, sans-serif;
+  font-size: 9pt;
+  font-style: normal;
+  font-weight: bold;
+  margin: 0px;
+  padding: 3px;
+  vertical-align: top;
+}
+.dataemphasis_tlr
+{
+  background-color: #DA3E26;
+  border-bottom-width: 1px;
+  border-color: #CEDAE4;
+  border-left-width: 0px;
+  border-right-width: 1px;
+  border-spacing: 0px;
+  border-style: solid;
+  border-top-width: 0px;
+  color: #FFFFFF;
+  font-family: Arial, 'Albany AMT', Helvetica, sans-serif;
+  font-size: 9pt;
+  font-style: normal;
+  font-weight: bold;
+  margin: 0px;
+  padding: 3px;
+  vertical-align: top;
+}
+.dataemphasis_xsmall
+{
+  background-color: #FFFFFF;
+  border-bottom-width: 1px;
+  border-color: #CEDAE4;
+  border-left-width: 0px;
+  border-right-width: 1px;
+  border-spacing: 0px;
+  border-style: solid;
+  border-top-width: 0px;
+  color: #000000;
+  font-family: Arial, 'Albany AMT', Helvetica, sans-serif;
+  font-size: 7pt;
+  font-style: normal;
+  font-weight: normal;
+  margin: 0px;
+  padding: 3px;
+  vertical-align: top;
+}
+.dataempty
+{
+  background-color: #FFFFFF;
+  border-bottom-width: 1px;
+  border-color: #CEDAE4;
+  border-left-width: 0px;
+  border-right-width: 1px;
+  border-spacing: 0px;
+  border-style: solid;
+  border-top-width: 0px;
+  color: #000000;
+  font-family: Arial, 'Albany AMT', Helvetica, sans-serif;
+  font-size: 9pt;
+  font-style: normal;
+  font-weight: normal;
+  margin: 0px;
+  padding: 3px;
+  vertical-align: top;
+}
+.datafixed
+{
+  background-color: #FFFFFF;
+  border-bottom-width: 1px;
+  border-color: #CEDAE4;
+  border-left-width: 0px;
+  border-right-width: 1px;
+  border-spacing: 0px;
+  border-style: solid;
+  border-top-width: 0px;
+  color: #000000;
+  font-family: 'Courier New', Courier, fixed;
+  font-size: 9pt;
+  font-style: normal;
+  font-weight: normal;
+  margin: 0px;
+  padding: 3px;
+  vertical-align: top;
+}
+.datafixedemphasis
+{
+  background-color: #FFFFFF;
+  border-bottom-width: 1px;
+  border-color: #CEDAE4;
+  border-left-width: 0px;
+  border-right-width: 1px;
+  border-spacing: 0px;
+  border-style: solid;
+  border-top-width: 0px;
+  color: #000000;
+  font-family: 'Courier New', Courier, fixed;
+  font-size: 9pt;
+  font-style: italic;
+  font-weight: normal;
+  margin: 0px;
+  padding: 3px;
+  vertical-align: top;
+}
+.datastrong
+{
+  background-color: #FFFFFF;
+  border-bottom-width: 1px;
+  border-color: #CEDAE4;
+  border-left-width: 0px;
+  border-right-width: 1px;
+  border-spacing: 0px;
+  border-style: solid;
+  border-top-width: 0px;
+  color: #000000;
+  font-family: Arial, 'Albany AMT', Helvetica, sans-serif;
+  font-size: 9pt;
+  font-style: normal;
+  font-weight: bold;
+  margin: 0px;
+  padding: 3px;
+  vertical-align: top;
+}
+.datastrongfixed
+{
+  background-color: #FFFFFF;
+  border-bottom-width: 1px;
+  border-color: #CEDAE4;
+  border-left-width: 0px;
+  border-right-width: 1px;
+  border-spacing: 0px;
+  border-style: solid;
+  border-top-width: 0px;
+  color: #000000;
+  font-family: 'Courier New', Courier, fixed;
+  font-size: 9pt;
+  font-style: normal;
+  font-weight: bold;
+  margin: 0px;
+  padding: 3px;
+  vertical-align: top;
+}
+.data_tlg
+{
+  background-color: #418708;
+  border-bottom-width: 1px;
+  border-color: #CEDAE4;
+  border-left-width: 0px;
+  border-right-width: 1px;
+  border-spacing: 0px;
+  border-style: solid;
+  border-top-width: 0px;
+  color: #000000;
+  font-family: Arial, 'Albany AMT', Helvetica, sans-serif;
+  font-size: 9pt;
+  font-style: normal;
+  font-weight: normal;
+  margin: 0px;
+  padding: 3px;
+  vertical-align: top;
+}
+.data_tlr
+{
+  background-color: #DA3E26;
+  border-bottom-width: 1px;
+  border-color: #CEDAE4;
+  border-left-width: 0px;
+  border-right-width: 1px;
+  border-spacing: 0px;
+  border-style: solid;
+  border-top-width: 0px;
+  color: #FFFFFF;
+  font-family: Arial, 'Albany AMT', Helvetica, sans-serif;
+  font-size: 9pt;
+  font-style: normal;
+  font-weight: normal;
+  margin: 0px;
+  padding: 3px;
+  vertical-align: top;
+}
+.data_xsmall
+{
+  background-color: #FFFFFF;
+  border-bottom-width: 1px;
+  border-color: #CEDAE4;
+  border-left-width: 0px;
+  border-right-width: 1px;
+  border-spacing: 0px;
+  border-style: solid;
+  border-top-width: 0px;
+  color: #000000;
+  font-family: Arial, 'Albany AMT', Helvetica, sans-serif;
+  font-size: 7pt;
+  font-style: normal;
+  font-weight: normal;
+  margin: 0px;
+  padding: 3px;
+  vertical-align: top;
+}
+.date
+{
+  background-color: #FFFFFF;
+  border: 0px solid #000000;
+  border-spacing: 0px;
+  color: #000000;
+  font-family: 'Trebuchet MS', Helvetica, Arial, 'Albany AMT', sans-serif;
+  font-size: 12pt;
+  font-style: normal;
+  font-weight: normal;
+  margin: 0px;
+  padding: 5px;
+  width: 100%;
+}
+.default
+{
+  background-color: transparent;
+  border: 0px solid #000000;
+  border-spacing: 0px;
+  color: #000000;
+  font-family: 'Trebuchet MS', Helvetica, Arial, 'Albany AMT', sans-serif;
+  font-size: 12pt;
+  font-style: normal;
+  font-weight: normal;
+  margin: 0px;
+  padding: 5px;
+}
+.document
+{
+}
+a:link {
+color:#275E94
+}
+a:visited {
+color:#275E94
+}
+a:active {
+color:#275E94
+}
+.drilldetaildata
+{
+  background-color: #FFFFFF;
+  color: #34699E;
+  font-family: Arial, 'Albany AMT', sans-serif;
+  font-size: 9pt;
+  font-weight: normal;
+  padding: 0px;
+}
+.drilldetailhover
+{
+  background-color: #FFFFFF;
+  color: #34699E;
+  font-family: Arial, 'Albany AMT', sans-serif;
+  font-size: 9pt;
+  font-weight: normal;
+  padding: 0px;
+  text-decoration: underline;
+}
+.errorbanner
+{
+  background-color: #FFFFFF;
+  border: 1px solid #CECFD2;
+  border-spacing: 0px;
+  color: #000000;
+  font-family: Arial, 'Albany AMT', sans-serif;
+  font-size: 9pt;
+  font-style: normal;
+  font-weight: bold;
+  margin: 0px;
+  padding: 3px;
+  text-align: left;
+  vertical-align: middle;
+}
+.errorcontent
+{
+  background-color: #FFFFFF;
+  border-bottom-width: 1px;
+  border-color: #CEDAE4;
+  border-left-width: 0px;
+  border-right-width: 1px;
+  border-spacing: 0px;
+  border-style: solid;
+  border-top-width: 0px;
+  color: #000000;
+  font-family: Arial, 'Albany AMT', Helvetica, sans-serif;
+  font-size: 9pt;
+  font-style: normal;
+  font-weight: normal;
+  margin: 0px;
+  padding: 3px;
+  vertical-align: top;
+}
+.errorcontentfixed
+{
+  background-color: #FFFFFF;
+  border-bottom-width: 1px;
+  border-color: #CEDAE4;
+  border-left-width: 0px;
+  border-right-width: 1px;
+  border-spacing: 0px;
+  border-style: solid;
+  border-top-width: 0px;
+  color: #000000;
+  font-family: 'Courier New', Courier, fixed;
+  font-size: 9pt;
+  font-style: normal;
+  font-weight: normal;
+  margin: 0px;
+  padding: 3px;
+  vertical-align: top;
+}
+.extendedpage
+{
+  background-color: transparent;
+  border: 0px solid #000000;
+  border-spacing: 0px;
+  color: #000000;
+  font-family: 'Trebuchet MS', Helvetica, Arial, 'Albany AMT', sans-serif;
+  font-size: 12pt;
+  font-style: normal;
+  font-weight: normal;
+  margin: 0px;
+  padding: 5px;
+}
+.fatalbanner
+{
+  background-color: #FFFFFF;
+  border: 1px solid #CECFD2;
+  border-spacing: 0px;
+  color: #000000;
+  font-family: Arial, 'Albany AMT', sans-serif;
+  font-size: 9pt;
+  font-style: normal;
+  font-weight: bold;
+  margin: 0px;
+  padding: 3px;
+  text-align: left;
+  vertical-align: middle;
+}
+.fatalcontent
+{
+  background-color: #FFFFFF;
+  border-bottom-width: 1px;
+  border-color: #CEDAE4;
+  border-left-width: 0px;
+  border-right-width: 1px;
+  border-spacing: 0px;
+  border-style: solid;
+  border-top-width: 0px;
+  color: #000000;
+  font-family: Arial, 'Albany AMT', Helvetica, sans-serif;
+  font-size: 9pt;
+  font-style: normal;
+  font-weight: normal;
+  margin: 0px;
+  padding: 3px;
+  vertical-align: top;
+}
+.fatalcontentfixed
+{
+  background-color: #FFFFFF;
+  border-bottom-width: 1px;
+  border-color: #CEDAE4;
+  border-left-width: 0px;
+  border-right-width: 1px;
+  border-spacing: 0px;
+  border-style: solid;
+  border-top-width: 0px;
+  color: #000000;
+  font-family: 'Courier New', Courier, fixed;
+  font-size: 9pt;
+  font-style: normal;
+  font-weight: normal;
+  margin: 0px;
+  padding: 3px;
+  vertical-align: top;
+}
+.folderaction
+{
+  background-color: transparent;
+  border: 0px solid #000000;
+  border-spacing: 0px;
+  color: #000000;
+  font-family: 'Trebuchet MS', Helvetica, Arial, 'Albany AMT', sans-serif;
+  font-size: 12pt;
+  font-style: normal;
+  font-weight: normal;
+  margin: 0px;
+  padding: 5px;
+}
+.footer
+{
+  background-color: #56B7E6;
+  border-bottom-width: 1px;
+  border-color: #CEDAE4;
+  border-left-width: 0px;
+  border-right-width: 1px;
+  border-spacing: 0px;
+  border-style: solid;
+  border-top-width: 0px;
+  color: #000000;
+  font-family: Arial, 'Albany AMT', sans-serif;
+  font-size: 9pt;
+  font-style: normal;
+  font-weight: bold;
+  margin: 0px;
+  padding: 3px;
+  text-align: center;
+  vertical-align: bottom;
+}
+.footeremphasis
+{
+  background-color: #56B7E6;
+  border-bottom-width: 1px;
+  border-color: #CEDAE4;
+  border-left-width: 0px;
+  border-right-width: 1px;
+  border-spacing: 0px;
+  border-style: solid;
+  border-top-width: 0px;
+  color: #000000;
+  font-family: Arial, 'Albany AMT', sans-serif;
+  font-size: 9pt;
+  font-style: italic;
+  font-weight: bold;
+  margin: 0px;
+  padding: 3px;
+  text-align: center;
+  vertical-align: bottom;
+}
+.footeremphasisfixed
+{
+  background-color: #56B7E6;
+  border-bottom-width: 1px;
+  border-color: #CEDAE4;
+  border-left-width: 0px;
+  border-right-width: 1px;
+  border-spacing: 0px;
+  border-style: solid;
+  border-top-width: 0px;
+  color: #000000;
+  font-family: 'Courier New', Courier, fixed;
+  font-size: 9pt;
+  font-style: italic;
+  font-weight: bold;
+  margin: 0px;
+  padding: 3px;
+  text-align: center;
+  vertical-align: bottom;
+}
+.footerempty
+{
+  background-color: #56B7E6;
+  border-bottom-width: 1px;
+  border-color: #CEDAE4;
+  border-left-width: 0px;
+  border-right-width: 1px;
+  border-spacing: 0px;
+  border-style: solid;
+  border-top-width: 0px;
+  color: #000000;
+  font-family: Arial, 'Albany AMT', sans-serif;
+  font-size: 9pt;
+  font-style: normal;
+  font-weight: bold;
+  margin: 0px;
+  padding: 3px;
+  text-align: center;
+  vertical-align: bottom;
+}
+.footerfixed
+{
+  background-color: #56B7E6;
+  border-bottom-width: 1px;
+  border-color: #CEDAE4;
+  border-left-width: 0px;
+  border-right-width: 1px;
+  border-spacing: 0px;
+  border-style: solid;
+  border-top-width: 0px;
+  color: #000000;
+  font-family: 'Courier New', Courier, fixed;
+  font-size: 9pt;
+  font-style: normal;
+  font-weight: bold;
+  margin: 0px;
+  padding: 3px;
+  text-align: center;
+  vertical-align: bottom;
+}
+.footerstrong
+{
+  background-color: #56B7E6;
+  border-bottom-width: 1px;
+  border-color: #CEDAE4;
+  border-left-width: 0px;
+  border-right-width: 1px;
+  border-spacing: 0px;
+  border-style: solid;
+  border-top-width: 0px;
+  color: #000000;
+  font-family: Arial, 'Albany AMT', sans-serif;
+  font-size: 9pt;
+  font-style: normal;
+  font-weight: bold;
+  margin: 0px;
+  padding: 3px;
+  text-align: center;
+  vertical-align: bottom;
+}
+.footerstrongfixed
+{
+  background-color: #56B7E6;
+  border-bottom-width: 1px;
+  border-color: #CEDAE4;
+  border-left-width: 0px;
+  border-right-width: 1px;
+  border-spacing: 0px;
+  border-style: solid;
+  border-top-width: 0px;
+  color: #000000;
+  font-family: 'Courier New', Courier, fixed;
+  font-size: 9pt;
+  font-style: normal;
+  font-weight: bold;
+  margin: 0px;
+  padding: 3px;
+  text-align: center;
+  vertical-align: bottom;
+}
+.frame
+{
+}
+.graph
+{
+  border: 1px solid #3872AC;
+}
+.graphcharts
+{
+  border: 1px solid #3872AC;
+}
+.graphcrumbtrail
+{
+  border: 0px solid #3872AC;
+  font-family: Arial, 'Albany AMT', sans-serif;
+  font-size: 8pt;
+  font-weight: normal;
+  padding: 5px;
+}
+.header
+{
+  background-color: #56B7E6;
+  border-bottom-width: 1px;
+  border-color: #CEDAE4;
+  border-left-width: 0px;
+  border-right-width: 1px;
+  border-spacing: 0px;
+  border-style: solid;
+  border-top-width: 0px;
+  color: #000000;
+  font-family: Arial, 'Albany AMT', sans-serif;
+  font-size: 9pt;
+  font-style: normal;
+  font-weight: bold;
+  margin: 0px;
+  padding: 3px;
+  text-align: center;
+  vertical-align: bottom;
+}
+.header2
+{
+  background-color: #00ABBA;
+  border-bottom-width: 1px;
+  border-color: #CEDAE4;
+  border-left-width: 0px;
+  border-right-width: 1px;
+  border-spacing: 0px;
+  border-style: solid;
+  border-top-width: 0px;
+  color: #000000;
+  font-family: Arial, 'Albany AMT', sans-serif;
+  font-size: 9pt;
+  font-style: normal;
+  font-weight: bold;
+  margin: 0px;
+  padding: 3px;
+  text-align: center;
+  vertical-align: bottom;
+}
+.header2_missing
+{
+  background-color: #00ABBA;
+  border-bottom-width: 1px;
+  border-color: #CEDAE4;
+  border-left-width: 0px;
+  border-right-width: 1px;
+  border-spacing: 0px;
+  border-style: solid;
+  border-top-width: 0px;
+  color: #00ABBA;
+  font-family: Arial, 'Albany AMT', sans-serif;
+  font-size: 9pt;
+  font-style: normal;
+  font-weight: bold;
+  margin: 0px;
+  padding: 3px;
+  text-align: center;
+  vertical-align: bottom;
+}
+.header3
+{
+  background-color: #008482;
+  border-bottom-width: 1px;
+  border-color: #CEDAE4;
+  border-left-width: 0px;
+  border-right-width: 1px;
+  border-spacing: 0px;
+  border-style: solid;
+  border-top-width: 0px;
+  color: #FFFFFF;
+  font-family: Arial, 'Albany AMT', sans-serif;
+  font-size: 9pt;
+  font-style: normal;
+  font-weight: bold;
+  margin: 0px;
+  padding: 3px;
+  text-align: center;
+  vertical-align: bottom;
+}
+.header3_missing
+{
+  background-color: #008482;
+  border-bottom-width: 1px;
+  border-color: #CEDAE4;
+  border-left-width: 0px;
+  border-right-width: 1px;
+  border-spacing: 0px;
+  border-style: solid;
+  border-top-width: 0px;
+  color: #008482;
+  font-family: Arial, 'Albany AMT', sans-serif;
+  font-size: 9pt;
+  font-style: normal;
+  font-weight: bold;
+  margin: 0px;
+  padding: 3px;
+  text-align: center;
+  vertical-align: bottom;
+}
+.headere
+{
+  background-color: #56B7E6;
+  border-bottom-width: 1px;
+  border-color: #CEDAE4;
+  border-left-width: 0px;
+  border-right-width: 1px;
+  border-spacing: 0px;
+  border-style: solid;
+  border-top-width: 0px;
+  color: #000000;
+  font-family: Arial, 'Albany AMT', sans-serif;
+  font-size: 9pt;
+  font-style: normal;
+  font-weight: bold;
+  margin: 0px;
+  padding: 3px;
+  text-align: left;
+  vertical-align: bottom;
+}
+.headeremphasis
+{
+  background-color: #56B7E6;
+  border-bottom-width: 1px;
+  border-color: #CEDAE4;
+  border-left-width: 0px;
+  border-right-width: 1px;
+  border-spacing: 0px;
+  border-style: solid;
+  border-top-width: 0px;
+  color: #000000;
+  font-family: Arial, 'Albany AMT', sans-serif;
+  font-size: 9pt;
+  font-style: italic;
+  font-weight: bold;
+  margin: 0px;
+  padding: 3px;
+  text-align: center;
+  vertical-align: bottom;
+}
+.headeremphasisfixed
+{
+  background-color: #56B7E6;
+  border-bottom-width: 1px;
+  border-color: #CEDAE4;
+  border-left-width: 0px;
+  border-right-width: 1px;
+  border-spacing: 0px;
+  border-style: solid;
+  border-top-width: 0px;
+  color: #000000;
+  font-family: 'Courier New', Courier, fixed;
+  font-size: 9pt;
+  font-style: italic;
+  font-weight: bold;
+  margin: 0px;
+  padding: 3px;
+  text-align: center;
+  vertical-align: bottom;
+}
+.headerempty
+{
+  background-color: #56B7E6;
+  border-bottom-width: 1px;
+  border-color: #CEDAE4;
+  border-left-width: 0px;
+  border-right-width: 1px;
+  border-spacing: 0px;
+  border-style: solid;
+  border-top-width: 0px;
+  color: #000000;
+  font-family: Arial, 'Albany AMT', sans-serif;
+  font-size: 9pt;
+  font-style: normal;
+  font-weight: bold;
+  margin: 0px;
+  padding: 3px;
+  text-align: center;
+  vertical-align: bottom;
+}
+.headerfixed
+{
+  background-color: #56B7E6;
+  border-bottom-width: 1px;
+  border-color: #CEDAE4;
+  border-left-width: 0px;
+  border-right-width: 1px;
+  border-spacing: 0px;
+  border-style: solid;
+  border-top-width: 0px;
+  color: #000000;
+  font-family: 'Courier New', Courier, fixed;
+  font-size: 9pt;
+  font-style: normal;
+  font-weight: bold;
+  margin: 0px;
+  padding: 3px;
+  text-align: center;
+  vertical-align: bottom;
+}
+.headersandfooters
+{
+  background-color: transparent;
+  border: 0px solid #000000;
+  border-spacing: 0px;
+  color: #000000;
+  font-family: 'Trebuchet MS', Helvetica, Arial, 'Albany AMT', sans-serif;
+  font-size: 12pt;
+  font-style: normal;
+  font-weight: normal;
+  margin: 0px;
+  padding: 5px;
+}
+.headerstrong
+{
+  background-color: #56B7E6;
+  border-bottom-width: 1px;
+  border-color: #CEDAE4;
+  border-left-width: 0px;
+  border-right-width: 1px;
+  border-spacing: 0px;
+  border-style: solid;
+  border-top-width: 0px;
+  color: #000000;
+  font-family: Arial, 'Albany AMT', sans-serif;
+  font-size: 9pt;
+  font-style: normal;
+  font-weight: bold;
+  margin: 0px;
+  padding: 3px;
+  text-align: center;
+  vertical-align: bottom;
+}
+.headerstrongfixed
+{
+  background-color: #56B7E6;
+  border-bottom-width: 1px;
+  border-color: #CEDAE4;
+  border-left-width: 0px;
+  border-right-width: 1px;
+  border-spacing: 0px;
+  border-style: solid;
+  border-top-width: 0px;
+  color: #000000;
+  font-family: 'Courier New', Courier, fixed;
+  font-size: 9pt;
+  font-style: normal;
+  font-weight: bold;
+  margin: 0px;
+  padding: 3px;
+  text-align: center;
+  vertical-align: bottom;
+}
+.header_xsmall
+{
+  background-color: #56B7E6;
+  border-bottom-width: 1px;
+  border-color: #CEDAE4;
+  border-left-width: 0px;
+  border-right-width: 1px;
+  border-spacing: 0px;
+  border-style: solid;
+  border-top-width: 0px;
+  color: #000000;
+  font-family: Arial, 'Albany AMT', sans-serif;
+  font-size: 7pt;
+  font-style: normal;
+  font-weight: bold;
+  margin: 0px;
+  padding: 3px;
+  text-align: center;
+  vertical-align: bottom;
+}
+.indexaction
+{
+  background-color: transparent;
+  border: 0px solid #000000;
+  border-spacing: 0px;
+  color: #000000;
+  font-family: 'Trebuchet MS', Helvetica, Arial, 'Albany AMT', sans-serif;
+  font-size: 12pt;
+  font-style: normal;
+  font-weight: normal;
+  margin: 0px;
+  padding: 5px;
+}
+.linecontent
+{
+  background-color: #E7E3DB;
+  border: 1px solid #CECFD2;
+  border-spacing: 0px;
+  color: #000000;
+  font-family: Arial, 'Albany AMT', sans-serif;
+  font-size: 9pt;
+  font-style: normal;
+  font-weight: bold;
+  margin: 0px;
+  padding: 3px;
+  text-align: left;
+  vertical-align: middle;
+}
+.list
+{
+  background-color: transparent;
+  border: 0px solid #000000;
+  border-spacing: 0px;
+  color: #000000;
+  font-family: 'Trebuchet MS', Helvetica, Arial, 'Albany AMT', sans-serif;
+  font-size: 12pt;
+  font-style: normal;
+  font-weight: normal;
+  margin: 0px;
+  padding: 5px;
+}
+.list10
+{
+  background-color: transparent;
+  border: 0px solid #000000;
+  border-spacing: 0px;
+  color: #000000;
+  font-family: 'Trebuchet MS', Helvetica, Arial, 'Albany AMT', sans-serif;
+  font-size: 12pt;
+  font-style: normal;
+  font-weight: normal;
+  margin: 0px;
+  padding: 5px;
+}
+.list2
+{
+  background-color: transparent;
+  border: 0px solid #000000;
+  border-spacing: 0px;
+  color: #000000;
+  font-family: 'Trebuchet MS', Helvetica, Arial, 'Albany AMT', sans-serif;
+  font-size: 12pt;
+  font-style: normal;
+  font-weight: normal;
+  margin: 0px;
+  padding: 5px;
+}
+.list3
+{
+  background-color: transparent;
+  border: 0px solid #000000;
+  border-spacing: 0px;
+  color: #000000;
+  font-family: 'Trebuchet MS', Helvetica, Arial, 'Albany AMT', sans-serif;
+  font-size: 12pt;
+  font-style: normal;
+  font-weight: normal;
+  margin: 0px;
+  padding: 5px;
+}
+.list4
+{
+  background-color: transparent;
+  border: 0px solid #000000;
+  border-spacing: 0px;
+  color: #000000;
+  font-family: 'Trebuchet MS', Helvetica, Arial, 'Albany AMT', sans-serif;
+  font-size: 12pt;
+  font-style: normal;
+  font-weight: normal;
+  margin: 0px;
+  padding: 5px;
+}
+.list5
+{
+  background-color: transparent;
+  border: 0px solid #000000;
+  border-spacing: 0px;
+  color: #000000;
+  font-family: 'Trebuchet MS', Helvetica, Arial, 'Albany AMT', sans-serif;
+  font-size: 12pt;
+  font-style: normal;
+  font-weight: normal;
+  margin: 0px;
+  padding: 5px;
+}
+.list6
+{
+  background-color: transparent;
+  border: 0px solid #000000;
+  border-spacing: 0px;
+  color: #000000;
+  font-family: 'Trebuchet MS', Helvetica, Arial, 'Albany AMT', sans-serif;
+  font-size: 12pt;
+  font-style: normal;
+  font-weight: normal;
+  margin: 0px;
+  padding: 5px;
+}
+.list7
+{
+  background-color: transparent;
+  border: 0px solid #000000;
+  border-spacing: 0px;
+  color: #000000;
+  font-family: 'Trebuchet MS', Helvetica, Arial, 'Albany AMT', sans-serif;
+  font-size: 12pt;
+  font-style: normal;
+  font-weight: normal;
+  margin: 0px;
+  padding: 5px;
+}
+.list8
+{
+  background-color: transparent;
+  border: 0px solid #000000;
+  border-spacing: 0px;
+  color: #000000;
+  font-family: 'Trebuchet MS', Helvetica, Arial, 'Albany AMT', sans-serif;
+  font-size: 12pt;
+  font-style: normal;
+  font-weight: normal;
+  margin: 0px;
+  padding: 5px;
+}
+.list9
+{
+  background-color: transparent;
+  border: 0px solid #000000;
+  border-spacing: 0px;
+  color: #000000;
+  font-family: 'Trebuchet MS', Helvetica, Arial, 'Albany AMT', sans-serif;
+  font-size: 12pt;
+  font-style: normal;
+  font-weight: normal;
+  margin: 0px;
+  padding: 5px;
+}
+.listitem
+{
+  background-color: transparent;
+  border: 0px solid #000000;
+  border-spacing: 0px;
+  color: #000000;
+  font-family: 'Trebuchet MS', Helvetica, Arial, 'Albany AMT', sans-serif;
+  font-size: 12pt;
+  font-style: normal;
+  font-weight: normal;
+  margin: 0px;
+  padding: 5px;
+}
+.listitem10
+{
+  background-color: transparent;
+  border: 0px solid #000000;
+  border-spacing: 0px;
+  color: #000000;
+  font-family: 'Trebuchet MS', Helvetica, Arial, 'Albany AMT', sans-serif;
+  font-size: 12pt;
+  font-style: normal;
+  font-weight: normal;
+  margin: 0px;
+  padding: 5px;
+}
+.listitem2
+{
+  background-color: transparent;
+  border: 0px solid #000000;
+  border-spacing: 0px;
+  color: #000000;
+  font-family: 'Trebuchet MS', Helvetica, Arial, 'Albany AMT', sans-serif;
+  font-size: 12pt;
+  font-style: normal;
+  font-weight: normal;
+  margin: 0px;
+  padding: 5px;
+}
+.listitem3
+{
+  background-color: transparent;
+  border: 0px solid #000000;
+  border-spacing: 0px;
+  color: #000000;
+  font-family: 'Trebuchet MS', Helvetica, Arial, 'Albany AMT', sans-serif;
+  font-size: 12pt;
+  font-style: normal;
+  font-weight: normal;
+  margin: 0px;
+  padding: 5px;
+}
+.listitem4
+{
+  background-color: transparent;
+  border: 0px solid #000000;
+  border-spacing: 0px;
+  color: #000000;
+  font-family: 'Trebuchet MS', Helvetica, Arial, 'Albany AMT', sans-serif;
+  font-size: 12pt;
+  font-style: normal;
+  font-weight: normal;
+  margin: 0px;
+  padding: 5px;
+}
+.listitem5
+{
+  background-color: transparent;
+  border: 0px solid #000000;
+  border-spacing: 0px;
+  color: #000000;
+  font-family: 'Trebuchet MS', Helvetica, Arial, 'Albany AMT', sans-serif;
+  font-size: 12pt;
+  font-style: normal;
+  font-weight: normal;
+  margin: 0px;
+  padding: 5px;
+}
+.listitem6
+{
+  background-color: transparent;
+  border: 0px solid #000000;
+  border-spacing: 0px;
+  color: #000000;
+  font-family: 'Trebuchet MS', Helvetica, Arial, 'Albany AMT', sans-serif;
+  font-size: 12pt;
+  font-style: normal;
+  font-weight: normal;
+  margin: 0px;
+  padding: 5px;
+}
+.listitem7
+{
+  background-color: transparent;
+  border: 0px solid #000000;
+  border-spacing: 0px;
+  color: #000000;
+  font-family: 'Trebuchet MS', Helvetica, Arial, 'Albany AMT', sans-serif;
+  font-size: 12pt;
+  font-style: normal;
+  font-weight: normal;
+  margin: 0px;
+  padding: 5px;
+}
+.listitem8
+{
+  background-color: transparent;
+  border: 0px solid #000000;
+  border-spacing: 0px;
+  color: #000000;
+  font-family: 'Trebuchet MS', Helvetica, Arial, 'Albany AMT', sans-serif;
+  font-size: 12pt;
+  font-style: normal;
+  font-weight: normal;
+  margin: 0px;
+  padding: 5px;
+}
+.listitem9
+{
+  background-color: transparent;
+  border: 0px solid #000000;
+  border-spacing: 0px;
+  color: #000000;
+  font-family: 'Trebuchet MS', Helvetica, Arial, 'Albany AMT', sans-serif;
+  font-size: 12pt;
+  font-style: normal;
+  font-weight: normal;
+  margin: 0px;
+  padding: 5px;
+}
+.metauser
+{
+  background-color: #56B7E6;
+  border-bottom-width: 1px;
+  border-color: #CEDAE4;
+  border-left-width: 0px;
+  border-right-width: 1px;
+  border-spacing: 0px;
+  border-style: solid;
+  border-top-width: 0px;
+  color: #000000;
+  font-family: Arial, 'Albany AMT', sans-serif;
+  font-size: 9pt;
+  font-style: normal;
+  font-weight: bold;
+  margin: 0px;
+  padding: 3px;
+  text-align: center;
+  vertical-align: middle;
+}
+.nav
+{
+  background-color: #FFFFFF;
+  border: 0px none #000000;
+  padding: 0px;
+  text-align: center;
+  vertical-align: bottom;
+  cursor: pointer}
+.normaltext
+{
+  color: #012169;
+  font-family: Arial, 'Albany AMT', sans-serif;
+  font-size: 12pt;
+  font-weight: bold;
+  padding: 0px;
+}
+.normal_text
+{
+  font-family: Arial;
+  font-size: 9pt;
+}
+.noscroll
+{
+  background-color: #56B7E6;
+  border-bottom-width: 1px;
+  border-color: #CEDAE4;
+  border-left-width: 0px;
+  border-right-width: 1px;
+  border-spacing: 0px;
+  border-style: solid;
+  border-top-width: 0px;
+  color: #000000;
+  font-family: Arial, 'Albany AMT', sans-serif;
+  font-size: 9pt;
+  font-style: normal;
+  font-weight: bold;
+  margin: 0px;
+  padding: 3px;
+  text-align: center;
+  vertical-align: bottom;
+}
+.note
+{
+  background-color: #FFFFFF;
+  border: 1px solid #CECFD2;
+  border-spacing: 0px;
+  color: #000000;
+  font-family: Arial, 'Albany AMT', sans-serif;
+  font-size: 9pt;
+  font-style: normal;
+  font-weight: bold;
+  margin: 0px;
+  padding: 3px;
+  text-align: left;
+  vertical-align: middle;
+}
+.notebanner
+{
+  background-color: #FFFFFF;
+  border: 1px solid #CECFD2;
+  border-spacing: 0px;
+  color: #000000;
+  font-family: Arial, 'Albany AMT', sans-serif;
+  font-size: 9pt;
+  font-style: normal;
+  font-weight: bold;
+  margin: 0px;
+  padding: 3px;
+  text-align: left;
+  vertical-align: middle;
+}
+.notecontent
+{
+  background-color: #FFFFFF;
+  border-bottom-width: 1px;
+  border-color: #CEDAE4;
+  border-left-width: 0px;
+  border-right-width: 1px;
+  border-spacing: 0px;
+  border-style: solid;
+  border-top-width: 0px;
+  color: #000000;
+  font-family: Arial, 'Albany AMT', Helvetica, sans-serif;
+  font-size: 9pt;
+  font-style: normal;
+  font-weight: normal;
+  margin: 0px;
+  padding: 3px;
+  vertical-align: top;
+}
+.notecontentfixed
+{
+  background-color: #FFFFFF;
+  border-bottom-width: 1px;
+  border-color: #CEDAE4;
+  border-left-width: 0px;
+  border-right-width: 1px;
+  border-spacing: 0px;
+  border-style: solid;
+  border-top-width: 0px;
+  color: #000000;
+  font-family: 'Courier New', Courier, fixed;
+  font-size: 9pt;
+  font-style: normal;
+  font-weight: normal;
+  margin: 0px;
+  padding: 3px;
+  vertical-align: top;
+}
+.pagebreak
+{
+  height: 1em;
+}
+.pages
+{
+  background-color: #F5F5F5;
+  color: #000000;
+  list-style-type: decimal;
+  margin-left: 8px;
+  margin-right: 8px;
+}
+.pagesdate
+{
+  background-color: #FFFFFF;
+  border: 0px solid #000000;
+  border-spacing: 0px;
+  color: #000000;
+  font-family: 'Trebuchet MS', Helvetica, Arial, 'Albany AMT', sans-serif;
+  font-size: 12pt;
+  font-style: normal;
+  font-weight: normal;
+  margin: 0px;
+  padding: 5px;
+  width: 100%;
+}
+.pagesitem
+{
+  font-family: 'Trebuchet MS', Helvetica, Arial, 'Albany AMT', sans-serif;
+  font-size: 10pt;
+}
+.pagesproclabel
+{
+  background-color: transparent;
+  border: 0px solid #000000;
+  border-spacing: 0px;
+  color: #000000;
+  font-family: 'Trebuchet MS', Helvetica, Arial, 'Albany AMT', sans-serif;
+  font-size: 12pt;
+  font-style: normal;
+  font-weight: normal;
+  margin: 0px;
+  padding: 5px;
+}
+.pagesprocname
+{
+  background-color: transparent;
+  border: 0px solid #000000;
+  border-spacing: 0px;
+  color: #000000;
+  font-family: 'Trebuchet MS', Helvetica, Arial, 'Albany AMT', sans-serif;
+  font-size: 12pt;
+  font-style: normal;
+  font-weight: normal;
+  margin: 0px;
+  padding: 5px;
+}
+.pagestitle
+{
+  background-color: transparent;
+  border: 0px solid #000000;
+  border-spacing: 0px;
+  color: #000000;
+  font-family: 'Trebuchet MS', Helvetica, Arial, 'Albany AMT', sans-serif;
+  font-size: 12pt;
+  font-style: italic;
+  font-weight: normal;
+  margin: 0px;
+  padding: 5px;
+}
+.paragraph
+{
+  background-color: transparent;
+  border: 0px hidden #FFFFFF;
+  border-spacing: 0px;
+  color: #000000;
+  font-family: Arial;
+  font-size: 10pt;
+  font-style: normal;
+  font-weight: normal;
+  margin: 0px;
+  padding: 5px;
+}
+.parskip
+{
+  background-color: transparent;
+  border: 0px solid #000000;
+  border-spacing: 0px;
+  color: #000000;
+  font-family: 'Trebuchet MS', Helvetica, Arial, 'Albany AMT', sans-serif;
+  font-size: 12pt;
+  font-style: normal;
+  font-weight: normal;
+  margin: 0px;
+  padding: 5px;
+}
+.prepage
+{
+  background-color: #FFFFFF;
+  border: 1px solid #CECFD2;
+  border-spacing: 0px;
+  color: #000000;
+  font-family: Arial, 'Albany AMT', sans-serif;
+  font-size: 9pt;
+  font-style: normal;
+  font-weight: bold;
+  margin: 0px;
+  padding: 3px;
+  text-align: left;
+  vertical-align: middle;
+}
+.proctitle
+{
+  background-color: transparent;
+  border: 0px solid #000000;
+  border-spacing: 0px;
+  color: #000000;
+  font-family: Arial, 'Albany AMT', sans-serif;
+  font-size: 12pt;
+  font-style: normal;
+  font-weight: bold;
+  margin: 0px;
+  padding: 0px;
+}
+.proctitlefixed
+{
+  background-color: transparent;
+  border: 0px solid #000000;
+  border-spacing: 0px;
+  color: #000000;
+  font-family: 'Courier New', Courier, fixed;
+  font-size: 12pt;
+  font-style: normal;
+  font-weight: bold;
+  margin: 0px;
+  padding: 0px;
+}
+.rowfooter
+{
+  background-color: #56B7E6;
+  border-bottom-width: 1px;
+  border-color: #CEDAE4;
+  border-left-width: 0px;
+  border-right-width: 1px;
+  border-spacing: 0px;
+  border-style: solid;
+  border-top-width: 0px;
+  color: #000000;
+  font-family: Arial, 'Albany AMT', sans-serif;
+  font-size: 9pt;
+  font-style: normal;
+  font-weight: bold;
+  margin: 0px;
+  padding: 3px;
+  text-align: left;
+  vertical-align: middle;
+}
+.rowfooteremphasis
+{
+  background-color: #56B7E6;
+  border-bottom-width: 1px;
+  border-color: #CEDAE4;
+  border-left-width: 0px;
+  border-right-width: 1px;
+  border-spacing: 0px;
+  border-style: solid;
+  border-top-width: 0px;
+  color: #000000;
+  font-family: Arial, 'Albany AMT', sans-serif;
+  font-size: 9pt;
+  font-style: italic;
+  font-weight: bold;
+  margin: 0px;
+  padding: 3px;
+  text-align: left;
+  vertical-align: middle;
+}
+.rowfooteremphasisfixed
+{
+  background-color: #56B7E6;
+  border-bottom-width: 1px;
+  border-color: #CEDAE4;
+  border-left-width: 0px;
+  border-right-width: 1px;
+  border-spacing: 0px;
+  border-style: solid;
+  border-top-width: 0px;
+  color: #000000;
+  font-family: 'Courier New', Courier, fixed;
+  font-size: 9pt;
+  font-style: italic;
+  font-weight: bold;
+  margin: 0px;
+  padding: 3px;
+  text-align: left;
+  vertical-align: middle;
+}
+.rowfooterempty
+{
+  background-color: #56B7E6;
+  border-bottom-width: 1px;
+  border-color: #CEDAE4;
+  border-left-width: 0px;
+  border-right-width: 1px;
+  border-spacing: 0px;
+  border-style: solid;
+  border-top-width: 0px;
+  color: #000000;
+  font-family: Arial, 'Albany AMT', sans-serif;
+  font-size: 9pt;
+  font-style: normal;
+  font-weight: bold;
+  margin: 0px;
+  padding: 3px;
+  text-align: left;
+  vertical-align: middle;
+}
+.rowfooterfixed
+{
+  background-color: #56B7E6;
+  border-bottom-width: 1px;
+  border-color: #CEDAE4;
+  border-left-width: 0px;
+  border-right-width: 1px;
+  border-spacing: 0px;
+  border-style: solid;
+  border-top-width: 0px;
+  color: #000000;
+  font-family: 'Courier New', Courier, fixed;
+  font-size: 9pt;
+  font-style: normal;
+  font-weight: bold;
+  margin: 0px;
+  padding: 3px;
+  text-align: left;
+  vertical-align: middle;
+}
+.rowfooterstrong
+{
+  background-color: #56B7E6;
+  border-bottom-width: 1px;
+  border-color: #CEDAE4;
+  border-left-width: 0px;
+  border-right-width: 1px;
+  border-spacing: 0px;
+  border-style: solid;
+  border-top-width: 0px;
+  color: #000000;
+  font-family: Arial, 'Albany AMT', sans-serif;
+  font-size: 9pt;
+  font-style: normal;
+  font-weight: bold;
+  margin: 0px;
+  padding: 3px;
+  text-align: left;
+  vertical-align: middle;
+}
+.rowfooterstrongfixed
+{
+  background-color: #56B7E6;
+  border-bottom-width: 1px;
+  border-color: #CEDAE4;
+  border-left-width: 0px;
+  border-right-width: 1px;
+  border-spacing: 0px;
+  border-style: solid;
+  border-top-width: 0px;
+  color: #000000;
+  font-family: 'Courier New', Courier, fixed;
+  font-size: 9pt;
+  font-style: normal;
+  font-weight: bold;
+  margin: 0px;
+  padding: 3px;
+  text-align: left;
+  vertical-align: middle;
+}
+.rowheader
+{
+  background-color: #56B7E6;
+  border-bottom-width: 1px;
+  border-color: #CEDAE4;
+  border-left-width: 0px;
+  border-right-width: 1px;
+  border-spacing: 0px;
+  border-style: solid;
+  border-top-width: 0px;
+  color: #000000;
+  font-family: Arial, 'Albany AMT', sans-serif;
+  font-size: 9pt;
+  font-style: normal;
+  font-weight: bold;
+  margin: 0px;
+  padding: 3px;
+  text-align: left;
+  vertical-align: middle;
+}
+.rowheaderemphasis
+{
+  background-color: #56B7E6;
+  border-bottom-width: 1px;
+  border-color: #CEDAE4;
+  border-left-width: 0px;
+  border-right-width: 1px;
+  border-spacing: 0px;
+  border-style: solid;
+  border-top-width: 0px;
+  color: #000000;
+  font-family: Arial, 'Albany AMT', sans-serif;
+  font-size: 9pt;
+  font-style: italic;
+  font-weight: bold;
+  margin: 0px;
+  padding: 3px;
+  text-align: left;
+  vertical-align: middle;
+}
+.rowheaderemphasisfixed
+{
+  background-color: #56B7E6;
+  border-bottom-width: 1px;
+  border-color: #CEDAE4;
+  border-left-width: 0px;
+  border-right-width: 1px;
+  border-spacing: 0px;
+  border-style: solid;
+  border-top-width: 0px;
+  color: #000000;
+  font-family: 'Courier New', Courier, fixed;
+  font-size: 9pt;
+  font-style: italic;
+  font-weight: bold;
+  margin: 0px;
+  padding: 3px;
+  text-align: left;
+  vertical-align: middle;
+}
+.rowheaderempty
+{
+  background-color: #56B7E6;
+  border-bottom-width: 1px;
+  border-color: #CEDAE4;
+  border-left-width: 0px;
+  border-right-width: 1px;
+  border-spacing: 0px;
+  border-style: solid;
+  border-top-width: 0px;
+  color: #000000;
+  font-family: Arial, 'Albany AMT', sans-serif;
+  font-size: 9pt;
+  font-style: normal;
+  font-weight: bold;
+  margin: 0px;
+  padding: 3px;
+  text-align: left;
+  vertical-align: middle;
+}
+.rowheaderfixed
+{
+  background-color: #56B7E6;
+  border-bottom-width: 1px;
+  border-color: #CEDAE4;
+  border-left-width: 0px;
+  border-right-width: 1px;
+  border-spacing: 0px;
+  border-style: solid;
+  border-top-width: 0px;
+  color: #000000;
+  font-family: 'Courier New', Courier, fixed;
+  font-size: 9pt;
+  font-style: normal;
+  font-weight: bold;
+  margin: 0px;
+  padding: 3px;
+  text-align: left;
+  vertical-align: middle;
+}
+.rowheaderstrong
+{
+  background-color: #56B7E6;
+  border-bottom-width: 1px;
+  border-color: #CEDAE4;
+  border-left-width: 0px;
+  border-right-width: 1px;
+  border-spacing: 0px;
+  border-style: solid;
+  border-top-width: 0px;
+  color: #000000;
+  font-family: Arial, 'Albany AMT', sans-serif;
+  font-size: 9pt;
+  font-style: normal;
+  font-weight: bold;
+  margin: 0px;
+  padding: 3px;
+  text-align: left;
+  vertical-align: middle;
+}
+.rowheaderstrongfixed
+{
+  background-color: #56B7E6;
+  border-bottom-width: 1px;
+  border-color: #CEDAE4;
+  border-left-width: 0px;
+  border-right-width: 1px;
+  border-spacing: 0px;
+  border-style: solid;
+  border-top-width: 0px;
+  color: #000000;
+  font-family: 'Courier New', Courier, fixed;
+  font-size: 9pt;
+  font-style: normal;
+  font-weight: bold;
+  margin: 0px;
+  padding: 3px;
+  text-align: left;
+  vertical-align: middle;
+}
+.systemfooter
+{
+  color: #012169;
+  font-family: Arial, 'Albany AMT', sans-serif;
+  font-size: 8pt;
+  font-style: normal;
+  font-weight: bold;
+  padding: 0px;
+}
+.systemfooter10
+{
+  color: #012169;
+  font-family: Arial, 'Albany AMT', sans-serif;
+  font-size: 8pt;
+  font-style: normal;
+  font-weight: bold;
+  padding: 0px;
+}
+.systemfooter2
+{
+  color: #012169;
+  font-family: Arial, 'Albany AMT', sans-serif;
+  font-size: 8pt;
+  font-style: normal;
+  font-weight: bold;
+  padding: 0px;
+}
+.systemfooter3
+{
+  color: #012169;
+  font-family: Arial, 'Albany AMT', sans-serif;
+  font-size: 8pt;
+  font-style: normal;
+  font-weight: bold;
+  padding: 0px;
+}
+.systemfooter4
+{
+  color: #012169;
+  font-family: Arial, 'Albany AMT', sans-serif;
+  font-size: 8pt;
+  font-style: normal;
+  font-weight: bold;
+  padding: 0px;
+}
+.systemfooter5
+{
+  color: #012169;
+  font-family: Arial, 'Albany AMT', sans-serif;
+  font-size: 8pt;
+  font-style: normal;
+  font-weight: bold;
+  padding: 0px;
+}
+.systemfooter6
+{
+  color: #012169;
+  font-family: Arial, 'Albany AMT', sans-serif;
+  font-size: 8pt;
+  font-style: normal;
+  font-weight: bold;
+  padding: 0px;
+}
+.systemfooter7
+{
+  color: #012169;
+  font-family: Arial, 'Albany AMT', sans-serif;
+  font-size: 8pt;
+  font-style: normal;
+  font-weight: bold;
+  padding: 0px;
+}
+.systemfooter8
+{
+  color: #012169;
+  font-family: Arial, 'Albany AMT', sans-serif;
+  font-size: 8pt;
+  font-style: normal;
+  font-weight: bold;
+  padding: 0px;
+}
+.systemfooter9
+{
+  color: #012169;
+  font-family: Arial, 'Albany AMT', sans-serif;
+  font-size: 8pt;
+  font-style: normal;
+  font-weight: bold;
+  padding: 0px;
+}
+.systemtitle
+{
+  color: #012169;
+  font-family: Arial, 'Albany AMT', sans-serif;
+  font-size: 12pt;
+  font-weight: bold;
+  padding: 0px;
+}
+.systemtitle10
+{
+  color: #012169;
+  font-family: Arial, 'Albany AMT', sans-serif;
+  font-size: 12pt;
+  font-weight: bold;
+  padding: 0px;
+}
+.systemtitle2
+{
+  color: #012169;
+  font-family: Arial, 'Albany AMT', sans-serif;
+  font-size: 12pt;
+  font-weight: bold;
+  padding: 0px;
+}
+.systemtitle3
+{
+  color: #012169;
+  font-family: Arial, 'Albany AMT', sans-serif;
+  font-size: 12pt;
+  font-weight: bold;
+  padding: 0px;
+}
+.systemtitle4
+{
+  color: #012169;
+  font-family: Arial, 'Albany AMT', sans-serif;
+  font-size: 12pt;
+  font-weight: bold;
+  padding: 0px;
+}
+.systemtitle5
+{
+  color: #012169;
+  font-family: Arial, 'Albany AMT', sans-serif;
+  font-size: 12pt;
+  font-weight: bold;
+  padding: 0px;
+}
+.systemtitle6
+{
+  color: #012169;
+  font-family: Arial, 'Albany AMT', sans-serif;
+  font-size: 12pt;
+  font-weight: bold;
+  padding: 0px;
+}
+.systemtitle7
+{
+  color: #012169;
+  font-family: Arial, 'Albany AMT', sans-serif;
+  font-size: 12pt;
+  font-weight: bold;
+  padding: 0px;
+}
+.systemtitle8
+{
+  color: #012169;
+  font-family: Arial, 'Albany AMT', sans-serif;
+  font-size: 12pt;
+  font-weight: bold;
+  padding: 0px;
+}
+.systemtitle9
+{
+  color: #012169;
+  font-family: Arial, 'Albany AMT', sans-serif;
+  font-size: 12pt;
+  font-weight: bold;
+  padding: 0px;
+}
+.table
+{
+  background-color: #FFFFFF;
+  border: 1px solid #7F9DB9;
+  border-spacing: 0px;
+  color: #000000;
+  font-family: Arial, 'Albany AMT', sans-serif;
+  font-size: 9pt;
+  font-style: normal;
+  font-weight: bold;
+  margin: 0px;
+  vertical-align: middle;
+}
+.top_stacked_value
+{
+  padding-bottom: 1px;
+  border: 0;
+}
+.middle_stacked_value
+{
+  padding-top: 1px;
+  padding-bottom: 1px;
+  border: 0;
+}
+.bottom_stacked_value
+{
+  padding-top: 1px;
+  border: 0;
+}
+.tl_red
+{
+  background-color: #DA3E26;
+  border-bottom-width: 1px;
+  border-color: #CEDAE4;
+  border-left-width: 0px;
+  border-right-width: 1px;
+  border-spacing: 0px;
+  border-style: solid;
+  border-top-width: 0px;
+  color: #FFFFFF;
+  font-family: Arial, 'Albany AMT', Helvetica, sans-serif;
+  font-size: 9pt;
+  font-style: normal;
+  font-weight: bold;
+  margin: 0px;
+  padding: 3px;
+  vertical-align: top;
+}
+.usertext
+{
+  background-color: #FFFFFF;
+  border: 1px solid #CECFD2;
+  border-spacing: 0px;
+  color: #000000;
+  font-family: Arial, 'Albany AMT', sans-serif;
+  font-size: 9pt;
+  font-style: normal;
+  font-weight: bold;
+  margin: 0px;
+  padding: 3px;
+  text-align: left;
+  vertical-align: middle;
+}
+.warnbanner
+{
+  background-color: #FFFFFF;
+  border: 1px solid #CECFD2;
+  border-spacing: 0px;
+  color: #000000;
+  font-family: Arial, 'Albany AMT', sans-serif;
+  font-size: 9pt;
+  font-style: normal;
+  font-weight: bold;
+  margin: 0px;
+  padding: 3px;
+  text-align: left;
+  vertical-align: middle;
+}
+.warncontent
+{
+  background-color: #FFFFFF;
+  border-bottom-width: 1px;
+  border-color: #CEDAE4;
+  border-left-width: 0px;
+  border-right-width: 1px;
+  border-spacing: 0px;
+  border-style: solid;
+  border-top-width: 0px;
+  color: #000000;
+  font-family: Arial, 'Albany AMT', Helvetica, sans-serif;
+  font-size: 9pt;
+  font-style: normal;
+  font-weight: normal;
+  margin: 0px;
+  padding: 3px;
+  vertical-align: top;
+}
+.warncontentfixed
+{
+  background-color: #FFFFFF;
+  border-bottom-width: 1px;
+  border-color: #CEDAE4;
+  border-left-width: 0px;
+  border-right-width: 1px;
+  border-spacing: 0px;
+  border-style: solid;
+  border-top-width: 0px;
+  color: #000000;
+  font-family: 'Courier New', Courier, fixed;
+  font-size: 9pt;
+  font-style: normal;
+  font-weight: normal;
+  margin: 0px;
+  padding: 3px;
+  vertical-align: top;
+}
+.l {text-align: left }
+.c {text-align: center }
+.r {text-align: right }
+.d {text-align: right }
+.j {text-align: justify }
+.t {vertical-align: top }
+.m {vertical-align: middle }
+.b {vertical-align: bottom }
+TD, TH {vertical-align: top }
+.stacked_cell{padding: 0 }
+-->
+</style>
+</head>
+<body class="body">
+<style>h1 {font-family: Arial, 'Albany AMT', sans-serif;    font-size: 12pt;}    /* Controls the positions of the TEA Logo. */.dropdownimg {float: left; overflow: hidden; background-color: #ffffff;}   /* Navbar container */.navbar {overflow: hidden;          background-color: #0d6cb9 ;          font-family: 'Arial';}    /* Links inside the navbar */.navbar a {float: left;            font-size: 13px;            font-weight: bold ;           color: white;            text-align: center;            padding: 14px 12px;            text-decoration: none;}    /* The dropdown container */.dropdown {float: left;            overflow: hidden;}   /* Dropdown button */.dropdown .dropbtn { font-size: 13px;                      font-weight: bold ;                     border: none;                      outline: none;                      color: white;                      padding: 14px 12px;                      background-color: #0d6cb9 ;                      font-family: inherit;                      margin: 0;}   /* Add a red background color to navbar links on hover */.navbar a:hover, .dropdown:hover .dropbtn {background-color: #da3e26 ;                                            cursor: pointer;}   /* Add a green background color to navbar links on hover */.navbar a:hover, .dropdown:hover .dropbtn {background-color: #418708 ;                                            cursor: pointer;}   /* Dropdown content (hidden by default) */.dropdown-content {display: none;                    position: absolute;                    background-color: #f9f9f9;                    min-width: 160px;                    -webkit-box-shadow: 0px 8px 16px 0px rgba(0,0,0,0.2);                    box-shadow: 0px 8px 16px 0px rgba(0,0,0,0.2);                    z-index: 10;}   /* Sub Header style */.sub_header {background-color: #CDE0F0;             border: none;              outline: none;              color: #012169;             font-family: Arial, 'Albany AMT', sans-serif;             font-size: 10pt;             font-style: normal;             font-weight: bold;             margin: 0px;             padding: 8px 8px;              text-align: left; }   /* Links inside the dropdown */.dropdown-content a {float: none;                      color: black;                      padding: 6px 16px;                      text-decoration: none;                      display: block;                      text-align: left;}   /* Add a grey background color to dropdown links on hover */.dropdown-content a:hover {background-color: #ddd;}   /* Data as of information. */.aod {float: right; font-family: inherit; font-size: 8pt; color: #c04c2c;}   /* Show the dropdown menu on hover */.dropdown:hover .dropdown-content {display: block;} thead  {position:sticky; top:1px; z-index: 1;}    /* Printing */@media print {.nav, .navbar{display:none;}              a:active, a:link, a:visited, a:hover,a.db:active, a.db:link, a.db:visited, a.db:hover {color:#000000; text-decoration:none;}}</style>  <div class="nav" style="height: 43px; width: 100%; border-top-left-radius: 7px; border-top-right-radius: 7px; background-color: #052984; cursor: default; padding: 10px 0px 0px 0px;">
+   <div style="float: left; padding-left: 10px;  padding-top: 4px;">
+      <img src='/perfreport/bi_images/tea_logo_white.png' border='0' height='30px' title="Texas Education Agency (TEA Logo)">
+   </div>
+   <div style="float: left; text-align: left; padding-left: 25px; padding-top: 3px; color: #FFFFFF; font-size: 18pt; font-variant: small-caps; font-family: Aptos, Arial;">
+      2024-25 Texas Performance Reporting System (TPRS)
+   </div>
+   <div style="float: left; text-align: left; padding-left: 10px; padding-top: 2px; color: #FFFFFF; font-size: 20pt; font-variant: small-caps;">
+      <img src="/perfreport/bi_images/tprs.png" width="25px" border="0" title="TPRS image">
+   </div>
+</div>
+ <div class="navbar" style="float: left; text-align: right; width: 100%; padding-top: 1px; margin-top: 1px; border-bottom-left-radius: 7px; border-bottom-right-radius: 7px;">
+
+ <div class="dropdown">
+   <button class="dropbtn">STAAR</button>
+   <div class="dropdown-content">
+      <div class="sub_header">STAAR Performance</div>
+      <a href='/cgi/sas/broker?_debug=0&_program=perfrept.perfmast.sas&_service=marykay&ccyy=2025&id=161920102&lev=C&prgopt=reports/tapr/performance.sas'>STAAR Performance</span></a>
+      <a href='/cgi/sas/broker?_debug=0&_program=perfrept.perfmast.sas&_service=marykay&ccyy=2025&id=161920102&lev=C&prgopt=reports/tapr/perf_addsg.sas'>STAAR Performance - Additional Student Groups</span></a>
+      <a href='/cgi/sas/broker?_debug=0&_program=perfrept.perfmast.sas&_service=marykay&ccyy=2025&id=161920102&lev=C&prgopt=reports/tapr/fed_performance.sas'>STAAR Performance (All Students)</span></a>
+      <a href='/cgi/sas/broker?_debug=0&_program=perfrept.perfmast.sas&_service=marykay&ccyy=2025&id=161920102&lev=C&prgopt=reports/tapr/fed_addsg_performance.sas'>STAAR Performance (All Students) - Additional Student Groups</span></a>
+      <a href='/cgi/sas/broker?_debug=0&_program=perfrept.perfmast.sas&_service=marykay&ccyy=2025&id=161920102&lev=C&prgopt=reports/tapr/progress.sas'>STAAR School Progress</span></a>
+      <a href='/cgi/sas/broker?_debug=0&_program=perfrept.perfmast.sas&_service=marykay&ccyy=2025&id=161920102&lev=C&prgopt=reports/tapr/be_esl.sas'>Bilingual Education/English as a Second Language (Current EB Students/EL)</span></a>
+      <a href='/cgi/sas/broker?_debug=0&_program=perfrept.perfmast.sas&_service=marykay&ccyy=2025&id=161920102&lev=C&prgopt=reports/tapr/adv_math.sas'>Advanced Math Pathways</span></a>
+      <a href='/cgi/sas/broker?_debug=0&_program=perfrept.perfmast.sas&_service=marykay&ccyy=2025&id=161920102&lev=C&prgopt=reports/tapr/accelerated_instruction.sas'>Accelerated Instruction</span></a>
+      <div class="sub_header">STAAR Participation</div>
+      <a href='/cgi/sas/broker?_debug=0&_program=perfrept.perfmast.sas&_service=marykay&ccyy=2025&id=161920102&lev=C&prgopt=reports/tapr/participation.sas'>STAAR Participation</span></a>
+      <a href='/cgi/sas/broker?_debug=0&_program=perfrept.perfmast.sas&_service=marykay&ccyy=2025&id=161920102&lev=C&prgopt=reports/tapr/part_addsg.sas'>STAAR Participation - Additional Student Groups</span></a>
+   </div>
+ </div>
+
+ <div class="dropdown">
+   <button class="dropbtn">Attendance and Graduation</button>
+   <div class="dropdown-content">
+      <a href='/cgi/sas/broker?_debug=0&_program=perfrept.perfmast.sas&_service=marykay&ccyy=2025&id=161920102&lev=C&prgopt=reports/tapr/attendgrad.sas'>Attendance, Graduation, and Dropout Rates</span></a>
+      <a href='/cgi/sas/broker?_debug=0&_program=perfrept.perfmast.sas&_service=marykay&ccyy=2025&id=161920102&lev=C&prgopt=reports/tapr/gradprofile.sas'>Graduation Profile</span></a>
+   </div>
+ </div>
+
+ <div class="dropdown">
+   <button class="dropbtn">Postsecondary</button>
+   <div class="dropdown-content">
+      <div class="sub_header">Postsecondary Readiness</div>
+      <a href='/cgi/sas/broker?_debug=0&_program=perfrept.perfmast.sas&_service=marykay&ccyy=2025&id=161920102&lev=C&prgopt=reports/tapr/ccmr.sas'>College, Career, and Military Readiness (CCMR)</span></a>
+      <a href='/cgi/sas/broker?_debug=0&_program=perfrept.perfmast.sas&_service=marykay&ccyy=2025&id=161920102&lev=C&prgopt=reports/tapr/ccmr_sub.sas'>CCMR-Related Indicators</span></a>
+      <a href='/cgi/sas/broker?_debug=0&_program=perfrept.perfmast.sas&_service=marykay&ccyy=2025&id=161920102&lev=C&prgopt=reports/tapr/ps_other.sas'>Other Postsecondary Indicators</span></a>
+      <div class="sub_header">Postsecondary Outcomes</div>
+      <a href='/cgi/sas/broker?_debug=0&_program=perfrept.perfmast.sas&_service=marykay&ccyy=2025&id=161920102&lev=C&prgopt=reports/tapr/ps_outcomes.sas'>Postsecondary Outcomes Yearly Details</span></a>
+      <a href='/cgi/sas/broker?_debug=0&_program=perfrept.perfmast.sas&_service=marykay&ccyy=2025&id=161920102&lev=C&prgopt=reports/tapr/ps_outcomes_sum.sas'>Postsecondary Outcomes Summary</span></a>
+      <a href='/cgi/sas/broker?_debug=0&_program=perfrept.perfmast.sas&_service=marykay&ccyy=2025&id=161920102&lev=C&prgopt=reports/tapr/pso_dataviz.sas'>Postsecondary Outcomes Visualization</span></a>
+   </div>
+ </div>
+
+ <div class="dropdown">
+   <button class="dropbtn">Profile</button>
+   <div class="dropdown-content">
+      <a href='/cgi/sas/broker?_debug=0&_program=perfrept.perfmast.sas&_service=marykay&ccyy=2025&id=161920102&lev=C&prgopt=reports/tapr/student.sas'>Student Information</span></a>
+      <a href='/cgi/sas/broker?_debug=0&_program=perfrept.perfmast.sas&_service=marykay&ccyy=2025&id=161920102&lev=C&prgopt=reports/tapr/staff.sas'>Staff Information</span></a>
+   </div>
+ </div>
+
+ <div class="dropdown">
+   <button class="dropbtn">KG Readiness</button>
+   <div class="dropdown-content">
+      <a href='/cgi/sas/broker?_debug=0&_program=perfrept.perfmast.sas&_service=marykay&ccyy=2025&id=161920102&lev=C&prgopt=reports/tapr/kindergarten.sas'>Kindergarten Readiness</span></a>
+      <a href='/cgi/sas/broker?_debug=0&_program=perfrept.perfmast.sas&_service=marykay&ccyy=2025&id=161920102&lev=C&prgopt=reports/tapr/pk_effectiveness.sas'>Pre-Kindergarten Effectiveness based on Kindergarten Readiness Assessments</span></a>
+   </div>
+ </div>
+
+ <div class="dropdown">
+   <button class="dropbtn">Accountability</button>
+   <div class="dropdown-content">
+      <a href='/cgi/sas/broker?_debug=0&_program=perfrept.perfmast.sas&_service=marykay&ccyy=2025&id=161920102&lev=C&prgopt=reports/acct/summary.sas'>Accountability Overall Summary</span></a>
+      <a href='/cgi/sas/broker?_debug=0&_program=perfrept.perfmast.sas&_service=marykay&ccyy=2025&id=161920102&lev=C&prgopt=reports/tapr/relperf.sas'>Relative Performance History</span></a>
+ </div>
+ </div>
+
+
+ <div class="dropdown">
+   <button class="dropbtn">Research and Analysis</button>
+   <div class="dropdown-content">
+      <a href='https://tea.texas.gov/reports-and-data/school-performance/accountability-research' target='_blank'>Accountability Research</a>
+      <a href='https://tea.texas.gov/reports-and-data/school-performance/accountability-research/apib/advanced-placement-and-international-baccalaureate-data-2018-19' target='_blank'>Advanced Placement and International Baccalaureate Data</a>
+  <a href='https://tea.texas.gov/reports-and-data/school-data/campus-and-district-type-data-search' target='_blank'>Campus and District Type Data Search</a>
+      <a href='https://tea.texas.gov/reports-and-data/school-performance/accountability-research/completion-graduation-and-dropout/completion-graduation-and-dropouts-data-search' target='_blank'>Completion, Graduation, and Dropouts Data Search</a>
+      <a href='https://tea.texas.gov/reports-and-data/student-data/discipline-data-products/discipline-reports' target='_blank'>Discipline Reports</a>
+      <a href='https://tea.texas.gov/reports-and-data/school-performance/accountability-research/grade-level-retention/grade-level-retention-data-search' target='_blank'>Grade-Level Retention Data Search</a>
+      <a href='https://tea.texas.gov/reports-and-data/student-data/standard-reports/peims-standard-reports' target='_blank'>PEIMS Standard Reports</a>
+      <a href='https://tea.texas.gov/reports-and-data/school-performance/accountability-research/satact/sat-and-act-data-search-and-data-downloads' target='_blank'>SAT and ACT Data Search and Data Downloads</a>
+      <a href='https://texaseducationinfo.org/' target='_blank'>TPEIR</a>
+   </div>
+ </div>
+
+ <div class="dropdown">
+   <button class="dropbtn">TAPR</button>
+   <div class="dropdown-content">
+      <a href='/cgi/sas/broker?_service=marykay&_program=perfrept.perfmast.sas&_debug=0&ccyy=2025&lev=C&id=161920102&prgopt=reports/tapr/paper_tapr.sas' target='_blank'>2024-25 Texas Academic Performance Report</a>
+      <a href='/cgi/sas/broker?_service=marykay&_program=perfrept.perfmast.sas&_debug=0&ccyy=2024&lev=C&id=161920102&prgopt=reports/tapr/paper_tapr.sas' target='_blank'>2023-24 Texas Academic Performance Report</a>
+      <a href='https://rptsvr1.tea.texas.gov/cgi/sas/broker?_service=marykay&_program=perfrept.perfmast.sas&_debug=0&ccyy=2023&lev=C&id=161920102&prgopt=reports/tapr/paper_tapr.sas' target='_blank'>2022-23 Texas Academic Performance Report</a>
+      <a href='https://rptsvr1.tea.texas.gov/cgi/sas/broker?_service=marykay&_program=perfrept.perfmast.sas&_debug=0&ccyy=2022&lev=C&id=161920102&prgopt=reports/tapr/paper_tapr.sas' target='_blank'>2021-22 Texas Academic Performance Report</a>
+      <a href='https://rptsvr1.tea.texas.gov/cgi/sas/broker?_service=marykay&_program=perfrept.perfmast.sas&_debug=0&ccyy=2021&lev=C&id=161920102&prgopt=reports/tapr/paper_tapr.sas' target='_blank'>2020-21 Texas Academic Performance Report</a>
+      <a href='https://rptsvr1.tea.texas.gov/cgi/sas/broker?_service=marykay&_program=perfrept.perfmast.sas&_debug=0&ccyy=2020&lev=C&id=161920102&prgopt=reports/tapr/2020/paper_tapr.sas' target='_blank'>2019-20 Texas Academic Performance Report</a>
+      <a href='https://rptsvr1.tea.texas.gov/cgi/sas/broker?_service=marykay&_program=perfrept.perfmast.sas&_debug=0&title=2019+Texas+Academic+Performance+Reports&year4=2019&year2=19&level=campus&search=campnum&namenum=161920102&prgopt=2019%2Ftapr%2Fpaper_tapr.sas' target='_blank'>2018-19 Texas Academic Performance Report</a>
+      <a href='https://rptsvr1.tea.texas.gov/cgi/sas/broker?_service=marykay&_program=perfrept.perfmast.sas&_debug=0&title=2018+Texas+Academic+Performance+Reports&year4=2018&year2=18&level=campus&search=campnum&namenum=161920102&prgopt=2018%2Ftapr%2Fpaper_tapr.sas' target='_blank'>2017-18 Texas Academic Performance Report</a>
+   </div>
+ </div>
+
+ <div class="dropdown">
+   <button class="dropbtn">Analytic Tools</button>
+   <div class="dropdown-content">
+      <a href='https://tealprod.tea.state.tx.us/visual-public-reports/?workspace=0fe93535-a080-4e6c-8bbe-68ccd4eb06a8&report=96b01c9c-004d-4a10-94d0-5726c6195cd0' target='_blank'><span style='vertical-align:middle'><img src='/perfreport/account/va/images/a_f_accountability.png' width='28px' height='25px' /></span> STAAR Performance</a>
+      <a href='https://tealprod.tea.state.tx.us/visual-public-reports/?workspace=0fe93535-a080-4e6c-8bbe-68ccd4eb06a8&report=9ebedf48-2b03-476a-8af3-2b3361666961' target='_blank'><span style='vertical-align:middle'><img src='/perfreport/account/va/images/dual_credit_logo.png' width='28px' height='25px' /></span> STAAR Comparison</a>
+      <a href='https://tealprod.tea.state.tx.us/visual-public-reports/?workspace=0fe93535-a080-4e6c-8bbe-68ccd4eb06a8&report=c67eaf84-dbbb-496b-b5a5-00b92beb88a9' target='_blank'><span style='vertical-align:middle'><img src='/perfreport/account/va/images/compare-school-district.png' width='28px' height='25px' /></span> School / District Comparison</a>
+      <a href='https://tealprod.tea.state.tx.us/visual-public-reports/?workspace=0fe93535-a080-4e6c-8bbe-68ccd4eb06a8&report=c9ad5228-4636-4c76-abd3-7d6faf08a9d6' target='_blank'><span style='vertical-align:middle'><img src='/perfreport/account/va/images/postsecondary_ready_icon.png' width='28px' height='25px' /></span> CCMR</a>
+      <a href='https://tealprod.tea.state.tx.us/visual-public-reports/?workspace=0fe93535-a080-4e6c-8bbe-68ccd4eb06a8&report=feedce87-c961-46e7-ba9f-23d6f4750495' target='_blank'><span style='vertical-align:middle'><img src='/perfreport/account/va/images/student_growth_icon.png' width='28px' height='25px' /></span> Academic Growth</a>
+      <a href='https://tealprod.tea.state.tx.us/visual-public-reports/?workspace=0fe93535-a080-4e6c-8bbe-68ccd4eb06a8&report=cde29bfa-497e-4514-8951-cc26d6ce63e6' target='_blank'><span style='vertical-align:middle'><img src='/perfreport/account/va/images/grad_cap_icon_blue.png' width='28px' /></span> Graduation</a>
+      <a href='https://tealprod.tea.state.tx.us/visual-public-reports/?workspace=0fe93535-a080-4e6c-8bbe-68ccd4eb06a8&report=98efbd53-082d-4678-81bc-555b5bf03cf3' target='_blank'><span style='vertical-align:middle'><img src='/perfreport/account/va/images/relative_performance_icon_blue.png' width='28px' height='25px' /></span> Correlate</a>
+   </div>
+ </div>
+
+ <div class="dropdown">
+   <button class="dropbtn">Other Links</button>
+   <div class="dropdown-content">
+      <a href='https://txresearchportal.com/' target='_blank'>Assessment Research Portal</a>
+      <a href='/cgi/sas/broker?_service=marykay&_service=appserv&_debug=0&_program=sfadhoc.new_Campus_actual23.sas&which_camp=161920102' target='_blank'>Revenue and Expenditures</a>
+      <a href='/cgi/sas/broker?_debug=0&_program=perfrept.perfmast.sas&_service=marykay&ccyy=2025&id=161920102&lev=C&prgopt=reports/src/src.sas&from_tprs=2025'>2024-25 School Report Card</span></a>
+      <a href='https://rptsvr1.tea.texas.gov/idea/index.html' target='_blank'>State Performance Plan Indicators</a>
+      <a href='https://txschools.gov/' target='_blank'><img src='/perfreport/parentresources/images/txschools-logo.png' width='125px' height='25px' title='TXSchools.gov logo' /></a>
+   </div>
+ </div>
+
+ <div class="dropdown" style="float:right;">
+   <button class="dropbtn" style="background-color: #DA3E26">Search</button>
+   <div class="dropdown-content" style="right:0;">
+      <a href='/perfreport/account/acct_srch.html'>Accountability Reports</a>
+      <a href='/perfreport/frc/frc_srch.html'>Federal Report Card</a>
+      <a href='/perfreport/src/src_srch.html'>School Report Card</a>
+      <a href='/perfreport/snapshot/snapshot_srch.html'>Snapshot Report</a>
+      <a href='/perfreport/tapr/tapr_srch.html'>Texas Academic Performance Report [TAPR]</a>
+      <a href='/perfreport/tprs/tprs_srch.html'>Texas Performance Reporting System [TPRS]</a>
+   </div>
+ </div>
+
+ </div>
+ &nbsp;
+ <script>
+
+    function myFunction() {
+       document.getElementById("myDropdown").classList.toggle("show") ;
+    }
+    window.onclick = function(event) {
+       if (!event.target.matches(".dropbtn")) {
+          var dropdowns = document.getElementsByClassName("dropdown-content") ;
+          var i;
+          for (i = 0; i < dropdowns.length; i++) {
+             var openDropdown = dropdowns[i];
+             if (openDropdown.classList.contains("show")) {
+                openDropdown.classList.remove("show");
+             }
+          }
+       }
+    }
+ </script>
+
+
+<div class="branch">
+<a name="IDX"></a>
+<table class="systitleandfootercontainer" width="100%" summary="Page Layout">
+<tr>
+<td class="l systemtitle" style=" width: 33%;"> &nbsp;</td>
+<td class="c systemtitle" colspan="2" style=" width: 34%;"><span class="c" style=" font-weight: normal;">Texas Education Agency</span></td>
+<td class="r systemtitle" style=" width: 33%;"><button class='nav' onclick=window.print(); title='Click to print report.'><img src='/perfreport/bi_images/print.png' /></button> <button class='nav' onclick=location.href='/cgi/sas/broker?_debug=0&_program=perfrept.perfmast.sas&_service=marykay&ccyy=2025&id=161920102&lev=C&prgopt=reports%2Ftapr%2Fstudent.sas&dest=P' title='Click to download to PDF.'><img src='/perfreport/bi_images/pdf_icon.png' /></button> <button class='nav' onclick=location.href='/cgi/sas/broker?_debug=0&_program=perfrept.perfmast.sas&_service=marykay&ccyy=2025&id=161920102&lev=C&prgopt=reports%2Ftapr%2Fstudent.sas&dest=E' title='Click to download to Excel.'><img src='/perfreport/bi_images/excel_small.png' /></button> <button class='nav' onclick='window.open("https://tea.texas.gov/school-and-district-leaders/accountability/academic-accountability/performance-reporting/comprehensive-tprs-glossary.pdf#nameddest=Profile", "_blank")' title='Click to view glossary.'><img src='/perfreport/bi_images/question.png' /></button> &nbsp;</td>
+</tr>
+<tr>
+<td class="c systemtitle2" colspan="4">2024-25 Student Information</td>
+</tr>
+<tr>
+<td class="c systemtitle3" colspan="4">CHINA SPRING EL (161920102) - CHINA SPRING ISD - MCLENNAN COUNTY</td>
+</tr>
+</table><br>
+<div>
+<div align="center">
+<table class="table" style="border-style:none;" cellspacing="0" cellpadding="3" border="2" summary="Procedure Report: Detailed and/or summarized report">
+<colgroup>
+<col>
+<col>
+<col>
+<col>
+<col>
+<col>
+<col>
+<col>
+</colgroup>
+<tbody>
+<tr>
+<td title="Click to view 2018-19 school year report for this campus." class="l t data" style="font-size: 10pt; border-style: none; border-right: 1px solid black; vertical-align: middle; padding: 0 8px 0 8px;"><a href="/cgi/sas/broker?_service=marykay&_program=perfrept.perfmast.sas&_debug=0&ccyy=2019&lev=C&id=161920102&prgopt=reports/tapr/student.sas">2018-19</a>
+</td>
+<td title="Click to view 2019-20 school year report for this campus." class="l t data" style="font-size: 10pt; border-style: none; border-right: 1px solid black; vertical-align: middle; padding: 0 8px 0 8px;"><a href="/cgi/sas/broker?_service=marykay&_program=perfrept.perfmast.sas&_debug=0&ccyy=2020&lev=C&id=161920102&prgopt=reports/tapr/student.sas">2019-20</a>
+</td>
+<td title="Click to view 2020-21 school year report for this campus." class="l t data" style="font-size: 10pt; border-style: none; border-right: 1px solid black; vertical-align: middle; padding: 0 8px 0 8px;"><a href="/cgi/sas/broker?_service=marykay&_program=perfrept.perfmast.sas&_debug=0&ccyy=2021&lev=C&id=161920102&prgopt=reports/tapr/student.sas">2020-21</a>
+</td>
+<td title="Click to view 2021-22 school year report for this campus." class="l t data" style="font-size: 10pt; border-style: none; border-right: 1px solid black; vertical-align: middle; padding: 0 8px 0 8px;"><a href="/cgi/sas/broker?_service=marykay&_program=perfrept.perfmast.sas&_debug=0&ccyy=2022&lev=C&id=161920102&prgopt=reports/tapr/student.sas">2021-22</a>
+</td>
+<td title="Click to view 2022-23 school year report for this campus." class="l t data" style="font-size: 10pt; border-style: none; border-right: 1px solid black; vertical-align: middle; padding: 0 8px 0 8px;"><a href="/cgi/sas/broker?_service=marykay&_program=perfrept.perfmast.sas&_debug=0&ccyy=2023&lev=C&id=161920102&prgopt=reports/tapr/student.sas">2022-23</a>
+</td>
+<td title="Click to view 2023-24 school year report for this campus." class="l t data" style="font-size: 10pt; border-style: none; border-right: 1px solid black; vertical-align: middle; padding: 0 8px 0 8px;"><a href="/cgi/sas/broker?_service=marykay&_program=perfrept.perfmast.sas&_debug=0&ccyy=2024&lev=C&id=161920102&prgopt=reports/tapr/student.sas">2023-24</a>
+</td>
+<td title="2024-25 school year currently displayed." class="l t data" style="font-size: 10pt; border-style: none; border-right: 1px solid black; vertical-align: middle; padding: 0 8px 0 8px; font: bold 11pt Arial; color: #012169; cursor: default;">2024-25</td>
+<td title="2025-26 school year report not available for this campus." class="l t data" style="font-size: 10pt; border-style: none; border-right: 1px solid black; vertical-align: middle; padding: 0 8px 0 8px; color: #c8c7c7; cursor: not-allowed;border-right-style: none;">2025-26</td>
+</tr>
+</tbody>
+</table>
+</div>
+</div>
+<br>
+</div>
+<div class="branch">
+<a name="IDX1"></a>
+<div>
+<div align="center">
+<table class="table" cellspacing="0" cellpadding="3" border="2" summary="Procedure Report: Detailed and/or summarized report">
+<colgroup>
+<col>
+<col>
+<col>
+<col>
+<col>
+<col>
+<col>
+<col>
+<col>
+</colgroup>
+<thead>
+<tr>
+<th class="c b header" scope="col">&nbsp;</th>
+<th class="c b header" colspan="4" scope="colgroup">Membership</th>
+<th class="c b header" colspan="4" scope="colgroup">Enrollment</th>
+</tr>
+<tr>
+<th class="c b header" scope="col">&nbsp;</th>
+<th class="c b header" colspan="2" scope="colgroup">Campus</th>
+<th class="c b header" colspan="2" scope="colgroup">&nbsp;</th>
+<th class="c b header" colspan="2" scope="colgroup">Campus</th>
+<th class="c b header" colspan="2" scope="colgroup">&nbsp;</th>
+</tr>
+<tr>
+<th class="l b header" scope="col">Student Information</th>
+<th class="c b header" scope="col">Count</th>
+<th class="c b header" scope="col">Percent</th>
+<th class="c b header" scope="col">District</th>
+<th class="c b header" scope="col">State</th>
+<th class="c b header" scope="col">Count</th>
+<th class="c b header" scope="col">Percent</th>
+<th class="c b header" scope="col">District</th>
+<th class="c b header" scope="col">State</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td class="l b data" style=" font-weight: bold;">Total Students                                       </td>
+<td class="r b data" style=" font-weight: bold;">       613</td>
+<td class="r b data" style=" font-weight: bold;">100.0%</td>
+<td class="r b data" style=" font-weight: bold;">     3,011</td>
+<td class="r b data" style=" font-weight: bold;"> 5,530,499</td>
+<td class="r b data" style=" font-weight: bold;">       613</td>
+<td class="r b data" style=" font-weight: bold;">100.0%</td>
+<td class="r b data" style=" font-weight: bold;">     3,013</td>
+<td class="r b data" style=" font-weight: bold;"> 5,544,255</td>
+</tr>
+<tr>
+<td class="l m linecontent" colspan="9">Students by Grade</td>
+</tr>
+<tr>
+<td class="l b data">Grade 2                                              </td>
+<td class="r b data">       181</td>
+<td class="r b data">    29.5%</td>
+<td class="r b data">     6.0%</td>
+<td class="r b data">     7.0%</td>
+<td class="r b data">       181</td>
+<td class="r b data">    29.5%</td>
+<td class="r b data">     6.0%</td>
+<td class="r b data">     7.0%</td>
+</tr>
+<tr>
+<td class="l b data">Grade 3                                              </td>
+<td class="r b data">       203</td>
+<td class="r b data">    33.1%</td>
+<td class="r b data">     6.7%</td>
+<td class="r b data">     7.3%</td>
+<td class="r b data">       203</td>
+<td class="r b data">    33.1%</td>
+<td class="r b data">     6.7%</td>
+<td class="r b data">     7.3%</td>
+</tr>
+<tr>
+<td class="l b data">Grade 4                                              </td>
+<td class="r b data">       229</td>
+<td class="r b data">    37.4%</td>
+<td class="r b data">     7.6%</td>
+<td class="r b data">     7.3%</td>
+<td class="r b data">       229</td>
+<td class="r b data">    37.4%</td>
+<td class="r b data">     7.6%</td>
+<td class="r b data">     7.3%</td>
+</tr>
+<tr>
+<td class="l m linecontent" colspan="9">Ethnic Distribution</td>
+</tr>
+<tr>
+<td class="l b data">African American                                     </td>
+<td class="r b data">        31</td>
+<td class="r b data">     5.1%</td>
+<td class="r b data">     5.4%</td>
+<td class="r b data">    12.8%</td>
+<td class="r b data">        31</td>
+<td class="r b data">     5.1%</td>
+<td class="r b data">     5.5%</td>
+<td class="r b data">    12.8%</td>
+</tr>
+<tr>
+<td class="l b data">Hispanic                                             </td>
+<td class="r b data">       161</td>
+<td class="r b data">    26.3%</td>
+<td class="r b data">    26.0%</td>
+<td class="r b data">    53.5%</td>
+<td class="r b data">       161</td>
+<td class="r b data">    26.3%</td>
+<td class="r b data">    26.0%</td>
+<td class="r b data">    53.5%</td>
+</tr>
+<tr>
+<td class="l b data">White                                                </td>
+<td class="r b data">       384</td>
+<td class="r b data">    62.6%</td>
+<td class="r b data">    62.2%</td>
+<td class="r b data">    24.4%</td>
+<td class="r b data">       384</td>
+<td class="r b data">    62.6%</td>
+<td class="r b data">    62.2%</td>
+<td class="r b data">    24.4%</td>
+</tr>
+<tr>
+<td class="l b data">American Indian                                      </td>
+<td class="r b data">         1</td>
+<td class="r b data">     0.2%</td>
+<td class="r b data">     0.2%</td>
+<td class="r b data">     0.3%</td>
+<td class="r b data">         1</td>
+<td class="r b data">     0.2%</td>
+<td class="r b data">     0.2%</td>
+<td class="r b data">     0.3%</td>
+</tr>
+<tr>
+<td class="l b data">Asian                                                </td>
+<td class="r b data">        10</td>
+<td class="r b data">     1.6%</td>
+<td class="r b data">     1.7%</td>
+<td class="r b data">     5.6%</td>
+<td class="r b data">        10</td>
+<td class="r b data">     1.6%</td>
+<td class="r b data">     1.7%</td>
+<td class="r b data">     5.6%</td>
+</tr>
+<tr>
+<td class="l b data">Pacific Islander                                     </td>
+<td class="r b data">         2</td>
+<td class="r b data">     0.3%</td>
+<td class="r b data">     0.1%</td>
+<td class="r b data">     0.2%</td>
+<td class="r b data">         2</td>
+<td class="r b data">     0.3%</td>
+<td class="r b data">     0.1%</td>
+<td class="r b data">     0.2%</td>
+</tr>
+<tr>
+<td class="l b data">Two or More Races                                    </td>
+<td class="r b data">        24</td>
+<td class="r b data">     3.9%</td>
+<td class="r b data">     4.4%</td>
+<td class="r b data">     3.3%</td>
+<td class="r b data">        24</td>
+<td class="r b data">     3.9%</td>
+<td class="r b data">     4.3%</td>
+<td class="r b data">     3.3%</td>
+</tr>
+<tr>
+<td class="l m linecontent" colspan="9">Sex</td>
+</tr>
+<tr>
+<td class="l b data">Female                                               </td>
+<td class="r b data">       304</td>
+<td class="r b data">    49.6%</td>
+<td class="r b data">    48.4%</td>
+<td class="r b data">    48.9%</td>
+<td class="r b data">       304</td>
+<td class="r b data">    49.6%</td>
+<td class="r b data">    48.4%</td>
+<td class="r b data">    48.8%</td>
+</tr>
+<tr>
+<td class="l b data">Male                                                 </td>
+<td class="r b data">       309</td>
+<td class="r b data">    50.4%</td>
+<td class="r b data">    51.6%</td>
+<td class="r b data">    51.1%</td>
+<td class="r b data">       309</td>
+<td class="r b data">    50.4%</td>
+<td class="r b data">    51.6%</td>
+<td class="r b data">    51.2%</td>
+</tr>
+<tr>
+<td class="l m linecontent" colspan="9">Other Student Cohorts</td>
+</tr>
+<tr>
+<td class="l b data">Economically Disadvantaged                           </td>
+<td class="r b data">       229</td>
+<td class="r b data">    37.4%</td>
+<td class="r b data">    33.8%</td>
+<td class="r b data">    60.5%</td>
+<td class="r b data">       229</td>
+<td class="r b data">    37.4%</td>
+<td class="r b data">    33.8%</td>
+<td class="r b data">    60.4%</td>
+</tr>
+<tr>
+<td class="l b data">Non-Educationally Disadvantaged                      </td>
+<td class="r b data">       384</td>
+<td class="r b data">    62.6%</td>
+<td class="r b data">    66.2%</td>
+<td class="r b data">    39.5%</td>
+<td class="r b data">       384</td>
+<td class="r b data">    62.6%</td>
+<td class="r b data">    66.2%</td>
+<td class="r b data">    39.6%</td>
+</tr>
+<tr>
+<td class="l b data">Section 504 Students                                 </td>
+<td class="r b data">        41</td>
+<td class="r b data">     6.7%</td>
+<td class="r b data">    15.1%</td>
+<td class="r b data">     6.8%</td>
+<td class="r b data">        41</td>
+<td class="r b data">     6.7%</td>
+<td class="r b data">    15.1%</td>
+<td class="r b data">     6.8%</td>
+</tr>
+<tr>
+<td class="l b data">EB Students/EL                                       </td>
+<td class="r b data">        22</td>
+<td class="r b data">     3.6%</td>
+<td class="r b data">     3.6%</td>
+<td class="r b data">    24.3%</td>
+<td class="r b data">        22</td>
+<td class="r b data">     3.6%</td>
+<td class="r b data">     3.6%</td>
+<td class="r b data">    24.3%</td>
+</tr>
+<tr>
+<td class="l b data">Students w/ Disciplinary Placements (2023-24)        </td>
+<td class="r b data">         0</td>
+<td class="r b data">     0.0%</td>
+<td class="r b data">     2.1%</td>
+<td class="r b data">     2.1%</td>
+<td class="r b data">&nbsp;</td>
+<td class="r b data">&nbsp;</td>
+<td class="r b data">&nbsp;</td>
+<td class="r b data">&nbsp;</td>
+</tr>
+<tr>
+<td class="l b data">Students w/ Dyslexia                                 </td>
+<td class="r b data">        51</td>
+<td class="r b data">     8.3%</td>
+<td class="r b data">    10.7%</td>
+<td class="r b data">     6.4%</td>
+<td class="r b data">        51</td>
+<td class="r b data">     8.3%</td>
+<td class="r b data">    10.7%</td>
+<td class="r b data">     6.4%</td>
+</tr>
+<tr>
+<td class="l b data">Foster Care                                          </td>
+<td class="r b data">         0</td>
+<td class="r b data">     0.0%</td>
+<td class="r b data">     0.1%</td>
+<td class="r b data">     0.2%</td>
+<td class="r b data">         0</td>
+<td class="r b data">     0.0%</td>
+<td class="r b data">     0.1%</td>
+<td class="r b data">     0.2%</td>
+</tr>
+<tr>
+<td class="l b data">Homeless                                             </td>
+<td class="r b data">         5</td>
+<td class="r b data">     0.8%</td>
+<td class="r b data">     0.4%</td>
+<td class="r b data">     1.4%</td>
+<td class="r b data">         5</td>
+<td class="r b data">     0.8%</td>
+<td class="r b data">     0.4%</td>
+<td class="r b data">     1.4%</td>
+</tr>
+<tr>
+<td class="l b data">Immigrant                                            </td>
+<td class="r b data">         5</td>
+<td class="r b data">     0.8%</td>
+<td class="r b data">     0.6%</td>
+<td class="r b data">     3.5%</td>
+<td class="r b data">         5</td>
+<td class="r b data">     0.8%</td>
+<td class="r b data">     0.6%</td>
+<td class="r b data">     3.5%</td>
+</tr>
+<tr>
+<td class="l b data">Migrant                                              </td>
+<td class="r b data">         0</td>
+<td class="r b data">     0.0%</td>
+<td class="r b data">     0.0%</td>
+<td class="r b data">     0.2%</td>
+<td class="r b data">         0</td>
+<td class="r b data">     0.0%</td>
+<td class="r b data">     0.0%</td>
+<td class="r b data">     0.2%</td>
+</tr>
+<tr>
+<td class="l b data">Title I                                              </td>
+<td class="r b data">       613</td>
+<td class="r b data">   100.0%</td>
+<td class="r b data">    35.7%</td>
+<td class="r b data">    66.6%</td>
+<td class="r b data">       613</td>
+<td class="r b data">   100.0%</td>
+<td class="r b data">    35.7%</td>
+<td class="r b data">    66.5%</td>
+</tr>
+<tr>
+<td class="l b data">Military Connected                                   </td>
+<td class="r b data">        22</td>
+<td class="r b data">     3.6%</td>
+<td class="r b data">     7.0%</td>
+<td class="r b data">     4.1%</td>
+<td class="r b data">        22</td>
+<td class="r b data">     3.6%</td>
+<td class="r b data">     7.0%</td>
+<td class="r b data">     4.1%</td>
+</tr>
+<tr>
+<td class="l b data">At-Risk                                              </td>
+<td class="r b data">       146</td>
+<td class="r b data">    23.8%</td>
+<td class="r b data">    19.7%</td>
+<td class="r b data">    53.5%</td>
+<td class="r b data">       146</td>
+<td class="r b data">    23.8%</td>
+<td class="r b data">    19.7%</td>
+<td class="r b data">    53.5%</td>
+</tr>
+<tr>
+<td class="l m linecontent" colspan="9">Students by Instructional Program</td>
+</tr>
+<tr>
+<td class="l b data">Bilingual/ESL Education                              </td>
+<td class="r b data">        21</td>
+<td class="r b data">     3.4%</td>
+<td class="r b data">     3.8%</td>
+<td class="r b data">    24.3%</td>
+<td class="r b data">        21</td>
+<td class="r b data">     3.4%</td>
+<td class="r b data">     3.8%</td>
+<td class="r b data">    24.3%</td>
+</tr>
+<tr>
+<td class="l b data">Career and Technical Education                       </td>
+<td class="r b data">         0</td>
+<td class="r b data">     0.0%</td>
+<td class="r b data">    30.0%</td>
+<td class="r b data">    27.7%</td>
+<td class="r b data">-</td>
+<td class="r b data">-</td>
+<td class="r b data">-</td>
+<td class="r b data">-</td>
+</tr>
+<tr>
+<td class="l b data">Career and Technical Education (9-12 grades only)    </td>
+<td class="r b data">         0</td>
+<td class="r b data">     0.0%</td>
+<td class="r b data">    92.8%</td>
+<td class="r b data">    74.0%</td>
+<td class="r b data">-</td>
+<td class="r b data">-</td>
+<td class="r b data">-</td>
+<td class="r b data">-</td>
+</tr>
+<tr>
+<td class="l b data">Gifted and Talented Education                        </td>
+<td class="r b data">        56</td>
+<td class="r b data">     9.1%</td>
+<td class="r b data">     8.3%</td>
+<td class="r b data">     8.7%</td>
+<td class="r b data">        56</td>
+<td class="r b data">     9.1%</td>
+<td class="r b data">     8.3%</td>
+<td class="r b data">     8.7%</td>
+</tr>
+<tr>
+<td class="l b data">Special Education                                    </td>
+<td class="r b data">       103</td>
+<td class="r b data">    16.8%</td>
+<td class="r b data">    13.0%</td>
+<td class="r b data">    15.3%</td>
+<td class="r b data">       103</td>
+<td class="r b data">    16.8%</td>
+<td class="r b data">    13.0%</td>
+<td class="r b data">    15.5%</td>
+</tr>
+<tr>
+<td class="l m linecontent" colspan="9">Students with Disabilities by Type of Primary Disability</td>
+</tr>
+<tr>
+<td class="l b data" style=" font-weight: bold;">Total Students with Disabilities                     </td>
+<td class="r b data" style=" font-weight: bold;">       103</td>
+<td class="r b data" style=" font-weight: bold;">&nbsp;</td>
+<td class="r b data" style=" font-weight: bold;">&nbsp;</td>
+<td class="r b data" style=" font-weight: bold;">&nbsp;</td>
+<td class="r b data" style=" font-weight: bold;">&nbsp;</td>
+<td class="r b data" style=" font-weight: bold;">&nbsp;</td>
+<td class="r b data" style=" font-weight: bold;">&nbsp;</td>
+<td class="r b data" style=" font-weight: bold;">&nbsp;</td>
+</tr>
+<tr>
+<td class="l b data">Students with Intellectual Disabilities              </td>
+<td class="r b data">        50</td>
+<td class="r b data">    48.5%</td>
+<td class="r b data">    49.5%</td>
+<td class="r b data">    48.3%</td>
+<td class="r b data">&nbsp;</td>
+<td class="r b data">&nbsp;</td>
+<td class="r b data">&nbsp;</td>
+<td class="r b data">&nbsp;</td>
+</tr>
+<tr>
+<td class="l b data">Students with Physical Disabilities                  </td>
+<td class="r b data">        23</td>
+<td class="r b data">    22.3%</td>
+<td class="r b data">    18.2%</td>
+<td class="r b data">    17.0%</td>
+<td class="r b data">&nbsp;</td>
+<td class="r b data">&nbsp;</td>
+<td class="r b data">&nbsp;</td>
+<td class="r b data">&nbsp;</td>
+</tr>
+<tr>
+<td class="l b data">Students with Autism                                 </td>
+<td class="r b data">        11</td>
+<td class="r b data">    10.7%</td>
+<td class="r b data">     9.2%</td>
+<td class="r b data">    16.8%</td>
+<td class="r b data">&nbsp;</td>
+<td class="r b data">&nbsp;</td>
+<td class="r b data">&nbsp;</td>
+<td class="r b data">&nbsp;</td>
+</tr>
+<tr>
+<td class="l b data">Students with Behavioral Disabilities                </td>
+<td class="r b data">        19</td>
+<td class="r b data">    18.4%</td>
+<td class="r b data">    21.0%</td>
+<td class="r b data">    16.3%</td>
+<td class="r b data">&nbsp;</td>
+<td class="r b data">&nbsp;</td>
+<td class="r b data">&nbsp;</td>
+<td class="r b data">&nbsp;</td>
+</tr>
+<tr>
+<td class="l b data">Students with Non-Categorical Early Childhood        </td>
+<td class="r b data">         0</td>
+<td class="r b data">     0.0%</td>
+<td class="r b data">     2.1%</td>
+<td class="r b data">     1.6%</td>
+<td class="r b data">&nbsp;</td>
+<td class="r b data">&nbsp;</td>
+<td class="r b data">&nbsp;</td>
+<td class="r b data">&nbsp;</td>
+</tr>
+<tr>
+<td class="l m linecontent" colspan="9">Mobility (2023-24)</td>
+</tr>
+<tr>
+<td class="l b data" style=" font-weight: bold;">Total Mobile Students                                </td>
+<td class="r b data" style=" font-weight: bold;">        57</td>
+<td class="r b data" style=" font-weight: bold;">     8.2%</td>
+<td class="r b data" style=" font-weight: bold;">     8.6%</td>
+<td class="r b data" style=" font-weight: bold;">    16.4%</td>
+<td class="r b data" style=" font-weight: bold;">&nbsp;</td>
+<td class="r b data" style=" font-weight: bold;">&nbsp;</td>
+<td class="r b data" style=" font-weight: bold;">&nbsp;</td>
+<td class="r b data" style=" font-weight: bold;">&nbsp;</td>
+</tr>
+<tr>
+<td class="l b data">African American                                     </td>
+<td class="r b data">         8</td>
+<td class="r b data">     1.2%</td>
+<td class="r b data">     0.9%</td>
+<td class="r b data">     3.3%</td>
+<td class="r b data">&nbsp;</td>
+<td class="r b data">&nbsp;</td>
+<td class="r b data">&nbsp;</td>
+<td class="r b data">&nbsp;</td>
+</tr>
+<tr>
+<td class="l b data">Hispanic                                             </td>
+<td class="r b data">        13</td>
+<td class="r b data">     1.9%</td>
+<td class="r b data">     2.2%</td>
+<td class="r b data">     8.9%</td>
+<td class="r b data">&nbsp;</td>
+<td class="r b data">&nbsp;</td>
+<td class="r b data">&nbsp;</td>
+<td class="r b data">&nbsp;</td>
+</tr>
+<tr>
+<td class="l b data">White                                                </td>
+<td class="r b data">        36</td>
+<td class="r b data">     5.2%</td>
+<td class="r b data">     5.0%</td>
+<td class="r b data">     2.9%</td>
+<td class="r b data">&nbsp;</td>
+<td class="r b data">&nbsp;</td>
+<td class="r b data">&nbsp;</td>
+<td class="r b data">&nbsp;</td>
+</tr>
+<tr>
+<td class="l b data">American Indian                                      </td>
+<td class="r b data">         0</td>
+<td class="r b data">     0.0%</td>
+<td class="r b data">     0.0%</td>
+<td class="r b data">     0.1%</td>
+<td class="r b data">&nbsp;</td>
+<td class="r b data">&nbsp;</td>
+<td class="r b data">&nbsp;</td>
+<td class="r b data">&nbsp;</td>
+</tr>
+<tr>
+<td class="l b data">Asian                                                </td>
+<td class="r b data">         0</td>
+<td class="r b data">     0.0%</td>
+<td class="r b data">     0.0%</td>
+<td class="r b data">     0.5%</td>
+<td class="r b data">&nbsp;</td>
+<td class="r b data">&nbsp;</td>
+<td class="r b data">&nbsp;</td>
+<td class="r b data">&nbsp;</td>
+</tr>
+<tr>
+<td class="l b data">Pacific Islander                                     </td>
+<td class="r b data">         0</td>
+<td class="r b data">     0.0%</td>
+<td class="r b data">     0.0%</td>
+<td class="r b data">     0.0%</td>
+<td class="r b data">&nbsp;</td>
+<td class="r b data">&nbsp;</td>
+<td class="r b data">&nbsp;</td>
+<td class="r b data">&nbsp;</td>
+</tr>
+<tr>
+<td class="l b data">Two or More Races                                    </td>
+<td class="r b data">         0</td>
+<td class="r b data">     0.0%</td>
+<td class="r b data">     0.5%</td>
+<td class="r b data">     0.6%</td>
+<td class="r b data">&nbsp;</td>
+<td class="r b data">&nbsp;</td>
+<td class="r b data">&nbsp;</td>
+<td class="r b data">&nbsp;</td>
+</tr>
+<tr>
+<td class="l b data">Special Ed Students who are Mobile                   </td>
+<td class="r b data">         8</td>
+<td class="r b data">     5.4%</td>
+<td class="r b data">    10.4%</td>
+<td class="r b data">    17.3%</td>
+<td class="r b data">&nbsp;</td>
+<td class="r b data">&nbsp;</td>
+<td class="r b data">&nbsp;</td>
+<td class="r b data">&nbsp;</td>
+</tr>
+<tr>
+<td class="l b data">Count and Percent of EB Students/EL who are Mobile   </td>
+<td class="r b data">         3</td>
+<td class="r b data">    13.6%</td>
+<td class="r b data">    17.1%</td>
+<td class="r b data">    17.9%</td>
+<td class="r b data">&nbsp;</td>
+<td class="r b data">&nbsp;</td>
+<td class="r b data">&nbsp;</td>
+<td class="r b data">&nbsp;</td>
+</tr>
+<tr>
+<td class="l b data">Count and Percent of Econ Dis Students who are Mobile</td>
+<td class="r b data">        27</td>
+<td class="r b data">     9.5%</td>
+<td class="r b data">    13.0%</td>
+<td class="r b data">    19.0%</td>
+<td class="r b data">&nbsp;</td>
+<td class="r b data">&nbsp;</td>
+<td class="r b data">&nbsp;</td>
+<td class="r b data">&nbsp;</td>
+</tr>
+<tr>
+<td class="l m linecontent" colspan="9">Student Attrition (2023-24)</td>
+</tr>
+<tr>
+<td class="l b data" style=" font-weight: bold;">Total Student Attrition                              </td>
+<td class="r b data" style=" font-weight: bold;">        52</td>
+<td class="r b data" style=" font-weight: bold;">    12.1%</td>
+<td class="r b data" style=" font-weight: bold;">    10.6%</td>
+<td class="r b data" style=" font-weight: bold;">    18.0%</td>
+<td class="r b data" style=" font-weight: bold;">&nbsp;</td>
+<td class="r b data" style=" font-weight: bold;">&nbsp;</td>
+<td class="r b data" style=" font-weight: bold;">&nbsp;</td>
+<td class="r b data" style=" font-weight: bold;">&nbsp;</td>
+</tr>
+</tbody>
+</table>
+</div>
+</div>
+<br>
+</div>
+<div class="branch">
+<a name="IDX2"></a>
+<div>
+<div align="center">
+<table class="table" cellspacing="0" cellpadding="3" border="2" summary="Procedure Report: Detailed and/or summarized report">
+<colgroup>
+<col>
+<col>
+<col>
+<col>
+<col>
+<col>
+<col>
+</colgroup>
+<thead>
+<tr>
+<th class="c b header" scope="col">&nbsp;</th>
+<th class="c b header" colspan="3" scope="colgroup">Non-Special Education Rates</th>
+<th class="c b header" colspan="3" scope="colgroup">Special Education Rates</th>
+</tr>
+<tr>
+<th class="l b header" scope="col">Student Information</th>
+<th class="c b header" scope="col">Campus</th>
+<th class="c b header" scope="col">District</th>
+<th class="c b header" scope="col">State</th>
+<th class="c b header" scope="col">Campus</th>
+<th class="c b header" scope="col">District</th>
+<th class="c b header" scope="col">State</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td class="l m linecontent" colspan="7">Retention Rates by Grade</td>
+</tr>
+<tr>
+<td class="l b data">Grade 2                                              </td>
+<td class="r b data">     0.0%</td>
+<td class="r b data">     0.0%</td>
+<td class="r b data">     1.1%</td>
+<td class="r b data">     7.9%</td>
+<td class="r b data">     7.9%</td>
+<td class="r b data">     1.4%</td>
+</tr>
+<tr>
+<td class="l b data">Grade 3                                              </td>
+<td class="r b data">     0.6%</td>
+<td class="r b data">     0.6%</td>
+<td class="r b data">     0.6%</td>
+<td class="r b data">     0.0%</td>
+<td class="r b data">     0.0%</td>
+<td class="r b data">     0.6%</td>
+</tr>
+<tr>
+<td class="l b data">Grade 4                                              </td>
+<td class="r b data">     0.0%</td>
+<td class="r b data">     0.0%</td>
+<td class="r b data">     0.4%</td>
+<td class="r b data">     1.9%</td>
+<td class="r b data">     1.9%</td>
+<td class="r b data">     0.4%</td>
+</tr>
+</tbody>
+</table>
+</div>
+</div>
+<br>
+</div>
+<div class="branch">
+<a name="IDX3"></a>
+<div>
+<div class="c paragraph" style=" background-color: #FFFFFF; font-size: 10pt;"><br/>
+Class Size Averages by Grade and Subject<br/>
+(Derived from teacher responsibility records):</div>
+</div>
+<br>
+</div>
+<div class="branch">
+<a name="IDX4"></a>
+<div>
+<div align="center">
+<table class="table" cellspacing="0" cellpadding="3" border="2" summary="Procedure Report: Detailed and/or summarized report">
+<colgroup>
+<col>
+<col>
+<col>
+<col>
+</colgroup>
+<thead>
+<tr>
+<th class="l b header" scope="col">Class Size Information</th>
+<th class="c b header" scope="col">Campus</th>
+<th class="c b header" scope="col">District</th>
+<th class="c b header" scope="col">State</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td class="l m linecontent" colspan="4">Elementary</td>
+</tr>
+<tr>
+<td class="l b data">Grade 2                                              </td>
+<td class="r b data">      21.1</td>
+<td class="r b data">      21.1</td>
+<td class="r b data">      19.4</td>
+</tr>
+<tr>
+<td class="l b data">Grade 3                                              </td>
+<td class="r b data">      22.5</td>
+<td class="r b data">      22.5</td>
+<td class="r b data">      20.1</td>
+</tr>
+<tr>
+<td class="l b data">Grade 4                                              </td>
+<td class="r b data">      22.2</td>
+<td class="r b data">      22.2</td>
+<td class="r b data">      20.0</td>
+</tr>
+</tbody>
+</table>
+</div>
+</div>
+<br>
+</div>
+<div class="branch">
+<a name="IDX5"></a>
+<div>
+<div align="center">
+<table class="table" style=" border-width: 0px;" cellspacing="0" cellpadding="3" rules="none" frame="void" border="0" summary="Procedure Report: Detailed and/or summarized report">
+<colgroup>
+<col>
+<col>
+</colgroup>
+<tbody>
+<tr>
+<td class="c t data" style=" border-width: 0px; font-size: 8pt;">-</td>
+<td class="l t data" style=" border-width: 0px; font-size: 8pt;">Indicates there are no students in the group.</td>
+</tr>
+<tr>
+<td class="c t data" style=" border-width: 0px; font-size: 8pt;">*</td>
+<td class="l t data" style=" border-width: 0px; font-size: 8pt;">Indicates results are masked due to small numbers to protect student confidentiality.</td>
+</tr>
+<tr>
+<td class="c t data" style=" border-width: 0px; font-size: 8pt;">**</td>
+<td class="l t data" style=" border-width: 0px; font-size: 8pt;">When only one student disability group is masked, then the second smallest student disability group is masked regardless of size.</td>
+</tr>
+<tr>
+<td class="c t data" style=" border-width: 0px; font-size: 8pt;">?</td>
+<td class="l t data" style=" border-width: 0px; font-size: 8pt;">Indicates that the data for this item were statistically improbable or were reported outside a reasonable range.</td>
+</tr>
+</tbody>
+</table>
+</div>
+</div>
+<br>
+<table class="systitleandfootercontainer" width="100%" summary="Page Layout">
+<tr>
+<td class="l systemfooter" style=" font-size: 8pt; width: 33%;">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;</td>
+<td class="c systemfooter" colspan="2" style=" font-size: 8pt; width: 34%;">TEA | Analytics, Assessment, and Reporting | Performance Reporting</td>
+<td class="r systemfooter" style=" font-size: 8pt; width: 33%;">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;</td>
+</tr>
+</table><br>
+</div>
+</body>
+</html>

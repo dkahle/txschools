@@ -4,23 +4,40 @@
 \alias{txs_list_downloads}
 \title{List downloads for a given year and source}
 \usage{
-txs_list_downloads(year, source = c("tapr", "src", "aeis"), refresh = FALSE)
+txs_list_downloads(year, source = c("tapr", "aeis"), refresh = FALSE)
 }
 \arguments{
 \item{year}{Integer ending year.}
 
-\item{source}{One of \code{"tapr"}, \code{"src"}, \code{"aeis"}.}
+\item{source}{One of \code{"tapr"}, \code{"aeis"}.}
 
 \item{refresh}{If \code{TRUE}, ignore the on-disk meta cache and re-fetch.}
 }
 \value{
 A tibble with columns \code{source}, \code{year}, \code{school_year},
-\code{level}, \code{data_type}, \code{file_format}, \code{label}, \code{url}.
+\code{level}, \code{data_type}, \code{dataset}, \code{file_format}, \code{label}, \code{method},
+\code{url}, \code{params}.
 }
 \description{
-Discovers data files published for a particular TEA program year by
-parsing the public HTML download pages. For TAPR this means
-following the year's index to its Basic and Advanced download pages.
+Discovers data artifacts published for a particular TEA program year
+by parsing the public HTML download pages, including the SAS-broker
+download forms that serve the actual data files.
+}
+\details{
+For TAPR this returns:
+\itemize{
+\item \code{data_type = "advanced"}: one row per level and dataset code
+(\code{dataset}, e.g. \code{"REF"}, \code{"STAAR1"}) served by TEA's SAS broker.
+These are the statewide data files (numerators, denominators, and
+rates).
+\item \code{data_type = "dictionary"}: the statewide variable-dictionary
+workbooks (\code{TAPR_campus_2024.xlsx}, ...). These describe variables;
+they do not contain data.
+}
+
+For AEIS this returns one row per level and dataset code served by
+the per-year AEIS CGI. SRC is not a downloadable-file program; see
+\code{\link[=txs_get_src]{txs_get_src()}}.
 }
 \examples{
 \dontrun{

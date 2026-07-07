@@ -59,22 +59,28 @@ cache_tapr_page_fixture <- function(year, geography, page_source, fixture,
   cp
 }
 
+fake_downloads_tbl <- function(year, level = "campus", data_type = "advanced",
+                               dataset = "REF", url) {
+  tibble::tibble(
+    source = "tapr", year = as.integer(year),
+    school_year = year_label(year),
+    level = level, data_type = data_type, dataset = dataset,
+    file_format = "csv", label = "fixture",
+    method = "get", url = url, params = NA_character_
+  )
+}
+
 test_that("txs_get_tapr_file stubbed end-to-end returns tidy with masking", {
   dir <- withr::local_tempdir()
   withr::local_options(txschools.cache_dir = dir)
 
   fake_url <- "https://example.org/perfreport/tapr/2024/download/campadv.csv"
-  fake_downloads <- tibble::tibble(
-    source = "tapr", year = 2024L, school_year = "2023-24",
-    level = "campus", data_type = "advanced",
-    file_format = "csv",
-    label = "Campus Advanced (CSV)", url = fake_url
-  )
+  fake_downloads <- fake_downloads_tbl(2024, url = fake_url)
   mockery::stub(txs_get_tapr_file, "txs_list_downloads", function(...) fake_downloads)
   mockery::stub(txs_get_tapr_file, "http_download", fake_tapr_download)
 
   df <- txs_get_tapr_file(
-    2024, level = "campus",
+    2024, level = "campus", dataset = "REF",
     data_type = "advanced", file_format = "csv",
     output = "tidy", verbose = FALSE
   )
@@ -97,7 +103,7 @@ test_that("txs_get_tapr_file stubbed end-to-end returns tidy with masking", {
   mockery::stub(txs_get_tapr_file, "http_download",
                 function(...) stop("should not be called"))
   df2 <- txs_get_tapr_file(
-    2024, level = "campus",
+    2024, level = "campus", dataset = "REF",
     data_type = "advanced", file_format = "csv",
     output = "tidy", verbose = FALSE
   )
@@ -106,21 +112,61 @@ test_that("txs_get_tapr_file stubbed end-to-end returns tidy with masking", {
                attr(df, "txschools")$sha256)
 })
 
+test_that("txs_get_tapr_file requires and validates the advanced dataset code", {
+  dir <- withr::local_tempdir()
+  withr::local_options(txschools.cache_dir = dir)
+
+  fake_downloads <- rbind(
+    fake_downloads_tbl(2024, dataset = "REF", url = "https://x/a.csv"),
+    fake_downloads_tbl(2024, dataset = "GRAD", url = "https://x/b.csv")
+  )
+  mockery::stub(txs_get_tapr_file, "txs_list_downloads", function(...) fake_downloads)
+
+  expect_error(
+    txs_get_tapr_file(2024, "campus", verbose = FALSE),
+    "supply `dataset`"
+  )
+  expect_error(
+    txs_get_tapr_file(2024, "campus", dataset = "NOPE", verbose = FALSE),
+    "Unknown TAPR dataset code"
+  )
+})
+
+test_that("txs_get_tapr_file rejects a broker HTML response instead of caching it", {
+  dir <- withr::local_tempdir()
+  withr::local_options(txschools.cache_dir = dir)
+
+  fake_downloads <- fake_downloads_tbl(2024, level = "state",
+                                       url = "https://x/broker")
+  mockery::stub(txs_get_tapr_file, "txs_list_downloads", function(...) fake_downloads)
+  mockery::stub(txs_get_tapr_file, "http_download", function(url, dest, ...) {
+    file.copy(fixture_path("broker_error_state_ref.html"), dest, overwrite = TRUE)
+    list(path = dest, sha256 = sha256_file(dest),
+         size_bytes = file.size(dest), content_type = "text/html",
+         retrieved_at = iso8601_now(), source_url = url)
+  })
+
+  expect_error(
+    txs_get_tapr_file(2024, "state", dataset = "REF", verbose = FALSE),
+    "report page instead of data"
+  )
+  # Nothing junk left in the cache.
+  expect_length(
+    list.files(dir, pattern = "\\.csv$", recursive = TRUE), 0
+  )
+})
+
 test_that("txs_get_tapr_file filters by geography", {
   dir <- withr::local_tempdir()
   withr::local_options(txschools.cache_dir = dir)
 
   fake_url <- "https://example.org/x/campadv.csv"
-  fake_downloads <- tibble::tibble(
-    source = "tapr", year = 2024L, school_year = "2023-24",
-    level = "campus", data_type = "advanced", file_format = "csv",
-    label = "Campus Advanced (CSV)", url = fake_url
-  )
+  fake_downloads <- fake_downloads_tbl(2024, url = fake_url)
   mockery::stub(txs_get_tapr_file, "txs_list_downloads", function(...) fake_downloads)
   mockery::stub(txs_get_tapr_file, "http_download", fake_tapr_download)
 
   df <- txs_get_tapr_file(
-    2024, level = "campus", geography = "000000001",
+    2024, level = "campus", geography = "000000001", dataset = "REF",
     data_type = "advanced", file_format = "csv",
     output = "raw", verbose = FALSE
   )
@@ -128,25 +174,20 @@ test_that("txs_get_tapr_file filters by geography", {
   expect_equal(df$CAMPUS, "000000001")
 })
 
-test_that("txs_get_tapr_file spec defaults use campus rates and cache=FALSE is temporary", {
+test_that("txs_get_tapr_file cache=FALSE leaves no files behind", {
   dir <- withr::local_tempdir()
   withr::local_options(txschools.cache_dir = dir)
 
   fake_url <- "https://example.org/perfreport/tapr/2024/download/cs.csv"
-  fake_downloads <- tibble::tibble(
-    source = "tapr", year = 2024L, school_year = "2023-24",
-    level = "campus", data_type = "rates",
-    file_format = "csv",
-    label = "Campus Rates (CSV)", url = fake_url
-  )
+  fake_downloads <- fake_downloads_tbl(2024, url = fake_url)
   mockery::stub(txs_get_tapr_file, "txs_list_downloads", function(...) fake_downloads)
   mockery::stub(txs_get_tapr_file, "http_download", fake_tapr_download)
 
-  df <- txs_get_tapr_file(2024, file_format = "csv", cache = FALSE,
-                          output = "raw", verbose = FALSE)
+  df <- txs_get_tapr_file(2024, dataset = "REF", file_format = "csv",
+                          cache = FALSE, output = "raw", verbose = FALSE)
   meta <- attr(df, "txschools")
   expect_equal(meta$level, "campus")
-  expect_equal(meta$data_type, "rates")
+  expect_equal(meta$data_type, "advanced")
   expect_length(list.files(dir, all.files = TRUE, no.. = TRUE), 0)
 })
 
@@ -245,7 +286,9 @@ test_that("txs_get_tapr returns semantic TAPR tables", {
   expect_equal(x$grade$entity_name[[1]], "CHINA SPRING EL")
   expect_equal(x$grade$district_name[[1]], "CHINA SPRING ISD")
   expect_gt(nrow(x$staar_performance), 0)
-  expect_false("value_num" %in% names(x$staar_performance))
+  expect_true(all(c("value", "value_num", "masked") %in%
+                    names(x$staar_performance)))
+  expect_type(x$staar_performance$value, "character")
   expect_gt(nrow(attr(x, "txschools")$pages), 0)
 })
 

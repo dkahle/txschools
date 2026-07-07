@@ -2,13 +2,14 @@
 % Please edit documentation in R/tapr.R
 \name{txs_get_tapr_file}
 \alias{txs_get_tapr_file}
-\title{Download a TAPR file}
+\title{Download a TAPR data file}
 \usage{
 txs_get_tapr_file(
   year,
   level = c("campus", "district", "region", "state"),
   geography = NULL,
-  data_type = c("rates", "advanced"),
+  dataset = NULL,
+  data_type = c("advanced", "rates"),
   file_format = c("csv", "txt", "xlsx", "html"),
   cache = TRUE,
   refresh = FALSE,
@@ -25,16 +26,19 @@ txs_get_tapr_file(
 
 \item{geography}{Optional. A character vector of campus or district
 numbers to filter the parsed file to. \code{NULL} returns all rows for
-structured downloads. For \code{file_format = "html"}, supply exactly
+statewide downloads. For \code{file_format = "html"}, supply exactly
 one campus, district, or region identifier.}
 
-\item{data_type}{Either \code{"rates"} (basic) or \code{"advanced"}
-(numerators, denominators, and rates).}
+\item{dataset}{Dataset code for \code{data_type = "advanced"}, e.g.
+\code{"REF"}, \code{"STAAR1"}, \code{"GRAD"}. Case-insensitive. Required for
+advanced downloads; see \code{\link[=txs_list_downloads]{txs_list_downloads()}}.}
 
-\item{file_format}{\code{"csv"}, \code{"txt"}, \code{"xlsx"}, or \code{"html"}. \code{"html"}
-requests a public TAPR/TPRS report page for one requested geography
-when TEA does not expose the current year as a structured download
-file.}
+\item{data_type}{\code{"advanced"} (the statewide data files: numerators,
+denominators, and rates) or \code{"rates"} (legacy static rates-only
+files, when TEA publishes them).}
+
+\item{file_format}{\code{"csv"} (statewide files) or \code{"html"} (a public
+TAPR/TPRS report page for one requested geography).}
 
 \item{cache}{If \code{TRUE}, reuse a cached copy when one exists.}
 
@@ -55,8 +59,10 @@ A tibble with a \code{txschools} attribute carrying source/metadata.
 }
 \description{
 Downloads (or returns the cached copy of) a single Texas Academic
-Performance Reports file for a given school year, level, data type,
-and file format. This is the lower-level file-oriented API retained
-for TAPR statewide structured downloads and legacy single-page HTML
-parsing. Use \code{\link[=txs_get_tapr]{txs_get_tapr()}} for semantic TAPR datasets.
+Performance Reports statewide data file. TEA serves these through its
+SAS-broker "Advanced Download" interface: one CSV per year, level,
+and dataset code (e.g. \code{"REF"} for campus/district reference
+information, \code{"STAAR1"} for STAAR performance). Use
+\code{\link[=txs_list_downloads]{txs_list_downloads()}} to see the codes available for a year, and
+\code{\link[=txs_get_tapr]{txs_get_tapr()}} for per-campus semantic datasets.
 }

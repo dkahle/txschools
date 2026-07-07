@@ -8,8 +8,8 @@ txs_get_aeis(
   year,
   level = c("campus", "district", "region", "state"),
   geography = NULL,
-  data_type = c("rates"),
-  file_format = c("csv", "txt", "xlsx"),
+  dataset = "ref",
+  layout = FALSE,
   cache = TRUE,
   refresh = FALSE,
   output = c("tidy", "wide", "raw"),
@@ -26,9 +26,12 @@ txs_get_aeis(
 \item{geography}{Optional. A character vector of campus or district
 numbers to filter the parsed file to. \code{NULL} returns all rows.}
 
-\item{data_type}{Currently \code{"rates"}.}
+\item{dataset}{AEIS dataset code, e.g. \code{"ref"}, \code{"stud"}, \code{"fin"}.
+Case-insensitive; defaults to \code{"ref"}.}
 
-\item{file_format}{\code{"csv"}, \code{"txt"}, or \code{"xlsx"}.}
+\item{layout}{If \code{TRUE}, also download the record layout (\code{.lyt})
+for the dataset and attach it as \code{attr(out, "layout")} (a
+character vector of lines).}
 
 \item{cache}{If \code{TRUE}, reuse a cached copy when one exists.}
 
@@ -48,6 +51,16 @@ human-readable labels attached), or \code{"raw"} (as parsed).}
 A tibble with a \code{txschools} attribute.
 }
 \description{
-Coverage: school years 2003-04 through 2011-12, requested as ending
-years 2004 through 2012.
+Downloads one statewide AEIS data file served by TEA's per-year
+download CGI. Each file is identified by a level and a dataset code
+(e.g. \code{"ref"} for reference information, \code{"stud"} for student
+information, \code{"fin"} for finance); use \code{\link[=txs_list_downloads]{txs_list_downloads()}} to see
+the codes TEA publishes for a year.
+}
+\details{
+Coverage: this package supports the school years 2003-04 through
+2011-12 (requested as ending years 2004 through 2012), the span TEA
+serves through its AEIS download forms. TEA's AEIS archive pages
+reach further back, but those years use different, unsupported
+publication formats.
 }
