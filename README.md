@@ -704,6 +704,92 @@ aeis_2011 <- txs_get_aeis(2011, "district", dataset = "ref",
                           geography = "161920")
 ```
 
+## Two ways to get data, and what each one costs
+
+The examples above use two different acquisition patterns, and it is
+worth choosing deliberately because they have opposite cost profiles:
+
+- **Per-entity report pulls** (`txs_get_tapr()`, `txs_get_src()`)
+  request one report page per campus/district, per year, per topic. Each
+  page is small (~100-200 KB), but each is a separate rate-limited
+  request – one request per second, deliberately. Pulling ten years of
+  one campus’s STAAR pages is ten polite requests; pulling fifty
+  campuses that way is five hundred. This mode is right when you care
+  about *a few entities in depth*.
+- **Statewide file pulls** (`txs_get_tapr_file()`, `txs_get_aeis()`)
+  download one file containing *every* campus or district in Texas for a
+  year and dataset – a single request, but megabytes (a district STAAR
+  file runs ~5-14 MB). You then filter locally, as the McLennan County
+  comparison above does. This mode is right when you compare *many
+  entities on a few measures*: eight districts over nine years cost nine
+  requests there, not seventy-two.
+
+Either way, every downloaded file lands in a persistent local cache, so
+the network cost is paid once: re-running an analysis (or re-rendering
+this README) reads from disk. The corollary is that the cache grows –
+statewide files in particular add megabytes each – and it persists
+across R sessions until you clean it up.
+
+## The cache: what is stored, and how to manage it
+
+The cache (under `tools::R_user_dir("txschools", "cache")`; see
+`txs_cache_dir()`) stores **exactly the bytes TEA served** – CSV, HTML,
+xlsx, PDF – each with a YAML sidecar recording the source URL, retrieval
+timestamp, SHA-256, and the exact request that produced it. Parsing
+always happens on read, never at download time. That design has three
+practical consequences:
+
+- **It is a cache, not a database.** Deleting any or all of it is always
+  safe; the only cost is re-downloading (politely) on next use.
+- **Parser improvements apply retroactively.** When the package’s
+  parsing gets better, your cached raw files benefit on the next read –
+  nothing stored is ever stale in the way parsed snapshots would be.
+- **Results are citable.** `txs_cite()` can reference the exact file by
+  URL, timestamp, and checksum.
+
+`txs_cache_list()` inventories the cache (and prints a one-line
+summary), and `txs_cache_size()` totals it, optionally grouped:
+
+``` r
+txs_cache_size()
+#> # A tibble: 1 × 3
+#>   n_files size_bytes size   
+#>     <int>      <dbl> <chr>  
+#> 1     147   87415274 87.4 MB
+
+txs_cache_size(by = c("source", "data_type"))
+#> # A tibble: 3 × 5
+#>   source data_type  n_files size_bytes size   
+#>   <chr>  <chr>        <int>      <dbl> <chr>  
+#> 1 tapr   advanced        11   67672045 67.7 MB
+#> 2 tapr   dictionary       9    1472030 1.5 MB 
+#> 3 tapr   semantic       127   18271199 18.3 MB
+```
+
+`txs_cache_delete()` takes the same filters as `txs_cache_size()` –
+`source`, `year`, `level`, `data_type`, `dataset`, and `older_than` (a
+`Date`, `POSIXct`, or number of days) – so you can preview exactly what
+a delete will remove, then remove it:
+
+``` r
+# How much would evicting year-old files reclaim?
+txs_cache_size(older_than = 365)
+
+# Evict them.
+txs_cache_delete(older_than = 365)
+
+# Drop the bulky statewide STAAR files but keep everything else:
+txs_cache_delete(data_type = "advanced", dataset = "STAAR1")
+
+# Nuclear option:
+txs_cache_delete(all = TRUE)
+```
+
+Two related switches on the download functions: `refresh = TRUE` forces
+a re-download even when a cached copy exists (useful when TEA revises a
+file), and `cache = FALSE` fetches to a temporary location without
+touching the cache at all.
+
 ## How it stays polite
 
 - Conservative rate-limiting (default 1 request/sec; bulk downloads
@@ -712,10 +798,8 @@ aeis_2011 <- txs_get_aeis(2011, "district", dataset = "ref",
 - Respects `robots.txt` (configurable via
   `options("txschools.respect_robots")`).
 - Never scrapes TEAL/authenticated resources.
-- All downloaded files are cached under
-  `tools::R_user_dir("txschools", "cache")` with a sidecar YAML
-  recording the source URL, retrieval timestamp, SHA-256, and content
-  type.
+- Every download is cached with provenance sidecars (see the cache
+  section above), so nothing is requested twice.
 
 ## Masking
 
