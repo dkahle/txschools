@@ -36,6 +36,7 @@ reference:
   contents:
   - txs_cache_dir
   - txs_cache_list
+  - txs_cache_size
   - txs_cache_delete
 
 - title: Bulk

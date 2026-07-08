@@ -61,3 +61,16 @@
 * The getting-started vignette no longer tangles live network/cache
   code, so `R CMD check` stays offline and never touches the user
   cache.
+
+## Cache visibility tooling (2026-07)
+
+* New `txs_cache_size()` summarizes cache size, optionally grouped `by`
+  one or more of `source`, `year`, `level`, `data_type`, `dataset`.
+* `txs_cache_size()` and `txs_cache_delete()` share one filter set --
+  `source`/`year`/`level`/`data_type`/`dataset`/`older_than` (a `Date`,
+  `POSIXct`, or a number of days) -- so a size preview always matches
+  what the same delete call would remove. Files whose sidecars lack a
+  retrieval timestamp are never matched by `older_than`.
+* `txs_cache_list()` results now print a short summary header (file
+  count, total size, retrieval date range when known) before the usual
+  tibble output, and gain a `dataset` column.

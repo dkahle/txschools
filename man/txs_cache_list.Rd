@@ -7,8 +7,8 @@
 txs_cache_list()
 }
 \value{
-A tibble. Empty (with the expected columns) if the cache is
-empty.
+A tibble (subclassed \code{txs_cache}, with a summary \code{print()}).
+Empty (with the expected columns) if the cache is empty.
 }
 \description{
 Walks \code{\link[=txs_cache_dir]{txs_cache_dir()}} and reads every \verb{*.txschools.yml} sidecar to

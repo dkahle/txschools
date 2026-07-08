@@ -8,6 +8,9 @@ txs_cache_delete(
   year = NULL,
   source = NULL,
   level = NULL,
+  data_type = NULL,
+  dataset = NULL,
+  older_than = NULL,
   all = FALSE,
   ask = interactive()
 )
@@ -19,6 +22,16 @@ txs_cache_delete(
 
 \item{level}{Optional level filter (\code{"campus"}, \code{"district"}, …).}
 
+\item{data_type}{Optional data-type filter (\code{"advanced"},
+\code{"dictionary"}, \code{"report"}, …).}
+
+\item{dataset}{Optional dataset-code filter (e.g. \code{"REF"},
+\code{"STAAR1"}; case-insensitive).}
+
+\item{older_than}{Optional cutoff: a \code{Date}/\code{POSIXct}, or a single
+number of days. Only files retrieved before the cutoff are
+deleted. Ignored when \code{all = TRUE}.}
+
 \item{all}{If \code{TRUE}, ignore other filters and delete the whole cache.}
 
 \item{ask}{Whether to confirm interactively. Defaults to
@@ -28,8 +41,10 @@ txs_cache_delete(
 Invisibly returns a tibble of the rows that were deleted.
 }
 \description{
-Filter cached files by \code{source}/\code{year}/\code{level} and delete them
-together with their sidecars. In interactive sessions the user is
-prompted unless \code{ask = FALSE}. Pass \code{all = TRUE} to wipe the entire
-cache.
+Filter cached files by \code{source}/\code{year}/\code{level}/\code{data_type}/\code{dataset}/
+\code{older_than} and delete them together with their sidecars. In
+interactive sessions the user is prompted unless \code{ask = FALSE}. Pass
+\code{all = TRUE} to wipe the entire cache (this ignores every other
+filter, including \code{older_than}). Use \code{\link[=txs_cache_size]{txs_cache_size()}} with the
+same filters to preview what a delete would remove.
 }
