@@ -37,6 +37,23 @@ test_that("parse_tapr_basic_page finds the dictionary workbooks (2024 page)", {
                         vapply(rows, function(r) r$url, character(1)))))
 })
 
+test_that("parse_tapr_html_reference_rows finds legacy master references", {
+  rows <- parse_tapr_html_reference_rows(
+    fixture_html("tapr_2018_advanced_form.html"),
+    page_url = "https://rptsvr1.tea.texas.gov/perfreport/tapr/2018/download/DownloadData.html",
+    year = 2018
+  )
+  expect_length(rows, 4)
+  expect_setequal(
+    vapply(rows, function(r) r$level, character(1)),
+    c("campus", "district", "region", "state")
+  )
+  expect_true(all(vapply(rows, function(r) r$file_format, character(1)) ==
+                    "html"))
+  expect_true(all(grepl("taprref\\.html$",
+                        vapply(rows, function(r) r$url, character(1)))))
+})
+
 test_that("parse_tapr_advanced_page parses the 2024 GET broker form", {
   rows <- parse_tapr_advanced_page(
     fixture_html("tapr_2024_advanced_download.html"),
@@ -95,6 +112,28 @@ test_that("discover_tapr_downloads combines dictionary and advanced rows", {
   dtypes <- vapply(rows, function(r) r$data_type, character(1))
   expect_equal(sum(dtypes == "dictionary"), 4)
   expect_equal(sum(dtypes == "advanced"), 4 * 18)
+})
+
+test_that("discover_tapr_downloads finds legacy dictionaries on advanced pages", {
+  dir <- withr::local_tempdir()
+  withr::local_options(txschools.cache_dir = dir)
+
+  mockery::stub(discover_tapr_downloads, "fetch_html", function(page_url) {
+    if (grepl("DownloadData\\.html", page_url)) {
+      fixture_html("tapr_2018_advanced_form.html")
+    } else {
+      stop("offline")
+    }
+  })
+  rows <- discover_tapr_downloads(2018)
+  dtypes <- vapply(rows, function(r) r$data_type, character(1))
+  dict <- rows[dtypes == "dictionary"]
+  expect_equal(length(dict), 4)
+  expect_setequal(
+    vapply(dict, function(r) r$level, character(1)),
+    c("campus", "district", "region", "state")
+  )
+  expect_true(any(dtypes == "advanced"))
 })
 
 test_that("discovery falls back to catalog broker rows when pages fail", {

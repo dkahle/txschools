@@ -290,7 +290,7 @@ txs_get_tapr_file <- function(year,
 # meaningful basename in the URL.
 download_filename <- function(row) {
   bn <- basename(httr2::url_parse(row$url)$path)
-  if (grepl("\\.(csv|txt|dat|xls|xlsx|zip)$", bn, ignore.case = TRUE)) {
+  if (grepl("\\.(csv|txt|dat|xls|xlsx|zip|html?)$", bn, ignore.case = TRUE)) {
     return(bn)
   }
   ds <- if (!is.na(row$dataset %||% NA_character_)) {
@@ -298,7 +298,8 @@ download_filename <- function(row) {
   } else {
     ""
   }
-  ext <- switch(row$file_format, csv = "csv", txt = "dat", xlsx = "xlsx", "dat")
+  ext <- switch(row$file_format, csv = "csv", txt = "dat", xlsx = "xlsx",
+                html = "html", "dat")
   sprintf("%s_%s_%d%s.%s", row$source, row$level, row$year, ds, ext)
 }
 

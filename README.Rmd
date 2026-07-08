@@ -7,6 +7,7 @@ knitr::opts_chunk$set(
   collapse = TRUE,
   comment = "#>",
   fig.path = "man/figures/README-",
+  message = FALSE,
   out.width = "100%"
 )
 ```
@@ -52,6 +53,7 @@ pak::pak("dkahle/txschools")
 ## Quick start
 
 ```{r setup-visible}
+# Load the packages used throughout the examples.
 library("tidyverse"); library("patchwork"); library("scales", warn.conflicts = FALSE)
 theme_set(theme_minimal()); theme_update(panel.grid.minor = element_blank())
 library("txschools")
@@ -84,6 +86,7 @@ the structure of TAPR itself: the report is not one table, but a
 collection of related tables.
 
 ```{r cses-basic-example}
+# Request just a few semantic TAPR tables for one campus.
 china_spring_elem_2025 <- txs_get_tapr(
   year = 2025,
   level = "campus",
@@ -123,21 +126,28 @@ china_spring_elem_2025 |> pluck("staff") |> print(n = Inf)
 ```
 
 Here is a small longitudinal visualization using the same campus. This pulls
-the semantic STAAR performance table for several report years, keeps one
-Grade 3 reading measure, and compares the campus to its district and the
-state. TEA's report tables nest measures under section headings ("Grade 3
-Reading" > "At Meets Grade Level or Above"), which the parsed data exposes
-as `section` and `row_label`; each page also repeats the prior year's row,
-so we keep the row whose `SchoolYear` matches the report year.
+the semantic STAAR performance table for 10 report years, keeps one Grade 3
+reading measure, and compares the campus to its district and the state. TEA's
+report tables nest measures under section headings ("Grade 3 Reading" > "At
+Meets Grade Level or Above"), which the parsed data exposes as `section` and
+`row_label`; each page also repeats the prior year's row, so we keep the row
+whose `SchoolYear` matches the report year. The series use both color and line
+type because the campus and district can land on the same values; in this
+case, China Spring Elementary is the only district campus serving Grade 3, so
+the campus and district series are expected to overlap.
 
 ```{r cses-staar-over-time}
+staar_years <- 2016:2025
+
+# Pull the semantic STAAR table once for all requested years.
 china_spring_elem_staar <- txs_get_tapr(
-  year = 2023:2025,
+  year = staar_years,
   level = "campus",
   geography = "161920102",
   datasets = "staar_performance"
 )
 
+# Keep the current-year Grade 3 reading row and reshape comparisons long.
 staar_grade3_reading <- china_spring_elem_staar$staar_performance |>
   filter(
     section == "Grade 3 Reading",
@@ -150,25 +160,218 @@ staar_grade3_reading <- china_spring_elem_staar$staar_performance |>
   select(year, Campus, District, State) |>
   pivot_longer(-year, names_to = "comparison", values_to = "rate") |>
   mutate(
-    comparison = factor(comparison, levels = c("Campus", "District", "State")),
+    comparison = factor(comparison, levels = c("State", "District", "Campus")),
     rate = rate / 100
   ) |>
-  drop_na(rate)
+  drop_na(rate) |>
+  arrange(comparison, year)
+
+# Offset overlapping campus/district points without changing the values.
+overlap_offset <- position_dodge(width = 0.18)
 
 ggplot(
   staar_grade3_reading,
-  aes(x = year, y = rate, color = comparison, group = comparison)
+  aes(
+    x = year,
+    y = rate,
+    color = comparison,
+    linetype = comparison,
+    shape = comparison,
+    group = comparison
+  )
 ) +
-  geom_line(linewidth = 0.8) +
-  geom_point(size = 2.5) +
-  scale_x_continuous(breaks = 2023:2025) +
+  geom_line(linewidth = 0.8, position = overlap_offset) +
+  geom_point(size = 2.5, position = overlap_offset) +
+  scale_x_continuous(breaks = staar_years) +
   scale_y_continuous(labels = percent, limits = c(0, NA)) +
   labs(
     x = NULL,
     y = "At Meets Grade Level or Above",
     color = NULL,
+    linetype = NULL,
+    shape = NULL,
     title = "Grade 3 reading STAAR performance",
-    subtitle = "China Spring Elementary School, TAPR report years 2023-2025"
+    subtitle = paste(
+      "China Spring Elementary School, TAPR report years",
+      min(staar_years), "to", max(staar_years)
+    )
+  )
+```
+
+For the district as a whole, use the district-level TAPR report and facet the
+same reading measure by grade. This drops the campus line because the unit of
+analysis is China Spring ISD rather than one campus.
+
+```{r csisd-staar-by-grade}
+# Switch from the campus report to the district report.
+china_spring_district_staar <- txs_get_tapr(
+  year = staar_years,
+  level = "district",
+  geography = "161920",
+  datasets = "staar_performance"
+)
+
+# Keep the same reading measure, now across every grade reported by the district.
+district_staar_reading_by_grade <- china_spring_district_staar$staar_performance |>
+  filter(
+    str_detect(section, regex("^Grade \\d+ Reading", ignore_case = TRUE)),
+    row_label == "At Meets Grade Level or Above",
+    column %in% c("SchoolYear", "District", "State")
+  ) |>
+  mutate(grade = str_extract(section, "^Grade \\d+")) |>
+  select(year, grade, table_index, row_index, column, value_num) |>
+  pivot_wider(names_from = column, values_from = value_num) |>
+  filter(SchoolYear == year) |>
+  select(year, grade, District, State) |>
+  pivot_longer(c(District, State), names_to = "comparison", values_to = "rate") |>
+  mutate(
+    comparison = factor(comparison, levels = c("State", "District")),
+    rate = rate / 100
+  ) |>
+  drop_na(rate)
+
+# Order facets by numeric grade rather than alphabetically.
+grade_levels <- district_staar_reading_by_grade |>
+  distinct(grade) |>
+  mutate(grade_num = parse_number(grade)) |>
+  arrange(grade_num) |>
+  pull(grade)
+
+district_staar_reading_by_grade <- district_staar_reading_by_grade |>
+  mutate(grade = factor(grade, levels = grade_levels))
+
+district_offset <- position_dodge(width = 0.18)
+
+ggplot(
+  district_staar_reading_by_grade,
+  aes(
+    x = year,
+    y = rate,
+    color = comparison,
+    linetype = comparison,
+    shape = comparison,
+    group = comparison
+  )
+) +
+  geom_line(linewidth = 0.7, position = district_offset) +
+  geom_point(size = 2, position = district_offset) +
+  facet_wrap(vars(grade), ncol = 2) +
+  scale_x_continuous(breaks = seq(min(staar_years), max(staar_years), by = 2)) +
+  scale_y_continuous(labels = percent, limits = c(0, NA)) +
+  labs(
+    x = NULL,
+    y = "At Meets Grade Level or Above",
+    color = NULL,
+    linetype = NULL,
+    shape = NULL,
+    title = "Reading STAAR performance by grade",
+    subtitle = paste(
+      "China Spring ISD, TAPR report years",
+      min(staar_years), "to", max(staar_years)
+    )
+  )
+```
+
+The semantic HTML report is convenient for one school or district, but it is
+not the fastest tool once you compare many districts: it has to request each
+report page separately. For a local comparison, use TEA's statewide Advanced
+Download files instead. The code below downloads one district-level STAAR file
+per year, uses the TAPR dictionary to find the Grade 3 reading variable, then
+filters locally to nearby McLennan County districts. The dictionary lookup is
+the intentionally explicit part here; this is the piece a future helper can
+make friendlier. This example stops at 2024 because the package can discover
+the 2025 Advanced Download data file, but not yet the corresponding district
+dictionary reference.
+
+```{r local-district-staar-comparison}
+local_staar_years <- 2016:2024
+
+# Compare China Spring with nearby McLennan County districts.
+local_district_names <- c(
+  "China Spring ISD", "Midway ISD", "Waco ISD", "Lorena ISD",
+  "Robinson ISD", "Connally ISD", "La Vega ISD", "Bosqueville ISD"
+) |>
+  str_to_upper()
+
+local_districts <- txs_directory(2024, level = "district") |>
+  mutate(name_key = str_to_upper(name)) |>
+  filter(county_name == "MCLENNAN", name_key %in% local_district_names) |>
+  mutate(
+    district = str_remove(name, " ISD$") |>
+      str_to_title() |>
+      fct_relevel("China Spring")
+  ) |>
+  arrange(district)
+
+# Find the year-specific Grade 3 reading rate variable in each dictionary.
+grade3_reading_vars <- map_dfr(local_staar_years, \(yr) {
+  txs_get_tapr_dictionary(yr, "district") |>
+    mutate(label_key = str_squish(str_to_lower(label))) |>
+    filter(
+      str_detect(label_key, "grade\\s*3"),
+      str_detect(label_key, "read"),
+      str_detect(label_key, "all students"),
+      str_detect(label_key, "rate"),
+      str_detect(label_key, "meets|level ii")
+    ) |>
+    slice_head(n = 1) |>
+    transmute(year = yr, variable, variable_label = label)
+})
+
+# Download one statewide file per year, then filter locally.
+local_grade3_reading <- map_dfr(local_staar_years, \(yr) {
+  rate_var <- grade3_reading_vars |>
+    filter(year == yr) |>
+    pull(variable)
+  if (length(rate_var) != 1L) {
+    stop("Could not identify the Grade 3 reading STAAR variable for ", yr, ".")
+  }
+
+  txs_get_tapr_file(
+    year = yr,
+    level = "district",
+    dataset = "STAAR1",
+    output = "raw",
+    verbose = FALSE
+  ) |>
+    transmute(
+      year = yr,
+      geography = str_remove(str_trim(DISTRICT), "^'"),
+      value = .data[[rate_var]]
+    )
+}) |>
+  filter(geography %in% local_districts$id) |>
+  mutate(
+    value_num = suppressWarnings(parse_number(value)),
+    rate = if_else(value_num > 1, value_num / 100, value_num)
+  ) |>
+  left_join(
+    local_districts |> select(geography = id, district),
+    by = "geography"
+  ) |>
+  drop_na(rate)
+
+ggplot(
+  local_grade3_reading,
+  aes(x = year, y = rate, color = district, group = district)
+) +
+  geom_line(linewidth = 0.8) +
+  geom_point(size = 2) +
+  scale_x_continuous(breaks = local_staar_years) +
+  scale_y_continuous(labels = percent, limits = c(0, NA)) +
+  labs(
+    x = NULL,
+    y = "All Students reading rate",
+    color = NULL,
+    title = "Grade 3 reading STAAR performance across local districts",
+    subtitle = paste(
+      "McLennan County area districts, TAPR report years",
+      min(local_staar_years), "to", max(local_staar_years)
+    ),
+    caption = paste(
+      "Older TAPR references use Level II/phase-in Level II labels;",
+      "later references use Meets Grade Level labels."
+    )
   )
 ```
 

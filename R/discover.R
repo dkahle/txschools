@@ -305,18 +305,36 @@ discover_tapr_downloads <- function(year) {
     page_url <- catalog_url(template, cat$base, year)
     got <- tryCatch({
       html_str <- fetch_html(page_url)
-      parse_tapr_basic_page(html_str, page_url, year = year,
-                            level_tokens = cat$level_tokens)
+      static <- parse_tapr_basic_page(html_str, page_url, year = year,
+                                      level_tokens = cat$level_tokens)
+      refs <- if (any_tapr_dictionary_rows(static)) {
+        list()
+      } else {
+        parse_tapr_html_reference_rows(html_str, page_url, year = year)
+      }
+      c(static, refs)
     }, error = function(e) list())
     if (length(got)) { rows <- c(rows, got); break }
   }
 
-  # 2. Advanced (broker) datasets: one row per level x dataset.
+  # 2. Advanced (broker) datasets: one row per level x dataset. Legacy
+  # TAPR pages also expose their master reference dictionaries here.
   for (template in cat$advanced_pages %||% character()) {
     page_url <- catalog_url(template, cat$base, year)
     got <- tryCatch({
       html_str <- fetch_html(page_url)
-      parse_tapr_advanced_page(html_str, page_url, year = year)
+      static <- parse_tapr_basic_page(html_str, page_url, year = year,
+                                      level_tokens = cat$level_tokens)
+      refs <- if (any_tapr_dictionary_rows(static)) {
+        list()
+      } else {
+        parse_tapr_html_reference_rows(html_str, page_url, year = year)
+      }
+      c(
+        static,
+        refs,
+        parse_tapr_advanced_page(html_str, page_url, year = year)
+      )
     }, error = function(e) list())
     if (length(got)) { rows <- c(rows, got); break }
   }
@@ -328,6 +346,11 @@ discover_tapr_downloads <- function(year) {
   }
 
   unique_rows(rows)
+}
+
+any_tapr_dictionary_rows <- function(rows) {
+  length(rows) &&
+    any(vapply(rows, function(r) identical(r$data_type, "dictionary"), logical(1)))
 }
 
 parse_tapr_basic_page <- function(html_str, page_url, year, level_tokens) {
@@ -369,6 +392,39 @@ parse_tapr_basic_page <- function(html_str, page_url, year, level_tokens) {
     )
   }
   rows
+}
+
+parse_tapr_html_reference_rows <- function(html_str, page_url, year) {
+  html <- read_html_tolerant(html_str)
+  anchors <- rvest::html_elements(html, "a")
+  hrefs <- rvest::html_attr(anchors, "href")
+  labels <- trimws(rvest::html_text(anchors))
+  keep <- !is.na(hrefs) &
+    grepl("(^|/)taprref\\.html(\\?|$)", hrefs, ignore.case = TRUE)
+  hrefs <- hrefs[keep]; labels <- labels[keep]
+  if (!length(hrefs)) return(list())
+
+  url <- xml2::url_absolute(hrefs[[1]], page_url)
+  label <- labels[[1]]
+  if (is.na(label) || !nzchar(label)) {
+    label <- "TAPR HTML master reference"
+  }
+
+  lapply(c("campus", "district", "region", "state"), function(lvl) {
+    list(
+      source      = "tapr",
+      year        = year,
+      school_year = year_label(year),
+      level       = lvl,
+      data_type   = "dictionary",
+      dataset     = NA_character_,
+      file_format = "html",
+      label       = label,
+      method      = "get",
+      url         = url,
+      params      = NA_character_
+    )
+  })
 }
 
 parse_tapr_advanced_page <- function(html_str, page_url, year) {
