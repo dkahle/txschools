@@ -458,7 +458,7 @@ staar_grade3_reading <- china_spring_elem_staar$staar_performance |>
     row_label == "At Meets Grade Level or Above",
     column %in% c("SchoolYear", "Campus", "District", "State")
   ) |>
-  select(year, row_index, column, value_num) |>
+  select(year, table_index, row_index, column, value_num) |>
   pivot_wider(names_from = column, values_from = value_num) |>
   filter(SchoolYear == year) |>
   select(year, Campus, District, State) |>
