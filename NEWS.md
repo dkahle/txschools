@@ -74,3 +74,26 @@
 * `txs_cache_list()` results now print a short summary header (file
   count, total size, retrieval date range when known) before the usual
   tibble output, and gain a `dataset` column.
+
+## PEIMS finance (2026-07)
+
+* New source: TEA's PEIMS "single file" financial data downloads.
+  `txs_get_peims_finance(year, basis, type)` pulls one statewide
+  fund/function/object-level budget or actual file for districts or
+  charter schools, school years 1999-2000 onward -- the district actual
+  files run to several million rows per year.
+* The data arrives already long; the tidy output types the amounts,
+  zero-pads the code columns, and (by default) joins human-readable
+  fund/function/object/program-intent labels plus district and campus
+  names from TEA's companion "multiple file" code tables, degrading
+  gracefully to codes-only when those tables cannot be fetched.
+  Charter files' nonprofit chart of accounts is normalized into the
+  same columns.
+* New `txs_write_peims_db()` writes results to DuckDB (one table per
+  year/basis/type plus a `_peims_meta` provenance table), and the
+  getter's `db` argument writes through directly, so multi-year
+  databases build one call at a time. DBI/duckdb remain optional
+  (Suggests).
+* `txs_list_years()`, `txs_list_downloads()`, `txs_cite()`, and the
+  cache tooling all understand `source = "peims"`. No FERPA masking
+  applies to this source (amounts, not student counts).

@@ -7,7 +7,7 @@
 #' Results are cached per session under `txs_cache_dir()/_meta/`. Pass
 #' `refresh = TRUE` to force a re-fetch.
 #'
-#' @param source One of `"tapr"`, `"src"`, `"aeis"`.
+#' @param source One of `"tapr"`, `"src"`, `"aeis"`, `"peims"`.
 #' @param refresh If `TRUE`, ignore the on-disk meta cache and re-fetch.
 #' @return A tibble with columns `source`, `year`, `school_year`.
 #' @examples
@@ -15,7 +15,7 @@
 #' txs_list_years("tapr")
 #' }
 #' @export
-txs_list_years <- function(source = c("tapr", "src", "aeis"),
+txs_list_years <- function(source = c("tapr", "src", "aeis", "peims"),
                            refresh = FALSE) {
   source <- match.arg(source)
   meta_dir <- file.path(txs_cache_dir(), "_meta")
@@ -27,9 +27,10 @@ txs_list_years <- function(source = c("tapr", "src", "aeis"),
 
   years <- switch(
     source,
-    tapr = discover_tapr_years(),
-    aeis = discover_aeis_years(),
-    src  = discover_src_years()
+    tapr  = discover_tapr_years(),
+    aeis  = discover_aeis_years(),
+    src   = discover_src_years(),
+    peims = discover_peims_years()
   )
   dir.create(meta_dir, recursive = TRUE, showWarnings = FALSE)
   yaml::write_yaml(
@@ -113,8 +114,12 @@ discover_src_years <- function() {
 #' the per-year AEIS CGI. SRC is not a downloadable-file program; see
 #' [txs_get_src()].
 #'
+#' For PEIMS this returns one row per financial single-file download:
+#' `level` is `"district"` or `"charter"` and `data_type` is
+#' `"actual"` or `"budget"`. See [txs_get_peims_finance()].
+#'
 #' @param year Integer ending year.
-#' @param source One of `"tapr"`, `"aeis"`.
+#' @param source One of `"tapr"`, `"aeis"`, `"peims"`.
 #' @param refresh If `TRUE`, ignore the on-disk meta cache and re-fetch.
 #' @return A tibble with columns `source`, `year`, `school_year`,
 #'   `level`, `data_type`, `dataset`, `file_format`, `label`, `method`,
@@ -125,7 +130,7 @@ discover_src_years <- function() {
 #' }
 #' @export
 txs_list_downloads <- function(year,
-                               source = c("tapr", "aeis"),
+                               source = c("tapr", "aeis", "peims"),
                                refresh = FALSE) {
   source <- match.arg(source)
   year <- normalize_year(year, source = source)
@@ -143,8 +148,9 @@ txs_list_downloads <- function(year,
 
   rows <- switch(
     source,
-    tapr = discover_tapr_downloads(year),
-    aeis = discover_aeis_downloads(year)
+    tapr  = discover_tapr_downloads(year),
+    aeis  = discover_aeis_downloads(year),
+    peims = discover_peims_downloads(year)
   )
   dir.create(meta_dir, recursive = TRUE, showWarnings = FALSE)
   yaml::write_yaml(

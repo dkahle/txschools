@@ -18,7 +18,8 @@ txs_cache_delete(
 \arguments{
 \item{year}{Optional ending year filter.}
 
-\item{source}{Optional source filter (\code{"tapr"}, \code{"src"}, \code{"aeis"}).}
+\item{source}{Optional source filter (\code{"tapr"}, \code{"src"}, \code{"aeis"},
+\code{"peims"}).}
 
 \item{level}{Optional level filter (\code{"campus"}, \code{"district"}, …).}
 

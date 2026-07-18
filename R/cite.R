@@ -9,7 +9,7 @@
 #'
 #' @param x Optional. A tibble returned by `txs_get_*()`. If `NULL`,
 #'   returns a generic citation for the named `source`.
-#' @param source `"tapr"`, `"src"`, or `"aeis"`.
+#' @param source `"tapr"`, `"src"`, `"aeis"`, or `"peims"`.
 #' @return A `bibentry`.
 #' @examples
 #' txs_cite(source = "tapr")
@@ -67,7 +67,7 @@ txs_cite <- function(x = NULL, source = "tapr") {
       publisher = "Texas Education Agency"
     ))
   }
-  source <- match.arg(source, c("tapr", "src", "aeis"))
+  source <- match.arg(source, c("tapr", "src", "aeis", "peims"))
   prog <- switch(
     source,
     tapr = list(name = "Texas Academic Performance Reports",
@@ -75,7 +75,9 @@ txs_cite <- function(x = NULL, source = "tapr") {
     aeis = list(name = "Academic Excellence Indicator System",
                 url  = "https://rptsvr1.tea.texas.gov/perfreport/aeis/"),
     src  = list(name = "School Report Card",
-                url  = "https://rptsvr1.tea.texas.gov/perfreport/src/")
+                url  = "https://rptsvr1.tea.texas.gov/perfreport/src/"),
+    peims = list(name = "PEIMS Financial Data (single file)",
+                 url  = TXS_INDEX_PEIMS)
   )
   utils::bibentry(
     bibtype = "Misc",

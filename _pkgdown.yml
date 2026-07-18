@@ -24,12 +24,18 @@ reference:
   - txs_get_tapr_dictionary
   - txs_get_src
   - txs_get_aeis
+  - txs_get_peims_finance
 
 - title: TAPR semantic datasets
-  desc: Discover and store semantic TAPR table outputs.
+  desc: Discover semantic TAPR table outputs.
   contents:
   - txs_list_tapr_datasets
+
+- title: Databases
+  desc: Write results to DuckDB for multi-year analysis.
+  contents:
   - txs_write_tapr_db
+  - txs_write_peims_db
 
 - title: Cache
   desc: Manage the local file cache.

@@ -95,6 +95,120 @@ aeis:
     - stud
     - othr
 
+peims:
+  label: PEIMS Financial Data (single file)
+  index: https://tea.texas.gov/about-tea/state-funding/state-funding-reports-and-data/peims-single-file-financial-data-downloads
+  codes_index: https://tea.texas.gov/about-tea/state-funding/state-funding-reports-and-data/peims-multiple-file-financial-data-downloads
+  years: [2000, 2001, 2002, 2003, 2004, 2005, 2006, 2007, 2008, 2009,
+          2010, 2011, 2012, 2013, 2014, 2015, 2016, 2017, 2018, 2019,
+          2020, 2021, 2022, 2023, 2024, 2025, 2026]
+  # 2000-2011 files live on rptsvr1 with template-stable names. 2012+
+  # files are scattered across tea.texas.gov paths whose location varies
+  # by year, so those are recorded as explicit per-year URLs below.
+  templates:
+    - years: [2000, 2011]
+      district_budget: "https://rptsvr1.tea.texas.gov/school.finance/forecasting/downloads/Budget_Singlefile/{end_year}Budget.zip"
+      district_actual: "https://rptsvr1.tea.texas.gov/school.finance/forecasting/downloads/Actual_Singlefile/{end_year}Actual.zip"
+      charter_budget: "https://rptsvr1.tea.texas.gov/school.finance/forecasting/downloads/Budget_Singlefile/CharBud{yy}.csv"
+      charter_actual: "https://rptsvr1.tea.texas.gov/school.finance/forecasting/downloads/Actual_Singlefile/CharAct{yy}.csv"
+  # Explicit URLs verified against TEA's live index on 2026-07-18. The
+  # live index scrape is authoritative; these are fallbacks only.
+  files:
+    2012:
+      district_budget: https://tea.texas.gov/data-reports/financial-reports/school-finance-reports-and-data/district-2011-12-financial-budget-data.zip
+      district_actual: https://tea.texas.gov/data-reports/financial-reports/school-finance-reports-and-data/district-final-actual-data-2011-12.zip
+      charter_budget: https://tea.texas.gov/data-reports/financial-reports/school-finance-reports-and-data/reports-and-downloadable-data/charbud12.csv
+      charter_actual: https://tea.texas.gov/data-reports/financial-reports/school-finance-reports-and-data/reports-and-downloadable-data/charact12.csv
+    2013:
+      district_budget: https://tea.texas.gov/data-reports/financial-reports/school-finance-reports-and-data/reports-and-downloadable-data/2013budget.zip
+      district_actual: https://tea.texas.gov/data-reports/financial-reports/school-finance-reports-and-data/reports-and-downloadable-data/actget2013.zip
+      charter_budget: https://tea.texas.gov/data-reports/financial-reports/school-finance-reports-and-data/reports-and-downloadable-data/charbud13.csv
+      charter_actual: https://tea.texas.gov/data-reports/financial-reports/school-finance-reports-and-data/reports-and-downloadable-data/charact13.zip
+    2014:
+      district_budget: https://tea.texas.gov/data-reports/financial-reports/school-finance-reports-and-data/reports-and-downloadable-data/2014budget.zip
+      district_actual: https://tea.texas.gov/data-reports/financial-reports/school-finance-reports-and-data/reports-and-downloadable-data/actget2014.zip
+      charter_budget: https://tea.texas.gov/data-reports/financial-reports/school-finance-reports-and-data/reports-and-downloadable-data/charbud14.csv
+      charter_actual: https://tea.texas.gov/data-reports/financial-reports/school-finance-reports-and-data/reports-and-downloadable-data/charact14.zip
+    2015:
+      district_budget: https://tea.texas.gov/data-reports/financial-reports/school-finance-reports-and-data/reports-and-downloadable-data/2015budget.zip
+      district_actual: https://tea.texas.gov/data-reports/financial-reports/school-finance-reports-and-data/reports-and-downloadable-data/actget2015.zip
+      charter_budget: https://tea.texas.gov/data-reports/financial-reports/school-finance-reports-and-data/reports-and-downloadable-data/charbud15.csv
+      charter_actual: https://tea.texas.gov/data-reports/financial-reports/school-finance-reports-and-data/reports-and-downloadable-data/charact15.zip
+    2016:
+      district_budget: https://tea.texas.gov/data-reports/financial-reports/school-finance-reports-and-data/reports-and-downloadable-data/2016budget.zip
+      district_actual: https://tea.texas.gov/sites/default/files/ACTget2016.zip
+      charter_budget: https://tea.texas.gov/data-reports/financial-reports/school-finance-reports-and-data/reports-and-downloadable-data/charbud16.csv
+      charter_actual: https://tea.texas.gov/sites/default/files/CharAct16.zip
+    2017:
+      district_budget: https://tea.texas.gov/sites/default/files/2017Budget.zip
+      district_actual: https://tea.texas.gov/sites/default/files/ACTget2017.zip
+      charter_budget: https://tea.texas.gov/sites/default/files/CharBud17.csv
+      charter_actual: https://tea.texas.gov/sites/default/files/CharAct17.zip
+    2018:
+      district_budget: https://tea.texas.gov/sites/default/files/2018Budget.zip
+      district_actual: https://tea.texas.gov/sites/default/files/ACTget2018.zip
+      charter_budget: https://tea.texas.gov/sites/default/files/CharBud18.csv
+      charter_actual: https://tea.texas.gov/sites/default/files/CharAct18.zip
+    2019:
+      district_budget: https://tea.texas.gov/sites/default/files/2019Budget.zip
+      district_actual: https://tea.texas.gov/sites/default/files/ACTget2019.zip
+      charter_budget: https://tea.texas.gov/sites/default/files/CharBud19.csv
+      charter_actual: https://tea.texas.gov/sites/default/files/charact19.zip
+    2020:
+      district_budget: https://tea.texas.gov/sites/default/files/budget2020.zip
+      district_actual: https://tea.texas.gov/sites/default/files/actget2020.zip
+      charter_budget: https://tea.texas.gov/sites/default/files/charbud20.csv
+      charter_actual: https://tea.texas.gov/sites/default/files/charact20.zip
+    2021:
+      district_budget: https://tea.texas.gov/sites/default/files/budget2021.zip
+      district_actual: https://tea.texas.gov/about-tea/state-funding/state-funding-reports-and-data/actget2021.zip
+      charter_budget: https://tea.texas.gov/sites/default/files/charbud21.zip
+      charter_actual: https://tea.texas.gov/about-tea/state-funding/state-funding-reports-and-data/charact21.zip
+    2022:
+      district_budget: https://tea.texas.gov/about-tea/state-funding/state-funding-reports-and-data/budget2022.zip
+      district_actual: https://tea.texas.gov/about-tea/state-funding/state-funding-reports-and-data/actget2022.zip
+      charter_budget: https://tea.texas.gov/about-tea/state-funding/state-funding-reports-and-data/charbud22.zip
+      charter_actual: https://tea.texas.gov/about-tea/state-funding/state-funding-reports-and-data/charact22.zip
+    2023:
+      district_budget: https://tea.texas.gov/about-tea/state-funding/state-funding-reports-and-data/budget2023.zip
+      district_actual: https://tea.texas.gov/data-reports/financial-reports/school-finance-reports-and-data/actget2023.zip
+      charter_budget: https://tea.texas.gov/about-tea/state-funding/state-funding-reports-and-data/charbud23.zip
+      charter_actual: https://tea.texas.gov/data-reports/financial-reports/school-finance-reports-and-data/charact23.zip
+    2024:
+      district_budget: https://tea.texas.gov/data-reports/financial-reports/school-finance-reports-and-data/budget2024.zip
+      district_actual: https://tea.texas.gov/data-reports/financial-reports/school-finance-reports-and-data/actget2024.zip
+      charter_budget: https://tea.texas.gov/data-reports/financial-reports/school-finance-reports-and-data/charbud24.zip
+      charter_actual: https://tea.texas.gov/data-reports/financial-reports/school-finance-reports-and-data/charact24.zip
+    2025:
+      district_budget: https://tea.texas.gov/data-reports/financial-reports/school-finance-reports-and-data/budget2025.zip
+      charter_budget: https://tea.texas.gov/data-reports/financial-reports/school-finance-reports-and-data/charbud25.zip
+    2026:
+      district_budget: https://tea.texas.gov/data-reports/financial-reports/school-finance-reports-and-data/budget2026.zip
+      charter_budget: https://tea.texas.gov/about-tea/state-funding/charbud26.zip
+  # Budget multi-file archives carry the fund/function/object/program
+  # code tables (and, in recent years, district and campus name tables)
+  # used for label joins. One archive covers both districts and
+  # charters.
+  codes_templates:
+    - years: [2000, 2011]
+      budget: "https://rptsvr1.tea.texas.gov/school.finance/forecasting/downloads/Budget_Multifile/Budget{yy}.zip"
+  codes_files:
+    2012: https://tea.texas.gov/WorkArea/linkit.aspx?LinkIdentifier=id&ItemID=25769804196
+    2013: https://tea.texas.gov/WorkArea/linkit.aspx?LinkIdentifier=id&ItemID=25769804143
+    2014: https://tea.texas.gov/WorkArea/linkit.aspx?LinkIdentifier=id&ItemID=25769810172
+    2015: https://tea.texas.gov/WorkArea/linkit.aspx?LinkIdentifier=id&ItemID=25769820600
+    2016: https://tea.texas.gov/WorkArea/linkit.aspx?LinkIdentifier=id&ItemID=25769825465
+    2017: https://tea.texas.gov/sites/default/files/Budget17.zip
+    2018: https://tea.texas.gov/sites/default/files/Budget18.zip
+    2019: https://tea.texas.gov/sites/default/files/Budget19.zip
+    2020: https://tea.texas.gov/sites/default/files/budget20.zip
+    2021: https://tea.texas.gov/sites/default/files/budget21.zip
+    2022: https://tea.texas.gov/about-tea/state-funding/state-funding-reports-and-data/budget-2022d.zip
+    2023: https://tea.texas.gov/about-tea/state-funding/state-funding-reports-and-data/budget-2023d.zip
+    2024: https://tea.texas.gov/data-reports/financial-reports/school-finance-reports-and-data/budget2024d.zip
+    2025: https://tea.texas.gov/data-reports/financial-reports/school-finance-reports-and-data/budget2025d.zip
+    2026: https://tea.texas.gov/data-reports/financial-reports/school-finance-reports-and-data/budget2026d.zip
+
 src:
   label: School Report Card
   base: https://rptsvr1.tea.texas.gov/perfreport/src

@@ -6,8 +6,9 @@
 #' validates the input and returns an integer.
 #'
 #' @param year Integer scalar; the ending calendar year.
-#' @param source Optional TEA program (`"tapr"`, `"aeis"`, `"src"`);
-#'   when given, the year is validated against that program's coverage.
+#' @param source Optional TEA program (`"tapr"`, `"aeis"`, `"src"`,
+#'   `"peims"`); when given, the year is validated against that
+#'   program's coverage.
 #' @return Integer scalar.
 #' @keywords internal
 normalize_year <- function(year, source = NULL) {
@@ -29,7 +30,9 @@ normalize_year <- function(year, source = NULL) {
     tapr = c(TXS_FIRST_TAPR_YEAR, current),
     aeis = c(TXS_FIRST_AEIS_YEAR, TXS_LAST_AEIS_YEAR),
     src  = c(TXS_FIRST_SRC_YEAR, TXS_LAST_SRC_YEAR),
-    c(TXS_FIRST_AEIS_YEAR, current)
+    # Budgets for the upcoming school year post before it starts.
+    peims = c(TXS_FIRST_PEIMS_YEAR, current + 1L),
+    c(TXS_FIRST_PEIMS_YEAR, current + 1L)
   )
   if (y < bounds[1] || y > bounds[2]) {
     label <- if (is.null(source)) "`year`" else sprintf("%s `year`", toupper(source))

@@ -9,8 +9,9 @@ normalize_year(year, source = NULL)
 \arguments{
 \item{year}{Integer scalar; the ending calendar year.}
 
-\item{source}{Optional TEA program (\code{"tapr"}, \code{"aeis"}, \code{"src"});
-when given, the year is validated against that program's coverage.}
+\item{source}{Optional TEA program (\code{"tapr"}, \code{"aeis"}, \code{"src"},
+\code{"peims"}); when given, the year is validated against that
+program's coverage.}
 }
 \value{
 Integer scalar.

@@ -24,6 +24,20 @@ TXS_LANDING_TAPR <- paste0(
   "texas-academic-performance-reports"
 )
 
+#' @rdname txs-constants
+TXS_INDEX_PEIMS <- paste0(
+  "https://tea.texas.gov/about-tea/state-funding/",
+  "state-funding-reports-and-data/",
+  "peims-single-file-financial-data-downloads"
+)
+
+#' @rdname txs-constants
+TXS_INDEX_PEIMS_CODES <- paste0(
+  "https://tea.texas.gov/about-tea/state-funding/",
+  "state-funding-reports-and-data/",
+  "peims-multiple-file-financial-data-downloads"
+)
+
 # Codes TEA uses to mask or suppress cell values. These are preserved as
 # strings; the package will never coerce them to NA without an explicit
 # `masked` flag traveling alongside.
@@ -40,6 +54,7 @@ TXS_LAST_AEIS_YEAR   <- 2012
 TXS_FIRST_SRC_YEAR   <- 2004
 TXS_LAST_SRC_HTML_YEAR <- 2012
 TXS_LAST_SRC_YEAR    <- 2019
+TXS_FIRST_PEIMS_YEAR <- 2000
 
 # Static UA string. We append the installed package version at runtime in
 # zzz.R rather than calling utils::packageVersion() at parse time (which

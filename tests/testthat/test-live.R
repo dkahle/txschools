@@ -79,3 +79,22 @@ test_that("live: directory lookup resolves names to CDC numbers", {
   expect_true("161920102" %in% hits$id)
   expect_equal(unique(hits$district_name), "CHINA SPRING ISD")
 })
+
+test_that("live: PEIMS download discovery resolves current files", {
+  skip_if_not_live()
+  local_cache()
+  dl <- txs_list_downloads(2024, "peims")
+  expect_gte(nrow(dl), 4)
+  expect_setequal(dl$level, c("district", "charter"))
+  expect_setequal(dl$data_type, c("actual", "budget"))
+})
+
+test_that("live: PEIMS charter budget pull parses end to end", {
+  skip_if_not_live()
+  local_cache()
+  x <- txs_get_peims_finance(2024, "budget", "charter", verbose = FALSE)
+  expect_gt(nrow(x), 1000)
+  expect_type(x$amount, "double")
+  expect_true("fund_label" %in% names(x))
+  expect_lt(mean(is.na(x$fund_label)), 0.05)
+})

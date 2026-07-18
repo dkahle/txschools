@@ -6,6 +6,8 @@
 \alias{TXS_BASE_AEIS}
 \alias{TXS_BASE_SRC}
 \alias{TXS_LANDING_TAPR}
+\alias{TXS_INDEX_PEIMS}
+\alias{TXS_INDEX_PEIMS_CODES}
 \title{Package-level constants}
 \usage{
 TXS_BROKER_URL
@@ -15,6 +17,10 @@ TXS_BASE_AEIS
 TXS_BASE_SRC
 
 TXS_LANDING_TAPR
+
+TXS_INDEX_PEIMS
+
+TXS_INDEX_PEIMS_CODES
 }
 \description{
 Internal constants used to identify TEA endpoints, build the HTTP

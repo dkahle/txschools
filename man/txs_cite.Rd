@@ -10,7 +10,7 @@ txs_cite(x = NULL, source = "tapr")
 \item{x}{Optional. A tibble returned by \verb{txs_get_*()}. If \code{NULL},
 returns a generic citation for the named \code{source}.}
 
-\item{source}{\code{"tapr"}, \code{"src"}, or \code{"aeis"}.}
+\item{source}{\code{"tapr"}, \code{"src"}, \code{"aeis"}, or \code{"peims"}.}
 }
 \value{
 A \code{bibentry}.

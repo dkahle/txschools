@@ -10,7 +10,7 @@ catalog_path <- function() {
 #'
 #' Returns the parsed catalog as a list. The catalog is a hand-authored
 #' YAML file (`inst/extdata/source_catalog.yml`) that documents the
-#' TAPR/SRC/AEIS base URLs, known years, and filename patterns. It is
+#' TAPR/SRC/AEIS/PEIMS base URLs, known years, and filename patterns. It is
 #' the fallback that `discover_*` functions consult when live HTML
 #' parsing fails or `refresh = FALSE`.
 #'
@@ -26,7 +26,7 @@ txs_catalog <- function() {
   yaml::read_yaml(p)
 }
 
-catalog_source <- function(source = c("tapr", "src", "aeis")) {
+catalog_source <- function(source = c("tapr", "src", "aeis", "peims")) {
   source <- match.arg(source)
   cat <- txs_catalog()
   cat[[source]] %||% list()
@@ -50,5 +50,6 @@ catalog_url <- function(template, base, year) {
   url <- gsub("\\{year_label\\}", year_label(year), url, fixed = FALSE)
   url <- gsub("\\{end_year\\}", sprintf("%d", as.integer(year)), url, fixed = FALSE)
   url <- gsub("\\{year\\}", sprintf("%d", as.integer(year)), url, fixed = FALSE)
+  url <- gsub("\\{yy\\}", sprintf("%02d", as.integer(year) %% 100L), url, fixed = FALSE)
   gsub(" ", "%20", url, fixed = TRUE)
 }

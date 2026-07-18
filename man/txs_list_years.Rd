@@ -4,10 +4,10 @@
 \alias{txs_list_years}
 \title{List the years available from a TEA source}
 \usage{
-txs_list_years(source = c("tapr", "src", "aeis"), refresh = FALSE)
+txs_list_years(source = c("tapr", "src", "aeis", "peims"), refresh = FALSE)
 }
 \arguments{
-\item{source}{One of \code{"tapr"}, \code{"src"}, \code{"aeis"}.}
+\item{source}{One of \code{"tapr"}, \code{"src"}, \code{"aeis"}, \code{"peims"}.}
 
 \item{refresh}{If \code{TRUE}, ignore the on-disk meta cache and re-fetch.}
 }

@@ -20,6 +20,10 @@ Agency (TEA):
   scrape.)
 - **AEIS** (Academic Excellence Indicator System, 2004-2012): statewide
   data files via `txs_get_aeis()`.
+- **PEIMS financial data** (1999-2000-present): statewide
+  fund/function/object-level district and charter budgets and actuals
+  via `txs_get_peims_finance()`, with optional DuckDB output via
+  `txs_write_peims_db()`.
 
 ## Disclaimer
 
@@ -704,6 +708,53 @@ aeis_2011 <- txs_get_aeis(2011, "district", dataset = "ref",
                           geography = "161920")
 ```
 
+## PEIMS finance
+
+`txs_get_peims_finance()` pulls TEA’s statewide PEIMS financial data:
+fund/function/object-level budgets and actuals for every district (or
+every charter school) in one school year, from 1999-2000 onward. The
+tidy output joins human-readable labels for the account codes plus
+district and campus names, so it is analysis-ready:
+
+``` r
+act <- txs_get_peims_finance(2024, "actual", "district")
+act |>
+  filter(district == "161920") |>              # China Spring ISD
+  filter(startsWith(object_code, "6")) |>      # expenditures
+  summarise(spent = sum(amount), .by = function_label) |>
+  arrange(desc(spent))
+```
+
+Because each call downloads (and caches) one statewide file, a
+multi-year district history is just a loop: each year costs one request
+the first time and is read from disk after that. China Spring ISD’s
+instruction spending over a decade:
+
+``` r
+china_spring <- lapply(2015:2024, function(yr) {
+  txs_get_peims_finance(yr, "actual", "district") |>
+    filter(district == "161920")
+}) |>
+  bind_rows()
+
+china_spring |>
+  filter(function_code == "11", startsWith(object_code, "6")) |>
+  summarise(instruction_spend = sum(amount), .by = school_year)
+```
+
+Mind the scale: a district actual file is a single ~30 MB download that
+parses to several million rows, so the loop above moves ~300 MB on its
+first run (and nothing after). Charter files are far smaller. For
+multi-year work at full grain, write each pull into a DuckDB database
+and aggregate lazily there instead of holding the rows in memory:
+
+``` r
+for (yr in 2015:2024) {
+  txs_get_peims_finance(yr, "actual", "district", db = "peims.duckdb")
+}
+con <- DBI::dbConnect(duckdb::duckdb(), "peims.duckdb")
+```
+
 ## Two ways to get data, and what each one costs
 
 The examples above use two different acquisition patterns, and it is
@@ -716,13 +767,13 @@ worth choosing deliberately because they have opposite cost profiles:
   one campus’s STAAR pages is ten polite requests; pulling fifty
   campuses that way is five hundred. This mode is right when you care
   about *a few entities in depth*.
-- **Statewide file pulls** (`txs_get_tapr_file()`, `txs_get_aeis()`)
-  download one file containing *every* campus or district in Texas for a
-  year and dataset – a single request, but megabytes (a district STAAR
-  file runs ~5-14 MB). You then filter locally, as the McLennan County
-  comparison above does. This mode is right when you compare *many
-  entities on a few measures*: eight districts over nine years cost nine
-  requests there, not seventy-two.
+- **Statewide file pulls** (`txs_get_tapr_file()`, `txs_get_aeis()`,
+  `txs_get_peims_finance()`) download one file containing *every* campus
+  or district in Texas for a year and dataset – a single request, but
+  megabytes (a district STAAR file runs ~5-14 MB). You then filter
+  locally, as the McLennan County comparison above does. This mode is
+  right when you compare *many entities on a few measures*: eight
+  districts over nine years cost nine requests there, not seventy-two.
 
 Either way, every downloaded file lands in a persistent local cache, so
 the network cost is paid once: re-running an analysis (or re-rendering

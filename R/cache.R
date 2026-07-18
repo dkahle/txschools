@@ -249,7 +249,8 @@ txs_cache_size <- function(source = NULL, year = NULL, level = NULL,
 #' same filters to preview what a delete would remove.
 #'
 #' @param year Optional ending year filter.
-#' @param source Optional source filter (`"tapr"`, `"src"`, `"aeis"`).
+#' @param source Optional source filter (`"tapr"`, `"src"`, `"aeis"`,
+#'   `"peims"`).
 #' @param level Optional level filter (`"campus"`, `"district"`, …).
 #' @param data_type Optional data-type filter (`"advanced"`,
 #'   `"dictionary"`, `"report"`, …).

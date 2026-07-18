@@ -4,12 +4,12 @@
 \alias{txs_list_downloads}
 \title{List downloads for a given year and source}
 \usage{
-txs_list_downloads(year, source = c("tapr", "aeis"), refresh = FALSE)
+txs_list_downloads(year, source = c("tapr", "aeis", "peims"), refresh = FALSE)
 }
 \arguments{
 \item{year}{Integer ending year.}
 
-\item{source}{One of \code{"tapr"}, \code{"aeis"}.}
+\item{source}{One of \code{"tapr"}, \code{"aeis"}, \code{"peims"}.}
 
 \item{refresh}{If \code{TRUE}, ignore the on-disk meta cache and re-fetch.}
 }
@@ -38,6 +38,10 @@ they do not contain data.
 For AEIS this returns one row per level and dataset code served by
 the per-year AEIS CGI. SRC is not a downloadable-file program; see
 \code{\link[=txs_get_src]{txs_get_src()}}.
+
+For PEIMS this returns one row per financial single-file download:
+\code{level} is \code{"district"} or \code{"charter"} and \code{data_type} is
+\code{"actual"} or \code{"budget"}. See \code{\link[=txs_get_peims_finance]{txs_get_peims_finance()}}.
 }
 \examples{
 \dontrun{

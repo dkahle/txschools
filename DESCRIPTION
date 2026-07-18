@@ -10,9 +10,11 @@ Description: Tools for discovering, downloading, caching, parsing, and citing
     public school-performance data published by the Texas Education Agency
     (TEA): the Texas Academic Performance Reports (TAPR, 2013 onward,
     including the statewide advanced-download data files and variable
-    dictionaries), per-campus School Report Cards (SRC, 2004-2019), and the
-    Academic Excellence Indicator System (AEIS, 2004-2012), plus a
-    name-to-identifier directory of Texas campuses and districts. Downloads
+    dictionaries), per-campus School Report Cards (SRC, 2004-2019), the
+    Academic Excellence Indicator System (AEIS, 2004-2012), and PEIMS
+    fund/function/object-level district and charter financial data
+    (budgets and actuals, 1999-2000 onward), plus a name-to-identifier
+    directory of Texas campuses and districts. Downloads
     happen on demand against TEA's public pages; files are cached locally
     under 'tools::R_user_dir()' with source-URL, timestamp, and checksum
     metadata. TEA masking and suppression values are preserved exactly.
