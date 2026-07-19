@@ -45,6 +45,9 @@ Imports:
 Suggests:
     DBI,
     duckdb,
+    ggalluvial,
+    ggplot2,
+    ggsankey,
     knitr,
     mockery,
     pkgdown,
@@ -53,4 +56,5 @@ Suggests:
     withr
 Config/testthat/edition: 3
 VignetteBuilder: knitr
+Remotes: davidsjoberg/ggsankey
 Config/roxygen2/version: 8.0.0

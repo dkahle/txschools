@@ -111,3 +111,20 @@
 * README's DuckDB section now also covers
   [duckplyr](https://duckplyr.tidyverse.org) as the no-database way
   to run dplyr pipelines on DuckDB's engine.
+
+## PEIMS money-flow diagrams (2026-07)
+
+* New `txs_peims_flow()`: aggregates a `txs_get_peims_finance()` pull
+  into an income-statement-style flow edge list across chosen axes
+  (revenue source, fund, function, object class, program intent).
+  Every edge is a genuine recorded total -- sources trace to spending
+  through funds, the one join TEA's accounting actually records --
+  and each fund's shortfall/surplus reconciles against explicit
+  from/to fund-balance nodes.
+* New `txs_plot_peims_flow()`: renders the edge list as a Sankey
+  diagram via the ggsankey package (GitHub-only; in Suggests with a
+  guarded, informative error when absent). Returns a normal ggplot.
+* New vignette `money-flow-diagrams`: the concepts behind honest
+  money-flow charts (recorded joins vs allocation, funds as the
+  traceable link, fund-balance reconciliation) and the same charts
+  built with ggsankey, ggalluvial, plotly, and networkD3.

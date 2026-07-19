@@ -495,6 +495,47 @@ Mind the scale: a district actual file is a single ~30 MB download that
 parses to several million rows, so the decade above moves ~300 MB on
 its first run (and nothing after). Charter files are far smaller.
 
+### Money-flow (Sankey) diagrams
+
+Because every PEIMS row carries the full chart of accounts, a
+district's year can be drawn as an income-statement-style flow
+diagram: `txs_peims_flow()` aggregates a pull into stage-to-stage
+flows and `txs_plot_peims_flow()` renders them with
+[ggsankey](https://github.com/davidsjoberg/ggsankey) (a GitHub-only
+package: `remotes::install_github("davidsjoberg/ggsankey")`).
+
+The default axes trace revenue sources into *funds* and funds out to
+functions. Funds are the honest join: TEA records which fund every
+revenue dollar entered and which fund every expenditure left, so each
+ribbon below is a genuine total, not an allocation -- federal grant
+dollars visibly arrive in their own funds and leave as their programs'
+spending, and each fund's shortfall or surplus reconciles against
+fund balance:
+
+```{r peims-flow, fig.width = 10, fig.height = 6.2, dpi = 150}
+txs_get_peims_finance(2024, "actual", "district", verbose = FALSE) |>
+  filter(district == "161920") |>
+  txs_peims_flow(lump = 4) |>
+  txs_plot_peims_flow() +
+  labs(
+    title = "China Spring ISD, 2023-24: every dollar in, every dollar out",
+    subtitle = "PEIMS actuals: revenue sources → funds → functions"
+  ) +
+  theme(plot.title = element_text(face = "bold", size = 15),
+        plot.subtitle = element_text(color = "grey35", size = 10,
+                                     margin = margin(b = 6)))
+```
+
+Deeper axes are available where the accounting supports them --
+`axes = c("fund", "function", "object")` continues to the right into
+what the money bought (payroll, contracted services, supplies,
+capital outlay), and `"program"` splits by program intent. The flow
+builder returns a plain edge-list tibble, so any other Sankey tool
+(plotly, networkD3) can consume it too. For the full tour -- the
+concepts behind honest flow charts, deeper axis combinations, and the
+same charts built with ggalluvial, plotly, and networkD3 -- see
+`vignette("money-flow-diagrams")`.
+
 ### Multi-year analysis with DuckDB
 
 Filtering each year down in R, as above, works when you know the
