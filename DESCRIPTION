@@ -50,7 +50,9 @@ Suggests:
     ggsankey,
     knitr,
     mockery,
+    networkD3,
     pkgdown,
+    plotly,
     rmarkdown,
     testthat (>= 3.0.0),
     withr
