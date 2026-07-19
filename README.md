@@ -842,8 +842,9 @@ functions. Funds are the honest join: TEA records which fund every
 revenue dollar entered and which fund every expenditure left, so each
 ribbon below is a genuine total, not an allocation – federal grant
 dollars visibly arrive in their own funds and leave as their programs’
-spending, and each fund’s shortfall or surplus reconciles against fund
-balance:
+spending, inter-fund transfers and bond proceeds flow through their own
+nodes, and what remains is each fund’s true draw on (or addition to) its
+fund balance:
 
 ``` r
 txs_get_peims_finance(2024, "actual", "district", verbose = FALSE) |>

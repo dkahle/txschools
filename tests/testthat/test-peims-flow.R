@@ -2,18 +2,23 @@
 peims_flow_fixture <- function(labels = TRUE) {
   x <- tibble::tibble(
     district = "161920",
-    fund_code = c("199", "199", "199", "199", "199", "240", "240", "240"),
-    fund_label = c(rep("GENERAL FUND", 5), rep("FOOD SERVICE", 3)),
-    function_code = c("00", "00", "11", "51", "51", "00", "35", "35"),
+    fund_code = c("199", "199", "199", "199", "199", "240", "240", "240",
+                  "199", "199", "240"),
+    fund_label = c(rep("GENERAL FUND", 5), rep("FOOD SERVICE", 3),
+                   "GENERAL FUND", "GENERAL FUND", "FOOD SERVICE"),
+    function_code = c("00", "00", "11", "51", "51", "00", "35", "35",
+                      "00", "00", "00"),
     function_label = c("NO FUNCTION", "NO FUNCTION", "INSTRUCTION",
                        "FACILITY MAINTENANCE AND OPERATIONS",
                        "FACILITY MAINTENANCE AND OPERATIONS",
-                       "NO FUNCTION", "FOOD SERVICES", "FOOD SERVICES"),
+                       "NO FUNCTION", "FOOD SERVICES", "FOOD SERVICES",
+                       "NO FUNCTION", "NO FUNCTION", "NO FUNCTION"),
     object_code = c("5711", "5811", "6119", "6249", "6634",
-                    "5921", "6119", "6341"),
+                    "5921", "6119", "6341",
+                    "7911", "8911", "7915"),
     program_intent_code = "00",
     program_intent_label = "NO PROGRAM",
-    amount = c(600, 300, 500, 200, 100, 120, 90, 60),
+    amount = c(600, 300, 500, 200, 100, 120, 90, 60, 50, 20, 20),
     year = 2024L, school_year = "2023-24",
     basis = "actual", type = "district"
   )
@@ -39,13 +44,29 @@ test_that("txs_peims_flow builds honest, balanced edges", {
     fl$amount[fl$from == "Federal revenue" & fl$to == "Food service"], 120
   )
 
-  # General fund: 900 revenue vs 800 spending -> 100 to fund balance.
+  # Transfers and other financing get their own half-edge nodes.
   expect_equal(
-    fl$amount[fl$from == "General fund" & fl$to == "To fund balance"], 100
+    fl$amount[fl$from == "Other financing sources" & fl$to == "General fund"],
+    50
   )
-  # Food service: 120 revenue vs 150 spending -> 30 from fund balance.
   expect_equal(
-    fl$amount[fl$from == "From fund balance" & fl$to == "Food service"], 30
+    fl$amount[fl$from == "General fund" & fl$to == "Transfers to other funds"],
+    20
+  )
+  expect_equal(
+    fl$amount[fl$from == "Transfers from other funds" &
+                fl$to == "Food service"], 20
+  )
+
+  # General fund: 950 in (900 revenue + 50 proceeds) vs 820 out
+  # (800 spending + 20 transfer) -> 130 to fund balance.
+  expect_equal(
+    fl$amount[fl$from == "General fund" & fl$to == "To fund balance"], 130
+  )
+  # Food service: 140 in (120 revenue + 20 transfer) vs 150 spending
+  # -> 10 from fund balance.
+  expect_equal(
+    fl$amount[fl$from == "From fund balance" & fl$to == "Food service"], 10
   )
 
   # Every fund's inflow equals its outflow.
@@ -64,8 +85,9 @@ test_that("txs_peims_flow supports deeper spending axes", {
   expect_equal(
     fl$amount[fl$from == "Instruction" & fl$to == "Payroll"], 500
   )
-  # No balancing nodes without a source axis.
-  expect_false(any(grepl("fund balance", c(fl$from, fl$to))))
+  # No balancing, transfer, or financing nodes without a source axis.
+  expect_false(any(grepl("fund balance|Transfers|financing",
+                         c(fl$from, fl$to))))
 })
 
 test_that("txs_peims_flow lumps small nodes into Other", {

@@ -84,11 +84,19 @@ spending. That makes `source -> fund -> function` a chain of genuine
 recorded totals, and it is why `txs_peims_flow()` refuses to put
 `"source"` next to anything but `"fund"`.
 
-One wrinkle remains: funds rarely break even in a year. A district
-draws down bond proceeds it banked earlier, or tucks away a surplus.
-The flow builder reconciles each fund with explicit **"From fund
-balance"** and **"To fund balance"** nodes, so both sides of every
-fund sum identically and the chart accounts for every dollar.
+Two wrinkles remain. First, money also enters and leaves funds
+outside ordinary revenue and spending: PEIMS records **inter-fund
+transfers** (objects 7915 in, 8911 out) and **other financing sources
+and uses** (bond, loan, and lease proceeds, asset sales; the remaining
+7900s/8900s). The flow builder draws these through their own nodes --
+transfers as half-edges via "Transfers from/to other funds", because
+TEA records each end on its own fund but not the fund-to-fund pairing.
+Second, funds rarely break even in a year: a district draws down bond
+proceeds it banked earlier, or tucks away a surplus. What is left
+after revenues, spending, transfers, and financing is each fund's true
+change in its pot, reconciled with explicit **"From fund balance"**
+and **"To fund balance"** nodes -- so both sides of every fund sum
+identically and the chart accounts for every dollar.
 
 ## The built-in pipeline
 

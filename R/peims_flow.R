@@ -24,12 +24,26 @@
 #' (money is only traceable source-to-spending *through* a fund);
 #' requesting e.g. `c("source", "function")` errors.
 #'
-#' @section Fund balances:
-#' Funds rarely break even within a year. When `axes` starts at
-#' `"source"`, each fund's shortfall is fed by a **"From fund balance"**
-#' node on the source axis and each fund's surplus drains to a
-#' **"To fund balance"** node on the following axis, so both sides of
-#' every fund reconcile exactly.
+#' @section Transfers, proceeds, and fund balances:
+#' When `axes` starts at `"source"`, the flow uses everything PEIMS
+#' records about a fund's two sides:
+#' * ordinary revenues (objects 5700-5900) enter by source class;
+#' * **inter-fund transfers** (objects 7915 in / 8911 out) enter from a
+#'   "Transfers from other funds" node and leave to a "Transfers to
+#'   other funds" node. PEIMS records each end on its own fund but not
+#'   the fund-to-fund pairing, so transfers are drawn as half-edges
+#'   through those nodes rather than as invented fund-to-fund ribbons;
+#' * **other financing sources and uses** (remaining 7900s/8900s: bond,
+#'   loan, and lease proceeds, asset sales, ...) enter from an "Other
+#'   financing sources" node and leave to an "Other financing uses"
+#'   node;
+#' * what remains is the genuine change in the fund's pot: each fund's
+#'   shortfall is fed by a **"From fund balance"** node and each fund's
+#'   surplus drains to a **"To fund balance"** node, so both sides of
+#'   every fund reconcile exactly.
+#'
+#' Without a `"source"` axis (spending-side charts), only expenditure
+#' rows (6000s) are drawn and the 7000s/8000s are omitted.
 #'
 #' @param x A tibble from [txs_get_peims_finance()] (tidy output),
 #'   usually filtered to one district and year.
@@ -77,6 +91,8 @@ txs_peims_flow <- function(x,
 
   rev_rows <- x[grepl("^5", x$object_code), , drop = FALSE]
   exp_rows <- x[grepl("^6", x$object_code), , drop = FALSE]
+  ofs_rows <- x[grepl("^7", x$object_code), , drop = FALSE]  # financing in
+  ofu_rows <- x[grepl("^8", x$object_code), , drop = FALSE]  # financing out
 
   # Node values per axis, on the rows where the axis is defined.
   axis_values <- function(rows, axis) {
@@ -130,18 +146,47 @@ txs_peims_flow <- function(x,
   }
   edges <- dplyr::bind_rows(edges)
 
-  # Per-fund balancing between the revenue and spending sides.
+  # Transfers, other financing, and per-fund pot changes -- only when
+  # the chart shows both sides of the funds.
   if (identical(axes[1:2], c("source", "fund"))) {
-    rev_by_fund <- tapply(rev_rows$amount,
-                          apply_lump(axis_values(rev_rows, "fund"), "fund"),
-                          sum)
-    exp_by_fund <- tapply(exp_rows$amount,
-                          apply_lump(axis_values(exp_rows, "fund"), "fund"),
-                          sum)
-    funds <- union(names(rev_by_fund), names(exp_by_fund))
+    use_axis <- if (length(axes) >= 3L) axes[3] else "balance"
+    fund_of <- function(rows) apply_lump(axis_values(rows, "fund"), "fund")
+
+    # Financing inflows enter on the source axis; the transfer halves
+    # get their own node because the fund-to-fund pairing is not
+    # recorded.
+    if (nrow(ofs_rows)) {
+      src <- ifelse(ofs_rows$object_code == "7915",
+                    "Transfers from other funds", "Other financing sources")
+      agg <- stats::aggregate(ofs_rows$amount,
+                              list(from = src, to = fund_of(ofs_rows)), sum)
+      edges <- dplyr::bind_rows(edges, tibble::tibble(
+        from_axis = "source", from = agg$from,
+        to_axis = "fund", to = agg$to, amount = agg$x
+      ))
+    }
+    # Financing outflows leave on the first spending axis.
+    if (nrow(ofu_rows)) {
+      dst <- ifelse(ofu_rows$object_code == "8911",
+                    "Transfers to other funds", "Other financing uses")
+      agg <- stats::aggregate(ofu_rows$amount,
+                              list(from = fund_of(ofu_rows), to = dst), sum)
+      edges <- dplyr::bind_rows(edges, tibble::tibble(
+        from_axis = "fund", from = agg$from,
+        to_axis = use_axis, to = agg$to, amount = agg$x
+      ))
+    }
+
+    # What remains is the true year-over-year change in each fund's
+    # pot.
+    in_by_fund <- tapply(c(rev_rows$amount, ofs_rows$amount),
+                         c(fund_of(rev_rows), fund_of(ofs_rows)), sum)
+    out_by_fund <- tapply(c(exp_rows$amount, ofu_rows$amount),
+                          c(fund_of(exp_rows), fund_of(ofu_rows)), sum)
+    funds <- union(names(in_by_fund), names(out_by_fund))
     get0n <- function(v, nm) if (nm %in% names(v)) v[[nm]] else 0
     for (f in funds) {
-      net <- get0n(exp_by_fund, f) - get0n(rev_by_fund, f)
+      net <- get0n(out_by_fund, f) - get0n(in_by_fund, f)
       if (net > 0) {
         edges <- dplyr::bind_rows(edges, tibble::tibble(
           from_axis = "source", from = "From fund balance",
@@ -150,8 +195,7 @@ txs_peims_flow <- function(x,
       } else if (net < 0) {
         edges <- dplyr::bind_rows(edges, tibble::tibble(
           from_axis = "fund", from = f,
-          to_axis = if (length(axes) >= 3L) axes[3] else "balance",
-          to = "To fund balance",
+          to_axis = use_axis, to = "To fund balance",
           amount = -net
         ))
       }
@@ -276,7 +320,10 @@ txs_plot_peims_flow <- function(flows,
   }
 
   axis_lv <- unique(c(axes, flows$to_axis))
-  balance_nodes <- c("From fund balance", "To fund balance")
+  # Balance and transfer nodes are internal money: neutral color,
+  # stacked at the bottom of their axis.
+  balance_nodes <- c("From fund balance", "To fund balance",
+                     "Transfers from other funds", "Transfers to other funds")
   node_order <- function(ax) {
     nm <- nodes[nodes$axis == ax, , drop = FALSE]
     nm <- nm[order(nm$x), , drop = FALSE]  # smallest first = bottom
