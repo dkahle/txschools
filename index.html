@@ -788,7 +788,31 @@
 <span></span>
 <span><span class="fu"><a href="https://dbi.r-dbi.org/reference/dbDisconnect.html" class="external-link">dbDisconnect</a></span><span class="op">(</span><span class="va">con</span>, shutdown <span class="op">=</span> <span class="cn">TRUE</span><span class="op">)</span></span></code></pre></div>
 <p>If you’re curious what a pipeline will run, <code><a href="https://dplyr.tidyverse.org/reference/explain.html" class="external-link">show_query()</a></code> prints the generated SQL instead of executing it. Disconnect when you’re done; the <code>.duckdb</code> file persists and reopens instantly in later sessions.</p>
-<p>A lighter-weight relative is <a href="https://duckplyr.tidyverse.org" class="external-link">duckplyr</a>: <code><a href="https://duckplyr.tidyverse.org" class="external-link">library(duckplyr)</a></code> makes ordinary dplyr pipelines on in-memory data frames run on DuckDB’s engine directly – no connection, no tables, and automatic fallback to plain dplyr for anything DuckDB can’t translate. It is the easy speedup when a single year’s multimillion-row tibble from <code><a href="reference/txs_get_peims_finance.html">txs_get_peims_finance()</a></code> makes <code><a href="https://dplyr.tidyverse.org/reference/summarise.html" class="external-link">summarise()</a></code> feel slow but you don’t need a persistent database; reach for the <code>db =</code> + dbplyr workflow above once you want many years on disk queried lazily.</p>
+<p>A lighter-weight relative is <a href="https://duckplyr.tidyverse.org" class="external-link">duckplyr</a>: the same dplyr verbs, but executed by DuckDB <em>directly against data files</em>, so the detail rows never pass through R at all – no connection, no tables, and automatic fallback to plain dplyr for anything DuckDB can’t translate. That makes it the fastest way to ask one question of a statewide file: point <code><a href="https://duckplyr.tidyverse.org/reference/read_csv_duckdb.html" class="external-link">read_csv_duckdb()</a></code> at the CSV already sitting in the cache and let DuckDB do the scanning. Summing 2023-24 expenditures by district this way runs in well under a second on the 5.4-million-row file, versus half a minute to parse it into a tibble first:</p>
+<div class="sourceCode" id="cb20"><pre class="downlit sourceCode r">
+<code class="sourceCode R"><span><span class="kw"><a href="https://rdrr.io/r/base/library.html" class="external-link">library</a></span><span class="op">(</span><span class="st"><a href="https://duckplyr.tidyverse.org" class="external-link">"duckplyr"</a></span><span class="op">)</span></span>
+<span></span>
+<span><span class="co"># The statewide CSV behind txs_get_peims_finance(2024, ...) sits</span></span>
+<span><span class="co"># extracted in the cache next to the zip it arrived in:</span></span>
+<span><span class="va">zip</span> <span class="op">&lt;-</span> <span class="fu"><a href="reference/txs_cache_list.html">txs_cache_list</a></span><span class="op">(</span><span class="op">)</span> <span class="op">|&gt;</span></span>
+<span>  <span class="fu"><a href="https://dplyr.tidyverse.org/reference/filter.html" class="external-link">filter</a></span><span class="op">(</span><span class="va">source</span> <span class="op">==</span> <span class="st">"peims"</span>, <span class="va">year</span> <span class="op">==</span> <span class="fl">2024</span>, <span class="va">level</span> <span class="op">==</span> <span class="st">"district"</span><span class="op">)</span> <span class="op">|&gt;</span></span>
+<span>  <span class="fu"><a href="https://dplyr.tidyverse.org/reference/pull.html" class="external-link">pull</a></span><span class="op">(</span><span class="va">path</span><span class="op">)</span></span>
+<span><span class="va">csv</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/r/base/list.files.html" class="external-link">list.files</a></span><span class="op">(</span><span class="fu"><a href="https://rdrr.io/r/base/paste.html" class="external-link">paste0</a></span><span class="op">(</span><span class="va">zip</span>, <span class="st">"-unzipped"</span><span class="op">)</span>, pattern <span class="op">=</span> <span class="st">"[.]csv$"</span>,</span>
+<span>                  full.names <span class="op">=</span> <span class="cn">TRUE</span><span class="op">)</span></span>
+<span></span>
+<span><span class="fu"><a href="https://duckplyr.tidyverse.org/reference/read_csv_duckdb.html" class="external-link">read_csv_duckdb</a></span><span class="op">(</span><span class="va">csv</span><span class="op">)</span> <span class="op">|&gt;</span>                          <span class="co"># lazy: DuckDB reads the file</span></span>
+<span>  <span class="fu"><a href="https://dplyr.tidyverse.org/reference/filter.html" class="external-link">filter</a></span><span class="op">(</span><span class="va">OBJECT</span> <span class="op">&gt;=</span> <span class="fl">6000</span>, <span class="va">OBJECT</span> <span class="op">&lt;</span> <span class="fl">7000</span><span class="op">)</span> <span class="op">|&gt;</span>       <span class="co"># expenditure objects</span></span>
+<span>  <span class="fu"><a href="https://dplyr.tidyverse.org/reference/summarise.html" class="external-link">summarise</a></span><span class="op">(</span>spent <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/sum.html" class="external-link">sum</a></span><span class="op">(</span><span class="va">ACTAMT</span><span class="op">)</span>, .by <span class="op">=</span> <span class="va">DISTRICT</span><span class="op">)</span> <span class="op">|&gt;</span></span>
+<span>  <span class="fu"><a href="https://dplyr.tidyverse.org/reference/arrange.html" class="external-link">arrange</a></span><span class="op">(</span><span class="fu"><a href="https://dplyr.tidyverse.org/reference/desc.html" class="external-link">desc</a></span><span class="op">(</span><span class="va">spent</span><span class="op">)</span><span class="op">)</span> <span class="op">|&gt;</span></span>
+<span>  <span class="fu"><a href="https://rdrr.io/r/utils/head.html" class="external-link">head</a></span><span class="op">(</span><span class="fl">5</span><span class="op">)</span> <span class="op">|&gt;</span></span>
+<span>  <span class="fu"><a href="https://dplyr.tidyverse.org/reference/compute.html" class="external-link">collect</a></span><span class="op">(</span><span class="op">)</span></span>
+<span><span class="co">#&gt;   DISTRICT      spent</span></span>
+<span><span class="co">#&gt; 1   101912 3439115417   # Houston ISD</span></span>
+<span><span class="co">#&gt; 2   057905 3323405495   # Dallas ISD</span></span>
+<span><span class="co">#&gt; 3   227901 2145678621   # Austin ISD</span></span>
+<span><span class="co">#&gt; 4   101907 1949889119   # Cypress-Fairbanks ISD</span></span>
+<span><span class="co">#&gt; 5   015915 1810876472   # Northside ISD</span></span></code></pre></div>
+<p>Two things to notice. You are querying the <em>raw</em> file – TEA’s original column names, numeric-sniffed codes, no label joins – which is exactly why it is fast; <code><a href="reference/txs_get_peims_finance.html">txs_get_peims_finance()</a></code> remains the way to get the analysis-ready, labeled table. And this speed does not come from converting tibbles you already have: on an in-memory data frame, plain dplyr is already quick, and routing it through DuckDB’s R bridge is slower. duckplyr earns its keep when DuckDB reads the file itself.</p>
 </div>
 </div>
 <div class="section level2">
@@ -816,7 +840,7 @@
 <strong>Results are citable.</strong> <code><a href="reference/txs_cite.html">txs_cite()</a></code> can reference the exact file by URL, timestamp, and checksum.</li>
 </ul>
 <p><code><a href="reference/txs_cache_list.html">txs_cache_list()</a></code> inventories the cache (and prints a one-line summary), and <code><a href="reference/txs_cache_size.html">txs_cache_size()</a></code> totals it, optionally grouped:</p>
-<div class="sourceCode" id="cb20"><pre class="downlit sourceCode r">
+<div class="sourceCode" id="cb21"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="fu"><a href="reference/txs_cache_size.html">txs_cache_size</a></span><span class="op">(</span><span class="op">)</span></span>
 <span><span class="co">#&gt; # A tibble: 1 × 3</span></span>
 <span><span class="co">#&gt;   n_files size_bytes size    </span></span>
@@ -834,7 +858,7 @@
 <span><span class="co">#&gt; 5 tapr   dictionary      10    1614729 1.6 MB  </span></span>
 <span><span class="co">#&gt; 6 tapr   semantic       127   18271199 18.3 MB</span></span></code></pre></div>
 <p><code><a href="reference/txs_cache_delete.html">txs_cache_delete()</a></code> takes the same filters as <code><a href="reference/txs_cache_size.html">txs_cache_size()</a></code> – <code>source</code>, <code>year</code>, <code>level</code>, <code>data_type</code>, <code>dataset</code>, and <code>older_than</code> (a <code>Date</code>, <code>POSIXct</code>, or number of days) – so you can preview exactly what a delete will remove, then remove it:</p>
-<div class="sourceCode" id="cb21"><pre class="downlit sourceCode r">
+<div class="sourceCode" id="cb22"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="co"># How much would evicting year-old files reclaim?</span></span>
 <span><span class="fu"><a href="reference/txs_cache_size.html">txs_cache_size</a></span><span class="op">(</span>older_than <span class="op">=</span> <span class="fl">365</span><span class="op">)</span></span>
 <span></span>
