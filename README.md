@@ -25,6 +25,16 @@ Agency (TEA):
   via `txs_get_peims_finance()`, with optional DuckDB output via
   `txs_write_peims_db()`.
 
+Every table these functions return is documented in a machine-readable
+data dictionary – column types, ranges, masking semantics,
+relationships, and a glossary of TEA terms – in the
+[data-dict.yaml](https://data-dict.tidyverse.org) format, shipped with
+the package:
+
+``` r
+system.file("data-dict.yaml", package = "txschools")
+```
+
 ## Disclaimer
 
 `txschools` is **not affiliated with or endorsed by the Texas Education
@@ -871,6 +881,15 @@ If you’re curious what a pipeline will run, `show_query()` prints the
 generated SQL instead of executing it. Disconnect when you’re done; the
 `.duckdb` file persists and reopens instantly in later sessions.
 
+A lighter-weight relative is [duckplyr](https://duckplyr.tidyverse.org):
+`library(duckplyr)` makes ordinary dplyr pipelines on in-memory data
+frames run on DuckDB’s engine directly – no connection, no tables, and
+automatic fallback to plain dplyr for anything DuckDB can’t translate.
+It is the easy speedup when a single year’s multimillion-row tibble from
+`txs_get_peims_finance()` makes `summarise()` feel slow but you don’t
+need a persistent database; reach for the `db =` + dbplyr workflow above
+once you want many years on disk queried lazily.
+
 ## Two ways to get data, and what each one costs
 
 The examples above use two different acquisition patterns, and it is
@@ -922,17 +941,18 @@ txs_cache_size()
 #> # A tibble: 1 × 3
 #>   n_files size_bytes size    
 #>     <int>      <dbl> <chr>   
-#> 1     167  406841631 406.8 MB
+#> 1     171  408449717 408.4 MB
 
 txs_cache_size(by = c("source", "data_type"))
-#> # A tibble: 5 × 5
+#> # A tibble: 6 × 5
 #>   source data_type  n_files size_bytes size    
 #>   <chr>  <chr>        <int>      <dbl> <chr>   
-#> 1 peims  actual          10  247217755 247.2 MB
-#> 2 peims  budget          10   72208602 72.2 MB 
-#> 3 tapr   advanced        11   67672045 67.7 MB 
-#> 4 tapr   dictionary       9    1472030 1.5 MB  
-#> 5 tapr   semantic       127   18271199 18.3 MB
+#> 1 aeis   rates            2    1430175 1.4 MB  
+#> 2 peims  actual          10  247217755 247.2 MB
+#> 3 peims  budget          10   72208602 72.2 MB 
+#> 4 tapr   advanced        12   67707257 67.7 MB 
+#> 5 tapr   dictionary      10    1614729 1.6 MB  
+#> 6 tapr   semantic       127   18271199 18.3 MB
 ```
 
 `txs_cache_delete()` takes the same filters as `txs_cache_size()` –

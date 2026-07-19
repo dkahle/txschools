@@ -97,3 +97,17 @@
 * `txs_list_years()`, `txs_list_downloads()`, `txs_cite()`, and the
   cache tooling all understand `source = "peims"`. No FERPA masking
   applies to this source (amounts, not student counts).
+
+## Data dictionary and duckplyr (2026-07)
+
+* New machine-readable data dictionary at `inst/data-dict.yaml`
+  (<https://data-dict.tidyverse.org> format, spec 0.1.0): documents
+  every table the package returns -- the TAPR semantic shapes,
+  statewide TAPR/AEIS files, the TAPR variable dictionary, SRC,
+  the directory, and PEIMS finance (plus its DuckDB provenance
+  table) -- with column types, ranges, masking semantics,
+  cross-table relationships, and a glossary of TEA terms. Access it
+  with `system.file("data-dict.yaml", package = "txschools")`.
+* README's DuckDB section now also covers
+  [duckplyr](https://duckplyr.tidyverse.org) as the no-database way
+  to run dplyr pipelines on DuckDB's engine.

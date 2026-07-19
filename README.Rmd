@@ -36,6 +36,16 @@ school-performance data published by the Texas Education Agency (TEA):
   via `txs_get_peims_finance()`, with optional DuckDB output via
   `txs_write_peims_db()`.
 
+Every table these functions return is documented in a machine-readable
+data dictionary -- column types, ranges, masking semantics,
+relationships, and a glossary of TEA terms -- in the
+[data-dict.yaml](https://data-dict.tidyverse.org) format, shipped with
+the package:
+
+```{r data-dict, eval = FALSE}
+system.file("data-dict.yaml", package = "txschools")
+```
+
 ## Disclaimer
 
 `txschools` is **not affiliated with or endorsed by the Texas Education
@@ -537,6 +547,16 @@ dbDisconnect(con, shutdown = TRUE)
 If you're curious what a pipeline will run, `show_query()` prints the
 generated SQL instead of executing it. Disconnect when you're done;
 the `.duckdb` file persists and reopens instantly in later sessions.
+
+A lighter-weight relative is
+[duckplyr](https://duckplyr.tidyverse.org): `library(duckplyr)` makes
+ordinary dplyr pipelines on in-memory data frames run on DuckDB's
+engine directly -- no connection, no tables, and automatic fallback to
+plain dplyr for anything DuckDB can't translate. It is the easy speedup
+when a single year's multimillion-row tibble from
+`txs_get_peims_finance()` makes `summarise()` feel slow but you don't
+need a persistent database; reach for the `db =` + dbplyr workflow
+above once you want many years on disk queried lazily.
 
 ## Two ways to get data, and what each one costs
 
