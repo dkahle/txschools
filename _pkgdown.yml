@@ -37,6 +37,12 @@ reference:
   - txs_write_tapr_db
   - txs_write_peims_db
 
+- title: Money-flow diagrams
+  desc: Sankey-style views of PEIMS finance data.
+  contents:
+  - txs_peims_flow
+  - txs_plot_peims_flow
+
 - title: Cache
   desc: Manage the local file cache.
   contents:
