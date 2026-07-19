@@ -87,6 +87,11 @@
 <li>
 <code><a href="../reference/txs_list_years.html">txs_list_years()</a></code>, <code><a href="../reference/txs_list_downloads.html">txs_list_downloads()</a></code>, <code><a href="../reference/txs_cite.html">txs_cite()</a></code>, and the cache tooling all understand <code>source = "peims"</code>. No FERPA masking applies to this source (amounts, not student counts).</li>
 </ul></div>
+<div class="section level3">
+<h3 id="data-dictionary-and-duckplyr-0-0-0-9000">Data dictionary and duckplyr (2026-07)<a class="anchor" aria-label="anchor" href="#data-dictionary-and-duckplyr-0-0-0-9000"></a></h3>
+<ul><li>New machine-readable data dictionary at <code>inst/data-dict.yaml</code> (<a href="https://data-dict.tidyverse.org" class="external-link uri">https://data-dict.tidyverse.org</a> format, spec 0.1.0): documents every table the package returns – the TAPR semantic shapes, statewide TAPR/AEIS files, the TAPR variable dictionary, SRC, the directory, and PEIMS finance (plus its DuckDB provenance table) – with column types, ranges, masking semantics, cross-table relationships, and a glossary of TEA terms. Access it with <code>system.file("data-dict.yaml", package = "txschools")</code>.</li>
+<li>README’s DuckDB section now also covers <a href="https://duckplyr.tidyverse.org" class="external-link">duckplyr</a> as the no-database way to run dplyr pipelines on DuckDB’s engine.</li>
+</ul></div>
 </div>
   </main><aside class="col-md-3"><nav id="toc" aria-label="Table of contents"><h2>On this page</h2>
     </nav></aside></div>
