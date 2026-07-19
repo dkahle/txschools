@@ -304,8 +304,9 @@ txs_plot_peims_flow <- function(flows,
 
   total <- sum(flows$amount[flows$from_axis == axes[1]])
   space <- space %||% (0.09 * total / unit)
+  node_w <- 0.04
 
-  ggplot2::ggplot(
+  base <- ggplot2::ggplot(
     lodes,
     ggplot2::aes(
       x = .data$x, next_x = .data$next_x,
@@ -315,11 +316,51 @@ txs_plot_peims_flow <- function(flows,
     )
   ) +
     ggsankey::geom_sankey(flow.alpha = 0.55, node.color = NA,
-                          width = 0.04, space = space) +
-    ggsankey::geom_sankey_text(size = 3, color = "grey15",
-                               lineheight = 0.95, space = space) +
-    ggplot2::scale_fill_manual(values = pal, guide = "none", na.value = "grey80") +
-    ggplot2::scale_x_discrete(expand = c(0.12, 0.02)) +
+                          width = node_w, space = space)
+
+  # ggsankey only centers labels on nodes. Harvest its computed node
+  # positions from a probe build, then place the text ourselves:
+  # first-axis labels sit outside on the left (right-aligned),
+  # last-axis labels outside on the right (left-aligned), and
+  # middle-axis labels above their bar.
+  probe <- base +
+    ggsankey::geom_sankey_text(size = 3, space = space)
+  probe_data <- ggplot2::ggplot_build(probe)$data
+  txt <- probe_data[[length(probe_data)]]
+  txt <- txt[!is.na(txt$label), , drop = FALSE]
+  n_axes <- max(txt$x)
+  left <- txt[txt$x == 1, , drop = FALSE]
+  right <- txt[txt$x == n_axes, , drop = FALSE]
+  middle <- txt[txt$x > 1 & txt$x < n_axes, , drop = FALSE]
+  pad_x <- node_w / 2 + 0.015
+
+  p <- base +
+    ggplot2::geom_text(
+      data = left, inherit.aes = FALSE,
+      ggplot2::aes(x = .data$x - pad_x, y = .data$y, label = .data$label),
+      hjust = 1, size = 3, color = "grey15", lineheight = 0.95
+    ) +
+    ggplot2::geom_text(
+      data = right, inherit.aes = FALSE,
+      ggplot2::aes(x = .data$x + pad_x, y = .data$y, label = .data$label),
+      hjust = 0, size = 3, color = "grey15", lineheight = 0.95
+    )
+  if (nrow(middle)) {
+    # One line, just above the bar top, centered on the node.
+    middle$label <- gsub("\n", " ", middle$label, fixed = TRUE)
+    p <- p + ggplot2::geom_text(
+      data = middle, inherit.aes = FALSE,
+      ggplot2::aes(x = .data$x, y = .data$y + .data$freq / 2,
+                   label = .data$label),
+      vjust = -0.4, size = 3, color = "grey15"
+    )
+  }
+
+  p +
+    ggplot2::scale_fill_manual(values = pal, guide = "none",
+                               na.value = "grey80") +
+    ggplot2::scale_x_discrete(expand = ggplot2::expansion(add = 0.55)) +
+    ggplot2::coord_cartesian(clip = "off") +
     ggplot2::labs(x = NULL, y = NULL) +
     ggplot2::theme_void(base_size = 12)
 }
