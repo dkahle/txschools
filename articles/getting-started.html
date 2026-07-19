@@ -35,6 +35,7 @@
   <ul class="dropdown-menu" aria-labelledby="dropdown-articles">
 <li><a class="dropdown-item" href="../articles/getting-started.html">Getting started with txschools</a></li>
     <li><a class="dropdown-item" href="../articles/masking.html">Masking and suppression in TEA data</a></li>
+    <li><a class="dropdown-item" href="../articles/money-flow-diagrams.html">Money-flow diagrams from PEIMS finance data</a></li>
   </ul>
 </li>
 <li class="nav-item"><a class="nav-link" href="../news/index.html">Changelog</a></li>
@@ -76,16 +77,57 @@ Excellence Indicator System (AEIS, 2004-2012).</p>
 <p>TEA identifies campuses by nine-digit county-district-campus numbers
 and districts by six-digit numbers. Look them up by name:</p>
 <div class="sourceCode" id="cb1"><pre class="downlit sourceCode r">
-<code class="sourceCode R"><span><span class="fu"><a href="../reference/txs_find_campus.html">txs_find_campus</a></span><span class="op">(</span><span class="st">"china spring"</span><span class="op">)</span></span></code></pre></div>
+<code class="sourceCode R"><span><span class="fu"><a href="../reference/txs_find_campus.html">txs_find_campus</a></span><span class="op">(</span><span class="st">"china spring"</span><span class="op">)</span></span>
+<span><span class="co">#&gt; <span style="color: #949494;"># A tibble: 7 × 9</span></span></span>
+<span><span class="co">#&gt;    year level  id     name  district district_name county_name region grade_span</span></span>
+<span><span class="co">#&gt;   <span style="color: #949494; font-style: italic;">&lt;int&gt;</span> <span style="color: #949494; font-style: italic;">&lt;chr&gt;</span>  <span style="color: #949494; font-style: italic;">&lt;chr&gt;</span>  <span style="color: #949494; font-style: italic;">&lt;chr&gt;</span> <span style="color: #949494; font-style: italic;">&lt;chr&gt;</span>    <span style="color: #949494; font-style: italic;">&lt;chr&gt;</span>         <span style="color: #949494; font-style: italic;">&lt;chr&gt;</span>       <span style="color: #949494; font-style: italic;">&lt;chr&gt;</span>  <span style="color: #949494; font-style: italic;">&lt;chr&gt;</span>     </span></span>
+<span><span class="co">#&gt; <span style="color: #BCBCBC;">1</span>  <span style="text-decoration: underline;">2</span>024 campus 16192… CHIN… 161920   CHINA SPRING… MCLENNAN    12     09 - 12   </span></span>
+<span><span class="co">#&gt; <span style="color: #BCBCBC;">2</span>  <span style="text-decoration: underline;">2</span>024 campus 16192… TAG   161920   CHINA SPRING… MCLENNAN    12     10 - 12   </span></span>
+<span><span class="co">#&gt; <span style="color: #BCBCBC;">3</span>  <span style="text-decoration: underline;">2</span>024 campus 16192… CHAL… 161920   CHINA SPRING… MCLENNAN    12     07 - 11   </span></span>
+<span><span class="co">#&gt; <span style="color: #BCBCBC;">4</span>  <span style="text-decoration: underline;">2</span>024 campus 16192… CHIN… 161920   CHINA SPRING… MCLENNAN    12     07 - 08   </span></span>
+<span><span class="co">#&gt; <span style="color: #BCBCBC;">5</span>  <span style="text-decoration: underline;">2</span>024 campus 16192… CHIN… 161920   CHINA SPRING… MCLENNAN    12     02 - 04   </span></span>
+<span><span class="co">#&gt; <span style="color: #BCBCBC;">6</span>  <span style="text-decoration: underline;">2</span>024 campus 16192… CHIN… 161920   CHINA SPRING… MCLENNAN    12     05 - 06   </span></span>
+<span><span class="co">#&gt; <span style="color: #BCBCBC;">7</span>  <span style="text-decoration: underline;">2</span>024 campus 16192… CHIN… 161920   CHINA SPRING… MCLENNAN    12     EE - 01</span></span></code></pre></div>
 </div>
 <div class="section level2">
 <h2 id="discover-available-years-and-downloads">Discover available years and downloads<a class="anchor" aria-label="anchor" href="#discover-available-years-and-downloads"></a>
 </h2>
 <div class="sourceCode" id="cb2"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="fu"><a href="../reference/txs_list_years.html">txs_list_years</a></span><span class="op">(</span><span class="st">"tapr"</span><span class="op">)</span></span>
+<span><span class="co">#&gt; <span style="color: #949494;"># A tibble: 13 × 3</span></span></span>
+<span><span class="co">#&gt;    source  year school_year</span></span>
+<span><span class="co">#&gt;    <span style="color: #949494; font-style: italic;">&lt;chr&gt;</span>  <span style="color: #949494; font-style: italic;">&lt;int&gt;</span> <span style="color: #949494; font-style: italic;">&lt;chr&gt;</span>      </span></span>
+<span><span class="co">#&gt; <span style="color: #BCBCBC;"> 1</span> tapr    <span style="text-decoration: underline;">2</span>013 2012-13    </span></span>
+<span><span class="co">#&gt; <span style="color: #BCBCBC;"> 2</span> tapr    <span style="text-decoration: underline;">2</span>014 2013-14    </span></span>
+<span><span class="co">#&gt; <span style="color: #BCBCBC;"> 3</span> tapr    <span style="text-decoration: underline;">2</span>015 2014-15    </span></span>
+<span><span class="co">#&gt; <span style="color: #BCBCBC;"> 4</span> tapr    <span style="text-decoration: underline;">2</span>016 2015-16    </span></span>
+<span><span class="co">#&gt; <span style="color: #BCBCBC;"> 5</span> tapr    <span style="text-decoration: underline;">2</span>017 2016-17    </span></span>
+<span><span class="co">#&gt; <span style="color: #BCBCBC;"> 6</span> tapr    <span style="text-decoration: underline;">2</span>018 2017-18    </span></span>
+<span><span class="co">#&gt; <span style="color: #BCBCBC;"> 7</span> tapr    <span style="text-decoration: underline;">2</span>019 2018-19    </span></span>
+<span><span class="co">#&gt; <span style="color: #BCBCBC;"> 8</span> tapr    <span style="text-decoration: underline;">2</span>020 2019-20    </span></span>
+<span><span class="co">#&gt; <span style="color: #BCBCBC;"> 9</span> tapr    <span style="text-decoration: underline;">2</span>021 2020-21    </span></span>
+<span><span class="co">#&gt; <span style="color: #BCBCBC;">10</span> tapr    <span style="text-decoration: underline;">2</span>022 2021-22    </span></span>
+<span><span class="co">#&gt; <span style="color: #BCBCBC;">11</span> tapr    <span style="text-decoration: underline;">2</span>023 2022-23    </span></span>
+<span><span class="co">#&gt; <span style="color: #BCBCBC;">12</span> tapr    <span style="text-decoration: underline;">2</span>024 2023-24    </span></span>
+<span><span class="co">#&gt; <span style="color: #BCBCBC;">13</span> tapr    <span style="text-decoration: underline;">2</span>025 2024-25</span></span>
 <span></span>
 <span><span class="va">downloads</span> <span class="op">&lt;-</span> <span class="fu"><a href="../reference/txs_list_downloads.html">txs_list_downloads</a></span><span class="op">(</span><span class="fl">2024</span>, source <span class="op">=</span> <span class="st">"tapr"</span><span class="op">)</span></span>
-<span><span class="va">downloads</span></span></code></pre></div>
+<span><span class="va">downloads</span></span>
+<span><span class="co">#&gt; <span style="color: #949494;"># A tibble: 76 × 11</span></span></span>
+<span><span class="co">#&gt;    source  year school_year level    data_type  dataset file_format label method</span></span>
+<span><span class="co">#&gt;    <span style="color: #949494; font-style: italic;">&lt;chr&gt;</span>  <span style="color: #949494; font-style: italic;">&lt;int&gt;</span> <span style="color: #949494; font-style: italic;">&lt;chr&gt;</span>       <span style="color: #949494; font-style: italic;">&lt;chr&gt;</span>    <span style="color: #949494; font-style: italic;">&lt;chr&gt;</span>      <span style="color: #949494; font-style: italic;">&lt;chr&gt;</span>   <span style="color: #949494; font-style: italic;">&lt;chr&gt;</span>       <span style="color: #949494; font-style: italic;">&lt;chr&gt;</span> <span style="color: #949494; font-style: italic;">&lt;chr&gt;</span> </span></span>
+<span><span class="co">#&gt; <span style="color: #BCBCBC;"> 1</span> tapr    <span style="text-decoration: underline;">2</span>024 2023-24     campus   dictionary <span style="color: #BB0000;">NA</span>      xlsx        camp… get   </span></span>
+<span><span class="co">#&gt; <span style="color: #BCBCBC;"> 2</span> tapr    <span style="text-decoration: underline;">2</span>024 2023-24     district dictionary <span style="color: #BB0000;">NA</span>      xlsx        dist… get   </span></span>
+<span><span class="co">#&gt; <span style="color: #BCBCBC;"> 3</span> tapr    <span style="text-decoration: underline;">2</span>024 2023-24     region   dictionary <span style="color: #BB0000;">NA</span>      xlsx        regi… get   </span></span>
+<span><span class="co">#&gt; <span style="color: #BCBCBC;"> 4</span> tapr    <span style="text-decoration: underline;">2</span>024 2023-24     state    dictionary <span style="color: #BB0000;">NA</span>      xlsx        state get   </span></span>
+<span><span class="co">#&gt; <span style="color: #BCBCBC;"> 5</span> tapr    <span style="text-decoration: underline;">2</span>024 2023-24     campus   advanced   REF     csv         TAPR… get   </span></span>
+<span><span class="co">#&gt; <span style="color: #BCBCBC;"> 6</span> tapr    <span style="text-decoration: underline;">2</span>024 2023-24     campus   advanced   STAAR1  csv         TAPR… get   </span></span>
+<span><span class="co">#&gt; <span style="color: #BCBCBC;"> 7</span> tapr    <span style="text-decoration: underline;">2</span>024 2023-24     campus   advanced   STAAR2  csv         TAPR… get   </span></span>
+<span><span class="co">#&gt; <span style="color: #BCBCBC;"> 8</span> tapr    <span style="text-decoration: underline;">2</span>024 2023-24     campus   advanced   STAAR3  csv         TAPR… get   </span></span>
+<span><span class="co">#&gt; <span style="color: #BCBCBC;"> 9</span> tapr    <span style="text-decoration: underline;">2</span>024 2023-24     campus   advanced   PART1   csv         TAPR… get   </span></span>
+<span><span class="co">#&gt; <span style="color: #BCBCBC;">10</span> tapr    <span style="text-decoration: underline;">2</span>024 2023-24     campus   advanced   STAAR4  csv         TAPR… get   </span></span>
+<span><span class="co">#&gt; <span style="color: #949494;"># ℹ 66 more rows</span></span></span>
+<span><span class="co">#&gt; <span style="color: #949494;"># ℹ 2 more variables: url &lt;chr&gt;, params &lt;chr&gt;</span></span></span></code></pre></div>
 <p>TAPR’s statewide data lives behind TEA’s SAS-broker “Advanced
 Download” interface: one CSV per <code>level</code> ×
 <code>dataset</code> code (<code>"REF"</code>, <code>"STAAR1"</code>,
@@ -103,7 +145,24 @@ links as “TAPR Data in Excel” are variable dictionaries, exposed here as
 <span>  geography <span class="op">=</span> <span class="st">"161920102"</span>,</span>
 <span>  datasets  <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="st">"grade"</span>, <span class="st">"sex"</span><span class="op">)</span></span>
 <span><span class="op">)</span></span>
-<span><span class="va">tapr</span><span class="op">$</span><span class="va">grade</span></span></code></pre></div>
+<span><span class="co">#&gt; <span style="color: #00BBBB;">ℹ</span> Downloading TAPR student information page (source)</span></span>
+<span><span class="va">tapr</span><span class="op">$</span><span class="va">grade</span></span>
+<span><span class="co">#&gt; <span style="color: #949494;"># A tibble: 6 × 23</span></span></span>
+<span><span class="co">#&gt;    year school_year level  geography entity_name     district_name   county_name</span></span>
+<span><span class="co">#&gt;   <span style="color: #949494; font-style: italic;">&lt;int&gt;</span> <span style="color: #949494; font-style: italic;">&lt;chr&gt;</span>       <span style="color: #949494; font-style: italic;">&lt;chr&gt;</span>  <span style="color: #949494; font-style: italic;">&lt;chr&gt;</span>     <span style="color: #949494; font-style: italic;">&lt;chr&gt;</span>           <span style="color: #949494; font-style: italic;">&lt;chr&gt;</span>           <span style="color: #949494; font-style: italic;">&lt;chr&gt;</span>      </span></span>
+<span><span class="co">#&gt; <span style="color: #BCBCBC;">1</span>  <span style="text-decoration: underline;">2</span>025 2024-25     campus 161920102 CHINA SPRING EL CHINA SPRING I… MCLENNAN C…</span></span>
+<span><span class="co">#&gt; <span style="color: #BCBCBC;">2</span>  <span style="text-decoration: underline;">2</span>025 2024-25     campus 161920102 CHINA SPRING EL CHINA SPRING I… MCLENNAN C…</span></span>
+<span><span class="co">#&gt; <span style="color: #BCBCBC;">3</span>  <span style="text-decoration: underline;">2</span>025 2024-25     campus 161920102 CHINA SPRING EL CHINA SPRING I… MCLENNAN C…</span></span>
+<span><span class="co">#&gt; <span style="color: #BCBCBC;">4</span>  <span style="text-decoration: underline;">2</span>025 2024-25     campus 161920102 CHINA SPRING EL CHINA SPRING I… MCLENNAN C…</span></span>
+<span><span class="co">#&gt; <span style="color: #BCBCBC;">5</span>  <span style="text-decoration: underline;">2</span>025 2024-25     campus 161920102 CHINA SPRING EL CHINA SPRING I… MCLENNAN C…</span></span>
+<span><span class="co">#&gt; <span style="color: #BCBCBC;">6</span>  <span style="text-decoration: underline;">2</span>025 2024-25     campus 161920102 CHINA SPRING EL CHINA SPRING I… MCLENNAN C…</span></span>
+<span><span class="co">#&gt; <span style="color: #949494;"># ℹ 16 more variables: source_url &lt;chr&gt;, retrieved_at &lt;chr&gt;, basis &lt;chr&gt;,</span></span></span>
+<span><span class="co">#&gt; <span style="color: #949494;">#   grade &lt;chr&gt;, count &lt;int&gt;, count_masked &lt;lgl&gt;, count_mask_code &lt;chr&gt;,</span></span></span>
+<span><span class="co">#&gt; <span style="color: #949494;">#   campus_percent &lt;dbl&gt;, campus_percent_masked &lt;lgl&gt;,</span></span></span>
+<span><span class="co">#&gt; <span style="color: #949494;">#   campus_percent_mask_code &lt;chr&gt;, district_percent &lt;dbl&gt;,</span></span></span>
+<span><span class="co">#&gt; <span style="color: #949494;">#   district_percent_masked &lt;lgl&gt;, district_percent_mask_code &lt;chr&gt;,</span></span></span>
+<span><span class="co">#&gt; <span style="color: #949494;">#   state_percent &lt;dbl&gt;, state_percent_masked &lt;lgl&gt;,</span></span></span>
+<span><span class="co">#&gt; <span style="color: #949494;">#   state_percent_mask_code &lt;chr&gt;</span></span></span></code></pre></div>
 <p><code><a href="../reference/txs_get_tapr.html">txs_get_tapr()</a></code> returns a named list because a TAPR
 report is a collection of datasets, not one rectangular table.</p>
 </div>
@@ -118,14 +177,87 @@ report is a collection of datasets, not one rectangular table.</p>
 <span>  data_type   <span class="op">=</span> <span class="st">"advanced"</span>,</span>
 <span>  output      <span class="op">=</span> <span class="st">"tidy"</span></span>
 <span><span class="op">)</span></span>
-<span><span class="va">df</span></span></code></pre></div>
+<span><span class="co">#&gt; <span style="color: #00BBBB;">ℹ</span> Using cached file: /private/var/folders/sj/hzqk2hps4wzfm92lfjdhpv3m0000gn/T/Rtmp594Xc7/txschools-vignette/tapr/2023-24/campus/advanced/tapr_campus_2024_ref.csv</span></span>
+<span><span class="va">df</span></span>
+<span><span class="co">#&gt; <span style="color: #949494;"># A tibble: 63,574 × 15</span></span></span>
+<span><span class="co">#&gt;    CAMPUS    CAMPNAME DISTRICT DISTNAME REGION GRDTYPE GRDSPAN  year school_year</span></span>
+<span><span class="co">#&gt;    <span style="color: #949494; font-style: italic;">&lt;chr&gt;</span>     <span style="color: #949494; font-style: italic;">&lt;chr&gt;</span>    <span style="color: #949494; font-style: italic;">&lt;chr&gt;</span>    <span style="color: #949494; font-style: italic;">&lt;chr&gt;</span>    <span style="color: #949494; font-style: italic;">&lt;chr&gt;</span>  <span style="color: #949494; font-style: italic;">&lt;chr&gt;</span>   <span style="color: #949494; font-style: italic;">&lt;chr&gt;</span>   <span style="color: #949494; font-style: italic;">&lt;int&gt;</span> <span style="color: #949494; font-style: italic;">&lt;chr&gt;</span>      </span></span>
+<span><span class="co">#&gt; <span style="color: #BCBCBC;"> 1</span> '0019020… CAYUGA … '001902  CAYUGA … '07    S       '09 - …  <span style="text-decoration: underline;">2</span>024 2023-24    </span></span>
+<span><span class="co">#&gt; <span style="color: #BCBCBC;"> 2</span> '0019020… CAYUGA … '001902  CAYUGA … '07    S       '09 - …  <span style="text-decoration: underline;">2</span>024 2023-24    </span></span>
+<span><span class="co">#&gt; <span style="color: #BCBCBC;"> 3</span> '0019020… CAYUGA … '001902  CAYUGA … '07    S       '09 - …  <span style="text-decoration: underline;">2</span>024 2023-24    </span></span>
+<span><span class="co">#&gt; <span style="color: #BCBCBC;"> 4</span> '0019020… CAYUGA … '001902  CAYUGA … '07    S       '09 - …  <span style="text-decoration: underline;">2</span>024 2023-24    </span></span>
+<span><span class="co">#&gt; <span style="color: #BCBCBC;"> 5</span> '0019020… CAYUGA … '001902  CAYUGA … '07    S       '09 - …  <span style="text-decoration: underline;">2</span>024 2023-24    </span></span>
+<span><span class="co">#&gt; <span style="color: #BCBCBC;"> 6</span> '0019020… CAYUGA … '001902  CAYUGA … '07    S       '09 - …  <span style="text-decoration: underline;">2</span>024 2023-24    </span></span>
+<span><span class="co">#&gt; <span style="color: #BCBCBC;"> 7</span> '0019020… CAYUGA … '001902  CAYUGA … '07    S       '09 - …  <span style="text-decoration: underline;">2</span>024 2023-24    </span></span>
+<span><span class="co">#&gt; <span style="color: #BCBCBC;"> 8</span> '0019020… CAYUGA … '001902  CAYUGA … '07    M       '06 - …  <span style="text-decoration: underline;">2</span>024 2023-24    </span></span>
+<span><span class="co">#&gt; <span style="color: #BCBCBC;"> 9</span> '0019020… CAYUGA … '001902  CAYUGA … '07    M       '06 - …  <span style="text-decoration: underline;">2</span>024 2023-24    </span></span>
+<span><span class="co">#&gt; <span style="color: #BCBCBC;">10</span> '0019020… CAYUGA … '001902  CAYUGA … '07    M       '06 - …  <span style="text-decoration: underline;">2</span>024 2023-24    </span></span>
+<span><span class="co">#&gt; <span style="color: #949494;"># ℹ 63,564 more rows</span></span></span>
+<span><span class="co">#&gt; <span style="color: #949494;"># ℹ 6 more variables: level &lt;chr&gt;, variable_code &lt;chr&gt;, value &lt;chr&gt;,</span></span></span>
+<span><span class="co">#&gt; <span style="color: #949494;">#   value_num &lt;dbl&gt;, masked &lt;lgl&gt;, mask_code &lt;chr&gt;</span></span></span></code></pre></div>
 <p>Variable codes are documented in the per-year dictionary:</p>
 <div class="sourceCode" id="cb5"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="va">dict</span> <span class="op">&lt;-</span> <span class="fu"><a href="../reference/txs_get_tapr_dictionary.html">txs_get_tapr_dictionary</a></span><span class="op">(</span><span class="fl">2024</span>, <span class="st">"campus"</span><span class="op">)</span></span>
-<span><span class="va">dict</span></span></code></pre></div>
+<span><span class="co">#&gt; <span style="color: #00BBBB;">ℹ</span> Downloading: https://rptsvr1.tea.texas.gov/perfreport/tapr/2024/Basic%20Download/xplore/TAPR_campus_2024.xlsx</span></span>
+<span><span class="va">dict</span></span>
+<span><span class="co">#&gt; <span style="color: #949494;"># A tibble: 5,011 × 7</span></span></span>
+<span><span class="co">#&gt;     year school_year level  sheet dataset variable label                        </span></span>
+<span><span class="co">#&gt;    <span style="color: #949494; font-style: italic;">&lt;int&gt;</span> <span style="color: #949494; font-style: italic;">&lt;chr&gt;</span>       <span style="color: #949494; font-style: italic;">&lt;chr&gt;</span>  <span style="color: #949494; font-style: italic;">&lt;chr&gt;</span> <span style="color: #949494; font-style: italic;">&lt;chr&gt;</span>   <span style="color: #949494; font-style: italic;">&lt;chr&gt;</span>    <span style="color: #949494; font-style: italic;">&lt;chr&gt;</span>                        </span></span>
+<span><span class="co">#&gt; <span style="color: #BCBCBC;"> 1</span>  <span style="text-decoration: underline;">2</span>024 2023-24     campus cref  CREF    PAIRNAME Campus 2024 Flag - Campus/Di…</span></span>
+<span><span class="co">#&gt; <span style="color: #BCBCBC;"> 2</span>  <span style="text-decoration: underline;">2</span>024 2023-24     campus cref  CREF    PAIRCAMP Campus 2024 Flag - Campus/Di…</span></span>
+<span><span class="co">#&gt; <span style="color: #BCBCBC;"> 3</span>  <span style="text-decoration: underline;">2</span>024 2023-24     campus cref  CREF    CFLCHART Campus 2024 Flag - Charter S…</span></span>
+<span><span class="co">#&gt; <span style="color: #BCBCBC;"> 4</span>  <span style="text-decoration: underline;">2</span>024 2023-24     campus cref  CREF    CFLALTED Campus 2024 Flag - Rated und…</span></span>
+<span><span class="co">#&gt; <span style="color: #BCBCBC;"> 5</span>  <span style="text-decoration: underline;">2</span>024 2023-24     campus cref  CREF    CAMPNAME Campus Name                  </span></span>
+<span><span class="co">#&gt; <span style="color: #BCBCBC;"> 6</span>  <span style="text-decoration: underline;">2</span>024 2023-24     campus cref  CREF    CAMPUS   Campus Number                </span></span>
+<span><span class="co">#&gt; <span style="color: #BCBCBC;"> 7</span>  <span style="text-decoration: underline;">2</span>024 2023-24     campus cref  CREF    GRDTYPE  Campus Type (B,E,M,S) Total …</span></span>
+<span><span class="co">#&gt; <span style="color: #BCBCBC;"> 8</span>  <span style="text-decoration: underline;">2</span>024 2023-24     campus cref  CREF    CNTYNAME County Name                  </span></span>
+<span><span class="co">#&gt; <span style="color: #BCBCBC;"> 9</span>  <span style="text-decoration: underline;">2</span>024 2023-24     campus cref  CREF    COUNTY   County Number                </span></span>
+<span><span class="co">#&gt; <span style="color: #BCBCBC;">10</span>  <span style="text-decoration: underline;">2</span>024 2023-24     campus cref  CREF    DISTNAME District Name                </span></span>
+<span><span class="co">#&gt; <span style="color: #949494;"># ℹ 5,001 more rows</span></span></span></code></pre></div>
 <p>Every call records source metadata as an attribute:</p>
 <div class="sourceCode" id="cb6"><pre class="downlit sourceCode r">
-<code class="sourceCode R"><span><span class="fu"><a href="https://rdrr.io/r/base/attr.html" class="external-link">attr</a></span><span class="op">(</span><span class="va">df</span>, <span class="st">"txschools"</span><span class="op">)</span></span></code></pre></div>
+<code class="sourceCode R"><span><span class="fu"><a href="https://rdrr.io/r/base/attr.html" class="external-link">attr</a></span><span class="op">(</span><span class="va">df</span>, <span class="st">"txschools"</span><span class="op">)</span></span>
+<span><span class="co">#&gt; $source</span></span>
+<span><span class="co">#&gt; [1] "tapr"</span></span>
+<span><span class="co">#&gt; </span></span>
+<span><span class="co">#&gt; $year</span></span>
+<span><span class="co">#&gt; [1] 2024</span></span>
+<span><span class="co">#&gt; </span></span>
+<span><span class="co">#&gt; $school_year</span></span>
+<span><span class="co">#&gt; [1] "2023-24"</span></span>
+<span><span class="co">#&gt; </span></span>
+<span><span class="co">#&gt; $level</span></span>
+<span><span class="co">#&gt; [1] "campus"</span></span>
+<span><span class="co">#&gt; </span></span>
+<span><span class="co">#&gt; $data_type</span></span>
+<span><span class="co">#&gt; [1] "advanced"</span></span>
+<span><span class="co">#&gt; </span></span>
+<span><span class="co">#&gt; $dataset</span></span>
+<span><span class="co">#&gt; [1] "REF"</span></span>
+<span><span class="co">#&gt; </span></span>
+<span><span class="co">#&gt; $file_format</span></span>
+<span><span class="co">#&gt; [1] "csv"</span></span>
+<span><span class="co">#&gt; </span></span>
+<span><span class="co">#&gt; $source_url</span></span>
+<span><span class="co">#&gt; [1] "https://rptsvr1.tea.texas.gov/cgi/sas/broker"</span></span>
+<span><span class="co">#&gt; </span></span>
+<span><span class="co">#&gt; $retrieved_at</span></span>
+<span><span class="co">#&gt; [1] "2026-07-19T20:19:12Z"</span></span>
+<span><span class="co">#&gt; </span></span>
+<span><span class="co">#&gt; $sha256</span></span>
+<span><span class="co">#&gt; [1] "90e9275fea3219509c3b3ee2a4ad598ac4115667950935dc192bf3fb72a7ab95"</span></span>
+<span><span class="co">#&gt; </span></span>
+<span><span class="co">#&gt; $size_bytes</span></span>
+<span><span class="co">#&gt; [1] 1240102</span></span>
+<span><span class="co">#&gt; </span></span>
+<span><span class="co">#&gt; $cache_path</span></span>
+<span><span class="co">#&gt; [1] "/private/var/folders/sj/hzqk2hps4wzfm92lfjdhpv3m0000gn/T/Rtmp594Xc7/txschools-vignette/tapr/2023-24/campus/advanced/tapr_campus_2024_ref.csv"</span></span>
+<span><span class="co">#&gt; </span></span>
+<span><span class="co">#&gt; $used_cache</span></span>
+<span><span class="co">#&gt; [1] TRUE</span></span>
+<span><span class="co">#&gt; </span></span>
+<span><span class="co">#&gt; $masking_values</span></span>
+<span><span class="co">#&gt;  [1] "."   "*"   "-"   "---" "-1"  "-2"  "-3"  "-4"  "-99" "n/a" "N/A"</span></span></code></pre></div>
 <p>A re-call uses the cached copy without re-downloading.</p>
 </div>
 <div class="section level2">
@@ -136,7 +268,24 @@ HTML and parse into a tidy tibble; 2013-2019 reports are PDF and are
 downloaded to the cache:</p>
 <div class="sourceCode" id="cb7"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="va">src</span> <span class="op">&lt;-</span> <span class="fu"><a href="../reference/txs_get_src.html">txs_get_src</a></span><span class="op">(</span><span class="fl">2011</span>, <span class="st">"campus"</span>, <span class="st">"161920102"</span><span class="op">)</span></span>
-<span><span class="va">src</span></span></code></pre></div>
+<span><span class="co">#&gt; <span style="color: #00BBBB;">ℹ</span> Downloading SRC campus report: https://rptsvr1.tea.texas.gov/cgi/sas/broker</span></span>
+<span><span class="va">src</span></span>
+<span><span class="co">#&gt; <span style="color: #949494;"># A tibble: 198 × 15</span></span></span>
+<span><span class="co">#&gt;     year school_year level  geography school_name    district_name  page section</span></span>
+<span><span class="co">#&gt;    <span style="color: #949494; font-style: italic;">&lt;int&gt;</span> <span style="color: #949494; font-style: italic;">&lt;chr&gt;</span>       <span style="color: #949494; font-style: italic;">&lt;chr&gt;</span>  <span style="color: #949494; font-style: italic;">&lt;chr&gt;</span>     <span style="color: #949494; font-style: italic;">&lt;chr&gt;</span>          <span style="color: #949494; font-style: italic;">&lt;chr&gt;</span>         <span style="color: #949494; font-style: italic;">&lt;int&gt;</span> <span style="color: #949494; font-style: italic;">&lt;chr&gt;</span>  </span></span>
+<span><span class="co">#&gt; <span style="color: #BCBCBC;"> 1</span>  <span style="text-decoration: underline;">2</span>011 2010-11     campus 161920102 CHINA SPRING … CHINA SPRING…     1 TAKS M…</span></span>
+<span><span class="co">#&gt; <span style="color: #BCBCBC;"> 2</span>  <span style="text-decoration: underline;">2</span>011 2010-11     campus 161920102 CHINA SPRING … CHINA SPRING…     1 TAKS M…</span></span>
+<span><span class="co">#&gt; <span style="color: #BCBCBC;"> 3</span>  <span style="text-decoration: underline;">2</span>011 2010-11     campus 161920102 CHINA SPRING … CHINA SPRING…     1 TAKS M…</span></span>
+<span><span class="co">#&gt; <span style="color: #BCBCBC;"> 4</span>  <span style="text-decoration: underline;">2</span>011 2010-11     campus 161920102 CHINA SPRING … CHINA SPRING…     1 TAKS M…</span></span>
+<span><span class="co">#&gt; <span style="color: #BCBCBC;"> 5</span>  <span style="text-decoration: underline;">2</span>011 2010-11     campus 161920102 CHINA SPRING … CHINA SPRING…     1 TAKS M…</span></span>
+<span><span class="co">#&gt; <span style="color: #BCBCBC;"> 6</span>  <span style="text-decoration: underline;">2</span>011 2010-11     campus 161920102 CHINA SPRING … CHINA SPRING…     1 TAKS M…</span></span>
+<span><span class="co">#&gt; <span style="color: #BCBCBC;"> 7</span>  <span style="text-decoration: underline;">2</span>011 2010-11     campus 161920102 CHINA SPRING … CHINA SPRING…     1 TAKS M…</span></span>
+<span><span class="co">#&gt; <span style="color: #BCBCBC;"> 8</span>  <span style="text-decoration: underline;">2</span>011 2010-11     campus 161920102 CHINA SPRING … CHINA SPRING…     1 TAKS M…</span></span>
+<span><span class="co">#&gt; <span style="color: #BCBCBC;"> 9</span>  <span style="text-decoration: underline;">2</span>011 2010-11     campus 161920102 CHINA SPRING … CHINA SPRING…     1 TAKS M…</span></span>
+<span><span class="co">#&gt; <span style="color: #BCBCBC;">10</span>  <span style="text-decoration: underline;">2</span>011 2010-11     campus 161920102 CHINA SPRING … CHINA SPRING…     1 TAKS M…</span></span>
+<span><span class="co">#&gt; <span style="color: #949494;"># ℹ 188 more rows</span></span></span>
+<span><span class="co">#&gt; <span style="color: #949494;"># ℹ 7 more variables: measure &lt;chr&gt;, row_label &lt;chr&gt;, column &lt;chr&gt;,</span></span></span>
+<span><span class="co">#&gt; <span style="color: #949494;">#   value &lt;chr&gt;, value_num &lt;dbl&gt;, masked &lt;lgl&gt;, mask_code &lt;chr&gt;</span></span></span></code></pre></div>
 </div>
 <div class="section level2">
 <h2 id="aeis">AEIS<a class="anchor" aria-label="anchor" href="#aeis"></a>
@@ -146,13 +295,27 @@ code:</p>
 <div class="sourceCode" id="cb8"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="va">aeis</span> <span class="op">&lt;-</span> <span class="fu"><a href="../reference/txs_get_aeis.html">txs_get_aeis</a></span><span class="op">(</span><span class="fl">2011</span>, <span class="st">"district"</span>, dataset <span class="op">=</span> <span class="st">"ref"</span>,</span>
 <span>                     geography <span class="op">=</span> <span class="st">"161920"</span><span class="op">)</span></span>
-<span><span class="va">aeis</span></span></code></pre></div>
+<span><span class="co">#&gt; <span style="color: #00BBBB;">ℹ</span> Downloading: https://rptsvr1.tea.texas.gov/cgi/perfreport/2011aeis.cgi</span></span>
+<span><span class="va">aeis</span></span>
+<span><span class="co">#&gt; <span style="color: #949494;"># A tibble: 6 × 11</span></span></span>
+<span><span class="co">#&gt;   DISTNAME DISTRICT REGION  year school_year level variable_code value value_num</span></span>
+<span><span class="co">#&gt;   <span style="color: #949494; font-style: italic;">&lt;chr&gt;</span>    <span style="color: #949494; font-style: italic;">&lt;chr&gt;</span>    <span style="color: #949494; font-style: italic;">&lt;chr&gt;</span>  <span style="color: #949494; font-style: italic;">&lt;int&gt;</span> <span style="color: #949494; font-style: italic;">&lt;chr&gt;</span>       <span style="color: #949494; font-style: italic;">&lt;chr&gt;</span> <span style="color: #949494; font-style: italic;">&lt;chr&gt;</span>         <span style="color: #949494; font-style: italic;">&lt;chr&gt;</span>     <span style="color: #949494; font-style: italic;">&lt;dbl&gt;</span></span></span>
+<span><span class="co">#&gt; <span style="color: #BCBCBC;">1</span> CHINA S… 161920   12      <span style="text-decoration: underline;">2</span>011 2010-11     dist… secs          D            <span style="color: #BB0000;">NA</span></span></span>
+<span><span class="co">#&gt; <span style="color: #BCBCBC;">2</span> CHINA S… 161920   12      <span style="text-decoration: underline;">2</span>011 2010-11     dist… dackdtl       UVJS         <span style="color: #BB0000;">NA</span></span></span>
+<span><span class="co">#&gt; <span style="color: #BCBCBC;">3</span> CHINA S… 161920   12      <span style="text-decoration: underline;">2</span>011 2010-11     dist… COUNTY        161         161</span></span>
+<span><span class="co">#&gt; <span style="color: #BCBCBC;">4</span> CHINA S… 161920   12      <span style="text-decoration: underline;">2</span>011 2010-11     dist… CNTYNAME      MCLE…        <span style="color: #BB0000;">NA</span></span></span>
+<span><span class="co">#&gt; <span style="color: #BCBCBC;">5</span> CHINA S… 161920   12      <span style="text-decoration: underline;">2</span>011 2010-11     dist… DFLCHART      N            <span style="color: #BB0000;">NA</span></span></span>
+<span><span class="co">#&gt; <span style="color: #BCBCBC;">6</span> CHINA S… 161920   12      <span style="text-decoration: underline;">2</span>011 2010-11     dist… D_RATING      R            <span style="color: #BB0000;">NA</span></span></span>
+<span><span class="co">#&gt; <span style="color: #949494;"># ℹ 2 more variables: masked &lt;lgl&gt;, mask_code &lt;chr&gt;</span></span></span></code></pre></div>
 </div>
 <div class="section level2">
 <h2 id="citation">Citation<a class="anchor" aria-label="anchor" href="#citation"></a>
 </h2>
 <div class="sourceCode" id="cb9"><pre class="downlit sourceCode r">
-<code class="sourceCode R"><span><span class="fu"><a href="../reference/txs_cite.html">txs_cite</a></span><span class="op">(</span><span class="va">df</span><span class="op">)</span></span></code></pre></div>
+<code class="sourceCode R"><span><span class="fu"><a href="../reference/txs_cite.html">txs_cite</a></span><span class="op">(</span><span class="va">df</span><span class="op">)</span></span>
+<span><span class="co">#&gt; Texas Education Agency (2026). "TAPR 2023-24, campus-level (advanced,</span></span>
+<span><span class="co">#&gt; csv)." Retrieved 2026-07-19T20:19:12Z via the txschools R package;</span></span>
+<span><span class="co">#&gt; SHA-256 90e9275fea32., &lt;https://rptsvr1.tea.texas.gov/cgi/sas/broker&gt;.</span></span></code></pre></div>
 </div>
 <div class="section level2">
 <h2 id="bulk-multi-year-downloads">Bulk multi-year downloads<a class="anchor" aria-label="anchor" href="#bulk-multi-year-downloads"></a>
@@ -160,8 +323,25 @@ code:</p>
 <div class="sourceCode" id="cb10"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="va">plan</span> <span class="op">&lt;-</span> <span class="fu"><a href="../reference/txs_bulk_plan.html">txs_bulk_plan</a></span><span class="op">(</span><span class="fl">2023</span><span class="op">:</span><span class="fl">2024</span>, levels <span class="op">=</span> <span class="st">"campus"</span>, datasets <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="st">"REF"</span>, <span class="st">"GRAD"</span><span class="op">)</span><span class="op">)</span></span>
 <span><span class="va">plan</span></span>
+<span><span class="co">#&gt; <span style="color: #949494;"># A tibble: 4 × 12</span></span></span>
+<span><span class="co">#&gt;   source  year school_year level  data_type dataset file_format method url      </span></span>
+<span><span class="co">#&gt;   <span style="color: #949494; font-style: italic;">&lt;chr&gt;</span>  <span style="color: #949494; font-style: italic;">&lt;int&gt;</span> <span style="color: #949494; font-style: italic;">&lt;chr&gt;</span>       <span style="color: #949494; font-style: italic;">&lt;chr&gt;</span>  <span style="color: #949494; font-style: italic;">&lt;chr&gt;</span>     <span style="color: #949494; font-style: italic;">&lt;chr&gt;</span>   <span style="color: #949494; font-style: italic;">&lt;chr&gt;</span>       <span style="color: #949494; font-style: italic;">&lt;chr&gt;</span>  <span style="color: #949494; font-style: italic;">&lt;chr&gt;</span>    </span></span>
+<span><span class="co">#&gt; <span style="color: #BCBCBC;">1</span> tapr    <span style="text-decoration: underline;">2</span>023 2022-23     campus advanced  REF     csv         post   https://…</span></span>
+<span><span class="co">#&gt; <span style="color: #BCBCBC;">2</span> tapr    <span style="text-decoration: underline;">2</span>023 2022-23     campus advanced  GRAD    csv         post   https://…</span></span>
+<span><span class="co">#&gt; <span style="color: #BCBCBC;">3</span> tapr    <span style="text-decoration: underline;">2</span>024 2023-24     campus advanced  REF     csv         get    https://…</span></span>
+<span><span class="co">#&gt; <span style="color: #BCBCBC;">4</span> tapr    <span style="text-decoration: underline;">2</span>024 2023-24     campus advanced  GRAD    csv         get    https://…</span></span>
+<span><span class="co">#&gt; <span style="color: #949494;"># ℹ 3 more variables: params &lt;chr&gt;, cache_path &lt;chr&gt;, exists_in_cache &lt;lgl&gt;</span></span></span>
 <span><span class="va">done</span> <span class="op">&lt;-</span> <span class="fu"><a href="../reference/txs_bulk_download.html">txs_bulk_download</a></span><span class="op">(</span><span class="va">plan</span>, delay <span class="op">=</span> <span class="fl">5</span><span class="op">)</span></span>
-<span><span class="va">done</span></span></code></pre></div>
+<span><span class="va">done</span></span>
+<span><span class="co">#&gt; <span style="color: #949494;"># A tibble: 4 × 17</span></span></span>
+<span><span class="co">#&gt;   source  year school_year level  data_type dataset file_format method url      </span></span>
+<span><span class="co">#&gt;   <span style="color: #949494; font-style: italic;">&lt;chr&gt;</span>  <span style="color: #949494; font-style: italic;">&lt;int&gt;</span> <span style="color: #949494; font-style: italic;">&lt;chr&gt;</span>       <span style="color: #949494; font-style: italic;">&lt;chr&gt;</span>  <span style="color: #949494; font-style: italic;">&lt;chr&gt;</span>     <span style="color: #949494; font-style: italic;">&lt;chr&gt;</span>   <span style="color: #949494; font-style: italic;">&lt;chr&gt;</span>       <span style="color: #949494; font-style: italic;">&lt;chr&gt;</span>  <span style="color: #949494; font-style: italic;">&lt;chr&gt;</span>    </span></span>
+<span><span class="co">#&gt; <span style="color: #BCBCBC;">1</span> tapr    <span style="text-decoration: underline;">2</span>023 2022-23     campus advanced  REF     csv         post   https://…</span></span>
+<span><span class="co">#&gt; <span style="color: #BCBCBC;">2</span> tapr    <span style="text-decoration: underline;">2</span>023 2022-23     campus advanced  GRAD    csv         post   https://…</span></span>
+<span><span class="co">#&gt; <span style="color: #BCBCBC;">3</span> tapr    <span style="text-decoration: underline;">2</span>024 2023-24     campus advanced  REF     csv         get    https://…</span></span>
+<span><span class="co">#&gt; <span style="color: #BCBCBC;">4</span> tapr    <span style="text-decoration: underline;">2</span>024 2023-24     campus advanced  GRAD    csv         get    https://…</span></span>
+<span><span class="co">#&gt; <span style="color: #949494;"># ℹ 8 more variables: params &lt;chr&gt;, cache_path &lt;chr&gt;, exists_in_cache &lt;lgl&gt;,</span></span></span>
+<span><span class="co">#&gt; <span style="color: #949494;">#   status &lt;chr&gt;, bytes &lt;dbl&gt;, elapsed_s &lt;dbl&gt;, sha256 &lt;chr&gt;, error &lt;chr&gt;</span></span></span></code></pre></div>
 </div>
   </main><aside class="col-md-3"><nav id="toc" aria-label="Table of contents"><h2>On this page</h2>
     </nav></aside>

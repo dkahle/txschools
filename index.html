@@ -37,6 +37,7 @@
   <ul class="dropdown-menu" aria-labelledby="dropdown-articles">
 <li><a class="dropdown-item" href="articles/getting-started.html">Getting started with txschools</a></li>
     <li><a class="dropdown-item" href="articles/masking.html">Masking and suppression in TEA data</a></li>
+    <li><a class="dropdown-item" href="articles/money-flow-diagrams.html">Money-flow diagrams from PEIMS finance data</a></li>
   </ul>
 </li>
 <li class="nav-item"><a class="nav-link" href="news/index.html">Changelog</a></li>
@@ -760,11 +761,31 @@
 <p><img src="reference/figures/README-peims-plot-1.png" alt="" width="100%"></p>
 <p>Mind the scale: a district actual file is a single ~30 MB download that parses to several million rows, so the decade above moves ~300 MB on its first run (and nothing after). Charter files are far smaller.</p>
 <div class="section level3">
+<h3 id="money-flow-sankey-diagrams">Money-flow (Sankey) diagrams<a class="anchor" aria-label="anchor" href="#money-flow-sankey-diagrams"></a>
+</h3>
+<p>Because every PEIMS row carries the full chart of accounts, a district’s year can be drawn as an income-statement-style flow diagram: <code><a href="reference/txs_peims_flow.html">txs_peims_flow()</a></code> aggregates a pull into stage-to-stage flows and <code><a href="reference/txs_plot_peims_flow.html">txs_plot_peims_flow()</a></code> renders them with <a href="https://github.com/davidsjoberg/ggsankey" class="external-link">ggsankey</a> (a GitHub-only package: <code>remotes::install_github("davidsjoberg/ggsankey")</code>).</p>
+<p>The default axes trace revenue sources into <em>funds</em> and funds out to functions. Funds are the honest join: TEA records which fund every revenue dollar entered and which fund every expenditure left, so each ribbon below is a genuine total, not an allocation – federal grant dollars visibly arrive in their own funds and leave as their programs’ spending, and each fund’s shortfall or surplus reconciles against fund balance:</p>
+<div class="sourceCode" id="cb18"><pre class="downlit sourceCode r">
+<code class="sourceCode R"><span><span class="fu"><a href="reference/txs_get_peims_finance.html">txs_get_peims_finance</a></span><span class="op">(</span><span class="fl">2024</span>, <span class="st">"actual"</span>, <span class="st">"district"</span>, verbose <span class="op">=</span> <span class="cn">FALSE</span><span class="op">)</span> <span class="op">|&gt;</span></span>
+<span>  <span class="fu"><a href="https://dplyr.tidyverse.org/reference/filter.html" class="external-link">filter</a></span><span class="op">(</span><span class="va">district</span> <span class="op">==</span> <span class="st">"161920"</span><span class="op">)</span> <span class="op">|&gt;</span></span>
+<span>  <span class="fu"><a href="reference/txs_peims_flow.html">txs_peims_flow</a></span><span class="op">(</span>lump <span class="op">=</span> <span class="fl">4</span><span class="op">)</span> <span class="op">|&gt;</span></span>
+<span>  <span class="fu"><a href="reference/txs_plot_peims_flow.html">txs_plot_peims_flow</a></span><span class="op">(</span><span class="op">)</span> <span class="op">+</span></span>
+<span>  <span class="fu"><a href="https://ggplot2.tidyverse.org/reference/labs.html" class="external-link">labs</a></span><span class="op">(</span></span>
+<span>    title <span class="op">=</span> <span class="st">"China Spring ISD, 2023-24: every dollar in, every dollar out"</span>,</span>
+<span>    subtitle <span class="op">=</span> <span class="st">"PEIMS actuals: revenue sources → funds → functions"</span></span>
+<span>  <span class="op">)</span> <span class="op">+</span></span>
+<span>  <span class="fu"><a href="https://ggplot2.tidyverse.org/reference/theme.html" class="external-link">theme</a></span><span class="op">(</span>plot.title <span class="op">=</span> <span class="fu"><a href="https://ggplot2.tidyverse.org/reference/element.html" class="external-link">element_text</a></span><span class="op">(</span>face <span class="op">=</span> <span class="st">"bold"</span>, size <span class="op">=</span> <span class="fl">15</span><span class="op">)</span>,</span>
+<span>        plot.subtitle <span class="op">=</span> <span class="fu"><a href="https://ggplot2.tidyverse.org/reference/element.html" class="external-link">element_text</a></span><span class="op">(</span>color <span class="op">=</span> <span class="st">"grey35"</span>, size <span class="op">=</span> <span class="fl">10</span>,</span>
+<span>                                     margin <span class="op">=</span> <span class="fu"><a href="https://ggplot2.tidyverse.org/reference/element.html" class="external-link">margin</a></span><span class="op">(</span>b <span class="op">=</span> <span class="fl">6</span><span class="op">)</span><span class="op">)</span><span class="op">)</span></span></code></pre></div>
+<p><img src="reference/figures/README-peims-flow-1.png" alt="" width="100%"></p>
+<p>Deeper axes are available where the accounting supports them – <code>axes = c("fund", "function", "object")</code> continues to the right into what the money bought (payroll, contracted services, supplies, capital outlay), and <code>"program"</code> splits by program intent. The flow builder returns a plain edge-list tibble, so any other Sankey tool (plotly, networkD3) can consume it too. For the full tour – the concepts behind honest flow charts, deeper axis combinations, and the same charts built with ggalluvial, plotly, and networkD3 – see <code><a href="articles/money-flow-diagrams.html">vignette("money-flow-diagrams")</a></code>.</p>
+</div>
+<div class="section level3">
 <h3 id="multi-year-analysis-with-duckdb">Multi-year analysis with DuckDB<a class="anchor" aria-label="anchor" href="#multi-year-analysis-with-duckdb"></a>
 </h3>
 <p>Filtering each year down in R, as above, works when you know the district up front. For full-grain, multi-year work – every district, every year, ~50 million rows – holding tibbles in memory stops being reasonable, and that is what the <code>db</code> argument is for.</p>
 <p><a href="https://duckdb.org/" class="external-link">DuckDB</a> is an <em>in-process</em> analytical database: a single file on disk, no server to install or administer – <code>install.packages("duckdb")</code> is the entire setup. Passing <code>db =</code> to <code><a href="reference/txs_get_peims_finance.html">txs_get_peims_finance()</a></code> (or calling <code><a href="reference/txs_write_peims_db.html">txs_write_peims_db()</a></code>) appends each pull to that file as a table named <code>peims_finance_&lt;basis&gt;_&lt;type&gt;_&lt;year&gt;</code>, alongside a <code>_peims_meta</code> provenance table:</p>
-<div class="sourceCode" id="cb18"><pre class="downlit sourceCode r">
+<div class="sourceCode" id="cb19"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="kw"><a href="https://rdrr.io/r/base/library.html" class="external-link">library</a></span><span class="op">(</span><span class="st"><a href="https://dbi.r-dbi.org" class="external-link">"DBI"</a></span><span class="op">)</span></span>
 <span><span class="fu"><a href="https://purrr.tidyverse.org/reference/map.html" class="external-link">walk</a></span><span class="op">(</span><span class="fl">2015</span><span class="op">:</span><span class="fl">2024</span>, <span class="kw">function</span><span class="op">(</span><span class="va">yr</span><span class="op">)</span> <span class="op">{</span></span>
 <span>  <span class="fu"><a href="reference/txs_get_peims_finance.html">txs_get_peims_finance</a></span><span class="op">(</span><span class="va">yr</span>, <span class="st">"actual"</span>, <span class="st">"district"</span>, db <span class="op">=</span> <span class="st">"peims.duckdb"</span><span class="op">)</span></span>
@@ -773,7 +794,7 @@
 <span><span class="va">con</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://dbi.r-dbi.org/reference/dbConnect.html" class="external-link">dbConnect</a></span><span class="op">(</span><span class="fu">duckdb</span><span class="fu">::</span><span class="fu"><a href="https://r.duckdb.org/reference/duckdb.html" class="external-link">duckdb</a></span><span class="op">(</span><span class="op">)</span>, <span class="st">"peims.duckdb"</span><span class="op">)</span></span>
 <span><span class="fu"><a href="https://dbi.r-dbi.org/reference/dbListTables.html" class="external-link">dbListTables</a></span><span class="op">(</span><span class="va">con</span><span class="op">)</span>   <span class="co"># one table per year, plus _peims_meta</span></span></code></pre></div>
 <p>You don’t need to write SQL to use it. dbplyr (installed with tidyverse) translates ordinary dplyr code into SQL that DuckDB runs inside the database: <code>tbl(con, "table_name")</code> returns a <em>lazy</em> reference to a table, pipes of <code><a href="https://dplyr.tidyverse.org/reference/filter.html" class="external-link">filter()</a></code>/<code><a href="https://dplyr.tidyverse.org/reference/summarise.html" class="external-link">summarise()</a></code>/<code><a href="https://dplyr.tidyverse.org/reference/arrange.html" class="external-link">arrange()</a></code> build a query without executing anything, and <code><a href="https://dplyr.tidyverse.org/reference/compute.html" class="external-link">collect()</a></code> runs the query and returns only the result to R. The 50 million detail rows never leave the database – only your summary does:</p>
-<div class="sourceCode" id="cb19"><pre class="downlit sourceCode r">
+<div class="sourceCode" id="cb20"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="va">actuals</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://purrr.tidyverse.org/reference/map.html" class="external-link">map</a></span><span class="op">(</span><span class="fl">2015</span><span class="op">:</span><span class="fl">2024</span>, <span class="kw">function</span><span class="op">(</span><span class="va">yr</span><span class="op">)</span> <span class="op">{</span></span>
 <span>  <span class="fu"><a href="https://dplyr.tidyverse.org/reference/tbl.html" class="external-link">tbl</a></span><span class="op">(</span><span class="va">con</span>, <span class="fu"><a href="https://stringr.tidyverse.org/reference/str_c.html" class="external-link">str_c</a></span><span class="op">(</span><span class="st">"peims_finance_actual_district_"</span>, <span class="va">yr</span><span class="op">)</span><span class="op">)</span></span>
 <span><span class="op">}</span><span class="op">)</span> <span class="op">|&gt;</span></span>
@@ -789,7 +810,7 @@
 <span><span class="fu"><a href="https://dbi.r-dbi.org/reference/dbDisconnect.html" class="external-link">dbDisconnect</a></span><span class="op">(</span><span class="va">con</span>, shutdown <span class="op">=</span> <span class="cn">TRUE</span><span class="op">)</span></span></code></pre></div>
 <p>If you’re curious what a pipeline will run, <code><a href="https://dplyr.tidyverse.org/reference/explain.html" class="external-link">show_query()</a></code> prints the generated SQL instead of executing it. Disconnect when you’re done; the <code>.duckdb</code> file persists and reopens instantly in later sessions.</p>
 <p>A lighter-weight relative is <a href="https://duckplyr.tidyverse.org" class="external-link">duckplyr</a>: the same dplyr verbs, but executed by DuckDB <em>directly against data files</em>, so the detail rows never pass through R at all – no connection, no tables, and automatic fallback to plain dplyr for anything DuckDB can’t translate. That makes it the fastest way to ask one question of a statewide file: point <code><a href="https://duckplyr.tidyverse.org/reference/read_csv_duckdb.html" class="external-link">read_csv_duckdb()</a></code> at the CSV already sitting in the cache and let DuckDB do the scanning. Summing 2023-24 expenditures by district this way runs in well under a second on the 5.4-million-row file, versus half a minute to parse it into a tibble first:</p>
-<div class="sourceCode" id="cb20"><pre class="downlit sourceCode r">
+<div class="sourceCode" id="cb21"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="kw"><a href="https://rdrr.io/r/base/library.html" class="external-link">library</a></span><span class="op">(</span><span class="st"><a href="https://duckplyr.tidyverse.org" class="external-link">"duckplyr"</a></span><span class="op">)</span></span>
 <span></span>
 <span><span class="co"># The statewide CSV behind txs_get_peims_finance(2024, ...) sits</span></span>
@@ -840,7 +861,7 @@
 <strong>Results are citable.</strong> <code><a href="reference/txs_cite.html">txs_cite()</a></code> can reference the exact file by URL, timestamp, and checksum.</li>
 </ul>
 <p><code><a href="reference/txs_cache_list.html">txs_cache_list()</a></code> inventories the cache (and prints a one-line summary), and <code><a href="reference/txs_cache_size.html">txs_cache_size()</a></code> totals it, optionally grouped:</p>
-<div class="sourceCode" id="cb21"><pre class="downlit sourceCode r">
+<div class="sourceCode" id="cb22"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="fu"><a href="reference/txs_cache_size.html">txs_cache_size</a></span><span class="op">(</span><span class="op">)</span></span>
 <span><span class="co">#&gt; # A tibble: 1 × 3</span></span>
 <span><span class="co">#&gt;   n_files size_bytes size    </span></span>
@@ -858,7 +879,7 @@
 <span><span class="co">#&gt; 5 tapr   dictionary      10    1614729 1.6 MB  </span></span>
 <span><span class="co">#&gt; 6 tapr   semantic       127   18271199 18.3 MB</span></span></code></pre></div>
 <p><code><a href="reference/txs_cache_delete.html">txs_cache_delete()</a></code> takes the same filters as <code><a href="reference/txs_cache_size.html">txs_cache_size()</a></code> – <code>source</code>, <code>year</code>, <code>level</code>, <code>data_type</code>, <code>dataset</code>, and <code>older_than</code> (a <code>Date</code>, <code>POSIXct</code>, or number of days) – so you can preview exactly what a delete will remove, then remove it:</p>
-<div class="sourceCode" id="cb22"><pre class="downlit sourceCode r">
+<div class="sourceCode" id="cb23"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="co"># How much would evicting year-old files reclaim?</span></span>
 <span><span class="fu"><a href="reference/txs_cache_size.html">txs_cache_size</a></span><span class="op">(</span>older_than <span class="op">=</span> <span class="fl">365</span><span class="op">)</span></span>
 <span></span>

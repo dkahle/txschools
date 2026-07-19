@@ -52,6 +52,15 @@ Write results to DuckDB for multi-year analysis.
 - [`txs_write_peims_db()`](https://dkahle.github.io/txschools/reference/txs_write_peims_db.md)
   : Write PEIMS financial data to DuckDB
 
+## Money-flow diagrams
+
+Sankey-style views of PEIMS finance data.
+
+- [`txs_peims_flow()`](https://dkahle.github.io/txschools/reference/txs_peims_flow.md)
+  : Build money-flow (Sankey) data from PEIMS finance rows
+- [`txs_plot_peims_flow()`](https://dkahle.github.io/txschools/reference/txs_plot_peims_flow.md)
+  : Plot a PEIMS money-flow diagram
+
 ## Cache
 
 Manage the local file cache.
