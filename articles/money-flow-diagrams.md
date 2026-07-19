@@ -250,18 +250,29 @@ why the package helpers use ggsankey instead.
 ### plotly (interactive)
 
 For hover values and draggable nodes, plotly’s `sankey` trace consumes a
-node/link list that is a few lines from the edge list. Links color by
-source node, labels carry the dollars, and the result embeds in any HTML
-page:
+node/link list that is a few lines from the edge list. When this
+vignette is built live (as on the package site) the chart below is a
+real widget – hover a ribbon for its dollars, drag the nodes around:
 
 ``` r
 
 library(plotly)
 
 nodes <- unique(c(flows$from, flows$to))
+node_pal <- c(
+  "State revenue" = "#2a78d6", "Local revenue" = "#008300",
+  "Federal revenue" = "#e87ba4", "Instruction" = "#eda100",
+  "Facility maintenance and operations" = "#1baf7a",
+  "Debt service" = "#eb6834",
+  "Facilities acquisition and construction" = "#4a3aa7"
+)
+node_col <- unname(node_pal[nodes])
+node_col[is.na(node_col)] <- "#9c9a92"
+
 plot_ly(
   type = "sankey",
-  node = list(label = nodes, pad = 18, thickness = 12),
+  valueformat = "$,.0f",
+  node = list(label = nodes, color = node_col, pad = 18, thickness = 12),
   link = list(
     source = match(flows$from, nodes) - 1L,  # zero-indexed
     target = match(flows$to, nodes) - 1L,
