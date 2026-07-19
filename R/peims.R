@@ -430,11 +430,13 @@ peims_code_tables <- function(year, type, cache, refresh, timeout, verbose) {
 
 # Code tables are headerless quoted CSVs: code, short label, long
 # label, flags... The long label (column 3) is used when present.
+# num_threads = 1: these files are tiny, and vroom's threaded reader
+# can abort the whole process on small files under knitr/sink contexts.
 peims_read_code_table <- function(path, width, label_col = NULL) {
   df <- readr::read_csv(
     path, col_names = FALSE,
     col_types = readr::cols(.default = readr::col_character()),
-    na = character(), trim_ws = TRUE, progress = FALSE
+    na = character(), trim_ws = TRUE, progress = FALSE, num_threads = 1L
   )
   if (ncol(df) < 2L || !nrow(df)) return(NULL)
   label_col <- label_col %||% if (ncol(df) >= 3L) 3L else 2L
@@ -449,7 +451,7 @@ peims_read_campus_table <- function(path) {
   df <- readr::read_csv(
     path, col_names = FALSE,
     col_types = readr::cols(.default = readr::col_character()),
-    na = character(), trim_ws = TRUE, progress = FALSE
+    na = character(), trim_ws = TRUE, progress = FALSE, num_threads = 1L
   )
   if (ncol(df) < 5L || !nrow(df)) return(NULL)
   tibble::tibble(

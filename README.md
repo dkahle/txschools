@@ -717,43 +717,159 @@ tidy output joins human-readable labels for the account codes plus
 district and campus names, so it is analysis-ready:
 
 ``` r
-act <- txs_get_peims_finance(2024, "actual", "district")
-act |>
+txs_get_peims_finance(2024, "actual", "district", verbose = FALSE) |>
   filter(district == "161920") |>              # China Spring ISD
   filter(startsWith(object_code, "6")) |>      # expenditures
   summarise(spent = sum(amount), .by = function_label) |>
   arrange(desc(spent))
+#> # A tibble: 18 × 2
+#>    function_label                                                spent
+#>    <chr>                                                         <dbl>
+#>  1 INSTRUCTION                                                18552765
+#>  2 FACILITY MAINTENANCE AND OPERATIONS                         6045456
+#>  3 DEBT SERVICE                                                4878572
+#>  4 FACILITIES ACQUISITION AND CONSTRUCTION                     3596565
+#>  5 EXTRACURRICULAR ACTIVITIES                                  1897555
+#>  6 SCHOOL LEADERSHIP                                           1774149
+#>  7 FOOD SERVICES                                               1446373
+#>  8 GENERAL ADMINISTRATION                                      1273574
+#>  9 GUIDANCE COUNSELING AND EVALUATION SERVICES                 1229953
+#> 10 STUDENT (PUPIL) TRANSPORTATION                              1054635
+#> 11 SECURITY AND MONITORING SERVICES                             600141
+#> 12 CURRICULUM DEVELOPMENT AND INSTRUCTIONAL STAFF DEVELOPMENT   403578
+#> 13 HEALTH SERVICES                                              360056
+#> 14 INSTRUCTIONAL LEADERSHIP                                     283679
+#> 15 INSTRUCTIONAL RESOURCES AND MEDIA SERVICES                   175943
+#> 16 OTHER INTERGOVERNMENTAL CHARGES                              167130
+#> 17 SOCIAL WORK SERVICES                                          92870
+#> 18 DATA PROCESSING SERVICES                                      82937
 ```
 
 Because each call downloads (and caches) one statewide file, a
-multi-year district history is just a loop: each year costs one request
-the first time and is read from disk after that. China Spring ISD’s
-instruction spending over a decade:
+multi-year district history is just a mapped pull: each year costs one
+request the first time and is read from disk after that. Here is China
+Spring ISD over a decade:
 
 ``` r
-china_spring <- lapply(2015:2024, function(yr) {
-  txs_get_peims_finance(yr, "actual", "district") |>
+china_spring <- map(2015:2024, function(yr) {
+  txs_get_peims_finance(yr, "actual", "district", verbose = FALSE) |>
     filter(district == "161920")
 }) |>
-  bind_rows()
-
-china_spring |>
-  filter(function_code == "11", startsWith(object_code, "6")) |>
-  summarise(instruction_spend = sum(amount), .by = school_year)
+  list_rbind()
 ```
 
-Mind the scale: a district actual file is a single ~30 MB download that
-parses to several million rows, so the loop above moves ~300 MB on its
-first run (and nothing after). Charter files are far smaller. For
-multi-year work at full grain, write each pull into a DuckDB database
-and aggregate lazily there instead of holding the rows in memory:
+Summarizing operating expenditures (objects 6100-6499) by function area
+shows where the district’s dollars go and how that has shifted as the
+district has grown:
 
 ``` r
-for (yr in 2015:2024) {
-  txs_get_peims_finance(yr, "actual", "district", db = "peims.duckdb")
-}
-con <- DBI::dbConnect(duckdb::duckdb(), "peims.duckdb")
+op <- china_spring |>
+  filter(grepl("^6[1-4]", object_code)) |>     # operating expenditures
+  mutate(area = str_to_sentence(function_label)) |>
+  summarise(spent = sum(amount), .by = c(year, school_year, area)) |>
+  mutate(area = fct_lump_n(area, 4, w = spent,
+                           other_level = "All other functions")) |>
+  summarise(spent = sum(spent), .by = c(year, school_year, area)) |>
+  mutate(area = fct_reorder2(area, year, spent)) |>
+  mutate(area = fct_relevel(area, "All other functions", after = Inf))
+
+op |>
+  mutate(spent = dollar(spent, scale = 1e-6, suffix = "M", accuracy = .1)) |>
+  pivot_wider(id_cols = school_year, names_from = area,
+              values_from = spent, names_sort = TRUE)
+#> # A tibble: 10 × 6
+#>    school_year Instruction Facility maintenance and ope…¹ Extracurricular acti…²
+#>    <chr>       <chr>       <chr>                          <chr>                 
+#>  1 2014-15     $11.0M      $2.1M                          $0.8M                 
+#>  2 2015-16     $11.5M      $2.2M                          $0.9M                 
+#>  3 2016-17     $12.6M      $2.3M                          $1.3M                 
+#>  4 2017-18     $13.5M      $2.6M                          $1.4M                 
+#>  5 2018-19     $13.9M      $2.5M                          $1.5M                 
+#>  6 2019-20     $15.8M      $2.6M                          $1.3M                 
+#>  7 2020-21     $16.7M      $2.9M                          $1.4M                 
+#>  8 2021-22     $17.3M      $2.9M                          $1.6M                 
+#>  9 2022-23     $18.1M      $3.7M                          $1.8M                 
+#> 10 2023-24     $18.4M      $5.5M                          $1.9M                 
+#> # ℹ abbreviated names: ¹​`Facility maintenance and operations`,
+#> #   ²​`Extracurricular activities`
+#> # ℹ 2 more variables: `School leadership` <chr>, `All other functions` <chr>
 ```
+
+``` r
+ggplot(op, aes(year, spent, color = area)) +
+  geom_line(linewidth = 0.8) +
+  geom_point(size = 2) +
+  scale_x_continuous(breaks = 2015:2024, minor_breaks = NULL) +
+  scale_y_continuous(labels = dollar_format(scale = 1e-6, suffix = "M"),
+                     limits = c(0, NA)) +
+  scale_color_manual(
+    values = c("#2a78d6", "#008300", "#e87ba4", "#eda100", "grey60")
+  ) +
+  labs(
+    title = "China Spring ISD operating expenditures by function",
+    subtitle = "PEIMS actuals, objects 6100-6499, school years 2014-15 to 2023-24",
+    x = "School year ending", y = NULL, color = NULL
+  )
+```
+
+<img src="man/figures/README-peims-plot-1.png" alt="" width="100%" />
+
+Mind the scale: a district actual file is a single ~30 MB download that
+parses to several million rows, so the decade above moves ~300 MB on its
+first run (and nothing after). Charter files are far smaller.
+
+### Multi-year analysis with DuckDB
+
+Filtering each year down in R, as above, works when you know the
+district up front. For full-grain, multi-year work – every district,
+every year, ~50 million rows – holding tibbles in memory stops being
+reasonable, and that is what the `db` argument is for.
+
+[DuckDB](https://duckdb.org/) is an *in-process* analytical database: a
+single file on disk, no server to install or administer –
+`install.packages("duckdb")` is the entire setup. Passing `db =` to
+`txs_get_peims_finance()` (or calling `txs_write_peims_db()`) appends
+each pull to that file as a table named
+`peims_finance_<basis>_<type>_<year>`, alongside a `_peims_meta`
+provenance table:
+
+``` r
+library("DBI")
+walk(2015:2024, function(yr) {
+  txs_get_peims_finance(yr, "actual", "district", db = "peims.duckdb")
+})
+
+con <- dbConnect(duckdb::duckdb(), "peims.duckdb")
+dbListTables(con)   # one table per year, plus _peims_meta
+```
+
+You don’t need to write SQL to use it. dbplyr (installed with tidyverse)
+translates ordinary dplyr code into SQL that DuckDB runs inside the
+database: `tbl(con, "table_name")` returns a *lazy* reference to a
+table, pipes of `filter()`/`summarise()`/`arrange()` build a query
+without executing anything, and `collect()` runs the query and returns
+only the result to R. The 50 million detail rows never leave the
+database – only your summary does:
+
+``` r
+actuals <- map(2015:2024, function(yr) {
+  tbl(con, str_c("peims_finance_actual_district_", yr))
+}) |>
+  reduce(union_all)   # still lazy: one virtual decade-long table
+
+actuals |>
+  filter(fund_code == "199", substr(object_code, 1, 1) == "6") |>
+  group_by(school_year, function_label) |>
+  summarise(spent = sum(amount, na.rm = TRUE), .groups = "drop") |>
+  arrange(school_year, desc(spent)) |>
+  collect()   # the SQL runs in DuckDB; only the summary reaches R
+
+dbDisconnect(con, shutdown = TRUE)
+```
+
+If you’re curious what a pipeline will run, `show_query()` prints the
+generated SQL instead of executing it. Disconnect when you’re done; the
+`.duckdb` file persists and reopens instantly in later sessions.
 
 ## Two ways to get data, and what each one costs
 
@@ -804,17 +920,19 @@ summary), and `txs_cache_size()` totals it, optionally grouped:
 ``` r
 txs_cache_size()
 #> # A tibble: 1 × 3
-#>   n_files size_bytes size   
-#>     <int>      <dbl> <chr>  
-#> 1     147   87415274 87.4 MB
+#>   n_files size_bytes size    
+#>     <int>      <dbl> <chr>   
+#> 1     167  406841631 406.8 MB
 
 txs_cache_size(by = c("source", "data_type"))
-#> # A tibble: 3 × 5
-#>   source data_type  n_files size_bytes size   
-#>   <chr>  <chr>        <int>      <dbl> <chr>  
-#> 1 tapr   advanced        11   67672045 67.7 MB
-#> 2 tapr   dictionary       9    1472030 1.5 MB 
-#> 3 tapr   semantic       127   18271199 18.3 MB
+#> # A tibble: 5 × 5
+#>   source data_type  n_files size_bytes size    
+#>   <chr>  <chr>        <int>      <dbl> <chr>   
+#> 1 peims  actual          10  247217755 247.2 MB
+#> 2 peims  budget          10   72208602 72.2 MB 
+#> 3 tapr   advanced        11   67672045 67.7 MB 
+#> 4 tapr   dictionary       9    1472030 1.5 MB  
+#> 5 tapr   semantic       127   18271199 18.3 MB
 ```
 
 `txs_cache_delete()` takes the same filters as `txs_cache_size()` –
