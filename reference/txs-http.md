@@ -1,0 +1,36 @@
+# Internal HTTP helpers
+
+Thin wrappers around `httr2` that enforce:
+
+- a clear, package-identifying User-Agent,
+
+- per-host throttling (configurable via
+  `options("txschools.rate_per_sec")`),
+
+- retries with exponential back-off on transient errors,
+
+- configurable timeout (`options("txschools.timeout")`),
+
+- a `robots.txt` check before each request.
+
+`method = "post"` sends `params` as a URL-encoded form body (used for
+TEA's SAS broker and AEIS CGI endpoints); `method = "get"` appends
+`params` to the query string. `params` may also be a single pre-encoded
+query string like `"sumlev=C&setpick=REF"`.
+
+## Usage
+
+``` r
+http_request(url, timeout = NULL, max_tries = NULL)
+
+http_get(url, timeout = NULL, max_tries = NULL)
+
+http_download(
+  url,
+  dest,
+  timeout = NULL,
+  max_tries = NULL,
+  method = c("get", "post"),
+  params = NULL
+)
+```
