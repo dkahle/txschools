@@ -58,11 +58,19 @@ and it is why
 [`txs_peims_flow()`](https://dkahle.github.io/txschools/reference/txs_peims_flow.md)
 refuses to put `"source"` next to anything but `"fund"`.
 
-One wrinkle remains: funds rarely break even in a year. A district draws
-down bond proceeds it banked earlier, or tucks away a surplus. The flow
-builder reconciles each fund with explicit **“From fund balance”** and
-**“To fund balance”** nodes, so both sides of every fund sum identically
-and the chart accounts for every dollar.
+Two wrinkles remain. First, money also enters and leaves funds outside
+ordinary revenue and spending: PEIMS records **inter-fund transfers**
+(objects 7915 in, 8911 out) and **other financing sources and uses**
+(bond, loan, and lease proceeds, asset sales; the remaining
+7900s/8900s). The flow builder draws these through their own nodes –
+transfers as half-edges via “Transfers from/to other funds”, because TEA
+records each end on its own fund but not the fund-to-fund pairing.
+Second, funds rarely break even in a year: a district draws down bond
+proceeds it banked earlier, or tucks away a surplus. What is left after
+revenues, spending, transfers, and financing is each fund’s true change
+in its pot, reconciled with explicit **“From fund balance”** and **“To
+fund balance”** nodes – so both sides of every fund sum identically and
+the chart accounts for every dollar.
 
 ## The built-in pipeline
 
@@ -77,20 +85,20 @@ returns a regular ggplot.
 
 flows <- txs_peims_flow(cs, lump = 4)
 flows
-#> # A tibble: 28 × 5
-#>    from_axis from              to_axis to                                 amount
-#>    <chr>     <chr>             <chr>   <chr>                               <dbl>
-#>  1 source    State revenue     fund    General fund                       1.98e7
-#>  2 source    Local revenue     fund    General fund                       9.65e6
-#>  3 source    Local revenue     fund    Debt service funds                 4.70e6
-#>  4 source    From fund balance fund    Capital projects funds             3.50e6
-#>  5 source    From fund balance fund    General fund                       2.84e6
-#>  6 source    Federal revenue   fund    Other funds                        9.60e5
-#>  7 source    State revenue     fund    Debt service funds                 8.59e5
-#>  8 source    Federal revenue   fund    National school breakfast and lun… 7.73e5
-#>  9 source    Local revenue     fund    National school breakfast and lun… 7.02e5
-#> 10 source    Local revenue     fund    Other funds                        5.09e5
-#> # ℹ 18 more rows
+#> # A tibble: 31 × 5
+#>    from_axis from                       to_axis to                        amount
+#>    <chr>     <chr>                      <chr>   <chr>                      <dbl>
+#>  1 source    State revenue              fund    General fund              1.98e7
+#>  2 source    Local revenue              fund    General fund              9.65e6
+#>  3 source    Local revenue              fund    Debt service funds        4.70e6
+#>  4 source    From fund balance          fund    Capital projects funds    2.64e6
+#>  5 source    Other financing sources    fund    General fund              1.98e6
+#>  6 source    From fund balance          fund    General fund              1.72e6
+#>  7 source    Federal revenue            fund    Other funds               9.60e5
+#>  8 source    State revenue              fund    Debt service funds        8.59e5
+#>  9 source    Transfers from other funds fund    Capital projects funds    8.58e5
+#> 10 source    Federal revenue            fund    National school breakfas… 7.73e5
+#> # ℹ 21 more rows
 ```
 
 The edge list is the whole interface: `from_axis`/`from` and

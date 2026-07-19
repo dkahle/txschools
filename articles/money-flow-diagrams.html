@@ -123,12 +123,20 @@ can only leave as Title I spending. That makes
 <code>source -&gt; fund -&gt; function</code> a chain of genuine
 recorded totals, and it is why <code><a href="../reference/txs_peims_flow.html">txs_peims_flow()</a></code> refuses to
 put <code>"source"</code> next to anything but <code>"fund"</code>.</p>
-<p>One wrinkle remains: funds rarely break even in a year. A district
-draws down bond proceeds it banked earlier, or tucks away a surplus. The
-flow builder reconciles each fund with explicit <strong>“From fund
-balance”</strong> and <strong>“To fund balance”</strong> nodes, so both
-sides of every fund sum identically and the chart accounts for every
-dollar.</p>
+<p>Two wrinkles remain. First, money also enters and leaves funds
+outside ordinary revenue and spending: PEIMS records <strong>inter-fund
+transfers</strong> (objects 7915 in, 8911 out) and <strong>other
+financing sources and uses</strong> (bond, loan, and lease proceeds,
+asset sales; the remaining 7900s/8900s). The flow builder draws these
+through their own nodes – transfers as half-edges via “Transfers from/to
+other funds”, because TEA records each end on its own fund but not the
+fund-to-fund pairing. Second, funds rarely break even in a year: a
+district draws down bond proceeds it banked earlier, or tucks away a
+surplus. What is left after revenues, spending, transfers, and financing
+is each fund’s true change in its pot, reconciled with explicit
+<strong>“From fund balance”</strong> and <strong>“To fund
+balance”</strong> nodes – so both sides of every fund sum identically
+and the chart accounts for every dollar.</p>
 </div>
 <div class="section level2">
 <h2 id="the-built-in-pipeline">The built-in pipeline<a class="anchor" aria-label="anchor" href="#the-built-in-pipeline"></a>
@@ -141,20 +149,20 @@ returns a regular ggplot.</p>
 <div class="sourceCode" id="cb2"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="va">flows</span> <span class="op">&lt;-</span> <span class="fu"><a href="../reference/txs_peims_flow.html">txs_peims_flow</a></span><span class="op">(</span><span class="va">cs</span>, lump <span class="op">=</span> <span class="fl">4</span><span class="op">)</span></span>
 <span><span class="va">flows</span></span>
-<span><span class="co">#&gt; <span style="color: #949494;"># A tibble: 28 × 5</span></span></span>
-<span><span class="co">#&gt;    from_axis from              to_axis to                                 amount</span></span>
-<span><span class="co">#&gt;    <span style="color: #949494; font-style: italic;">&lt;chr&gt;</span>     <span style="color: #949494; font-style: italic;">&lt;chr&gt;</span>             <span style="color: #949494; font-style: italic;">&lt;chr&gt;</span>   <span style="color: #949494; font-style: italic;">&lt;chr&gt;</span>                               <span style="color: #949494; font-style: italic;">&lt;dbl&gt;</span></span></span>
-<span><span class="co">#&gt; <span style="color: #BCBCBC;"> 1</span> source    State revenue     fund    General fund                       1.98<span style="color: #949494;">e</span>7</span></span>
-<span><span class="co">#&gt; <span style="color: #BCBCBC;"> 2</span> source    Local revenue     fund    General fund                       9.65<span style="color: #949494;">e</span>6</span></span>
-<span><span class="co">#&gt; <span style="color: #BCBCBC;"> 3</span> source    Local revenue     fund    Debt service funds                 4.70<span style="color: #949494;">e</span>6</span></span>
-<span><span class="co">#&gt; <span style="color: #BCBCBC;"> 4</span> source    From fund balance fund    Capital projects funds             3.50<span style="color: #949494;">e</span>6</span></span>
-<span><span class="co">#&gt; <span style="color: #BCBCBC;"> 5</span> source    From fund balance fund    General fund                       2.84<span style="color: #949494;">e</span>6</span></span>
-<span><span class="co">#&gt; <span style="color: #BCBCBC;"> 6</span> source    Federal revenue   fund    Other funds                        9.60<span style="color: #949494;">e</span>5</span></span>
-<span><span class="co">#&gt; <span style="color: #BCBCBC;"> 7</span> source    State revenue     fund    Debt service funds                 8.59<span style="color: #949494;">e</span>5</span></span>
-<span><span class="co">#&gt; <span style="color: #BCBCBC;"> 8</span> source    Federal revenue   fund    National school breakfast and lun… 7.73<span style="color: #949494;">e</span>5</span></span>
-<span><span class="co">#&gt; <span style="color: #BCBCBC;"> 9</span> source    Local revenue     fund    National school breakfast and lun… 7.02<span style="color: #949494;">e</span>5</span></span>
-<span><span class="co">#&gt; <span style="color: #BCBCBC;">10</span> source    Local revenue     fund    Other funds                        5.09<span style="color: #949494;">e</span>5</span></span>
-<span><span class="co">#&gt; <span style="color: #949494;"># ℹ 18 more rows</span></span></span></code></pre></div>
+<span><span class="co">#&gt; <span style="color: #949494;"># A tibble: 31 × 5</span></span></span>
+<span><span class="co">#&gt;    from_axis from                       to_axis to                        amount</span></span>
+<span><span class="co">#&gt;    <span style="color: #949494; font-style: italic;">&lt;chr&gt;</span>     <span style="color: #949494; font-style: italic;">&lt;chr&gt;</span>                      <span style="color: #949494; font-style: italic;">&lt;chr&gt;</span>   <span style="color: #949494; font-style: italic;">&lt;chr&gt;</span>                      <span style="color: #949494; font-style: italic;">&lt;dbl&gt;</span></span></span>
+<span><span class="co">#&gt; <span style="color: #BCBCBC;"> 1</span> source    State revenue              fund    General fund              1.98<span style="color: #949494;">e</span>7</span></span>
+<span><span class="co">#&gt; <span style="color: #BCBCBC;"> 2</span> source    Local revenue              fund    General fund              9.65<span style="color: #949494;">e</span>6</span></span>
+<span><span class="co">#&gt; <span style="color: #BCBCBC;"> 3</span> source    Local revenue              fund    Debt service funds        4.70<span style="color: #949494;">e</span>6</span></span>
+<span><span class="co">#&gt; <span style="color: #BCBCBC;"> 4</span> source    From fund balance          fund    Capital projects funds    2.64<span style="color: #949494;">e</span>6</span></span>
+<span><span class="co">#&gt; <span style="color: #BCBCBC;"> 5</span> source    Other financing sources    fund    General fund              1.98<span style="color: #949494;">e</span>6</span></span>
+<span><span class="co">#&gt; <span style="color: #BCBCBC;"> 6</span> source    From fund balance          fund    General fund              1.72<span style="color: #949494;">e</span>6</span></span>
+<span><span class="co">#&gt; <span style="color: #BCBCBC;"> 7</span> source    Federal revenue            fund    Other funds               9.60<span style="color: #949494;">e</span>5</span></span>
+<span><span class="co">#&gt; <span style="color: #BCBCBC;"> 8</span> source    State revenue              fund    Debt service funds        8.59<span style="color: #949494;">e</span>5</span></span>
+<span><span class="co">#&gt; <span style="color: #BCBCBC;"> 9</span> source    Transfers from other funds fund    Capital projects funds    8.58<span style="color: #949494;">e</span>5</span></span>
+<span><span class="co">#&gt; <span style="color: #BCBCBC;">10</span> source    Federal revenue            fund    National school breakfas… 7.73<span style="color: #949494;">e</span>5</span></span>
+<span><span class="co">#&gt; <span style="color: #949494;"># ℹ 21 more rows</span></span></span></code></pre></div>
 <p>The edge list is the whole interface:
 <code>from_axis</code>/<code>from</code> and
 <code>to_axis</code>/<code>to</code> name the stages and nodes,

@@ -62,13 +62,30 @@ dollar paid which bill, `"source"` may only be followed by `"fund"`
 (money is only traceable source-to-spending *through* a fund);
 requesting e.g. `c("source", "function")` errors.
 
-## Fund balances
+## Transfers, proceeds, and fund balances
 
-Funds rarely break even within a year. When `axes` starts at `"source"`,
-each fund's shortfall is fed by a **"From fund balance"** node on the
-source axis and each fund's surplus drains to a **"To fund balance"**
-node on the following axis, so both sides of every fund reconcile
-exactly.
+When `axes` starts at `"source"`, the flow uses everything PEIMS records
+about a fund's two sides:
+
+- ordinary revenues (objects 5700-5900) enter by source class;
+
+- **inter-fund transfers** (objects 7915 in / 8911 out) enter from a
+  "Transfers from other funds" node and leave to a "Transfers to other
+  funds" node. PEIMS records each end on its own fund but not the
+  fund-to-fund pairing, so transfers are drawn as half-edges through
+  those nodes rather than as invented fund-to-fund ribbons;
+
+- **other financing sources and uses** (remaining 7900s/8900s: bond,
+  loan, and lease proceeds, asset sales, ...) enter from an "Other
+  financing sources" node and leave to an "Other financing uses" node;
+
+- what remains is the genuine change in the fund's pot: each fund's
+  shortfall is fed by a **"From fund balance"** node and each fund's
+  surplus drains to a **"To fund balance"** node, so both sides of every
+  fund reconcile exactly.
+
+Without a `"source"` axis (spending-side charts), only expenditure rows
+(6000s) are drawn and the 7000s/8000s are omitted.
 
 ## Examples
 
