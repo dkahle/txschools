@@ -197,6 +197,12 @@
   now served as the attendance/absenteeism slice of TEA’s combined
   attendance-graduation-dropout page (the `graduation` page), which is
   where TEA publishes those measures.
+
 - The semantic page fetcher now detects SAS-broker error pages, refuses
   to cache them, warns like any other failed page, and treats previously
   cached error pages as stale (refetched automatically).
+
+- New vignette `data-dictionaries`: human-readable documentation of
+  every table the package returns, rendered directly from the shipped
+  `data-dict.yaml` so the vignette and the machine-readable dictionary
+  cannot drift apart.

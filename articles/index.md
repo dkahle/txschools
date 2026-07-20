@@ -4,6 +4,8 @@
 
 - [Getting started with
   txschools](https://dkahle.github.io/txschools/articles/getting-started.md):
+- [Data dictionaries: every table txschools
+  returns](https://dkahle.github.io/txschools/articles/data-dictionaries.md):
 - [Masking and suppression in TEA
   data](https://dkahle.github.io/txschools/articles/masking.md):
 - [Money-flow diagrams from PEIMS finance

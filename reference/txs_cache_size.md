@@ -45,7 +45,7 @@ column, plus the grouping column(s) if `by` is given.
 ``` r
 txs_cache_size()
 #> # A tibble: 1 × 3
-#>   n_files size_bytes size    
-#>     <int>      <dbl> <chr>   
-#> 1     183  411928767 411.9 MB
+#>   n_files size_bytes size  
+#>     <int>      <dbl> <chr> 
+#> 1     184  412043793 412 MB
 ```
