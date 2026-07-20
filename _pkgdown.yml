@@ -23,6 +23,7 @@ reference:
   - txs_get_tapr_file
   - txs_get_tapr_dictionary
   - txs_get_src
+  - txs_open_src
   - txs_get_aeis
   - txs_get_peims_finance
 

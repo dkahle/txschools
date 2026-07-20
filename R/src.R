@@ -167,6 +167,55 @@ txs_get_src <- function(year,
   out
 }
 
+#' Open a campus or district's Texas School Report Card
+#'
+#' Since 2020, TEA publishes School Report Cards exclusively at
+#' <https://txschools.gov> -- a JavaScript application this package
+#' cannot scrape (see [txs_get_src()] for the parsed 2004-2019
+#' archive). This function is the complement for anything
+#' [txs_get_src()] cannot reach: it does not download or parse
+#' anything, it just launches the right page in a browser.
+#'
+#' @param geography A single campus (9-digit) or district (6-digit)
+#'   number, quoted to preserve leading zeros.
+#' @param level `"campus"` or `"district"`.
+#' @param tab Which tab of the report card to land on -- TEA-defined,
+#'   e.g. `"overview"`, `"academic"`, `"stakeholder-and-community-input"`,
+#'   or (district level) `"schools"` to list its campuses.
+#' @param browse If `TRUE` (the default), open the URL with
+#'   [utils::browseURL()]. Set `FALSE` to only build the URL, e.g. for
+#'   scripting or testing.
+#' @return Invisibly, the URL.
+#' @examples
+#' \dontrun{
+#' txs_open_src("161920102")                     # China Spring Elementary
+#' txs_open_src("161920", level = "district")     # China Spring ISD
+#' }
+#' @export
+txs_open_src <- function(geography,
+                         level = c("campus", "district"),
+                         tab = "overview",
+                         browse = TRUE) {
+  level <- match.arg(level)
+  if (is.null(geography) || length(geography) != 1L ||
+      is.na(geography) || !nzchar(as.character(geography))) {
+    stop(
+      "`geography` must be a single campus (9-digit) or district ",
+      "(6-digit) number, quoted to preserve leading zeros.",
+      call. = FALSE
+    )
+  }
+  geography <- as.character(geography)
+
+  view <- if (identical(level, "campus")) "school" else "district"
+  url <- sprintf(
+    "%s/?view=%s&id=%s&tab=%s&lng=en",
+    TXS_LANDING_SRC, view, geography, utils::URLencode(tab, reserved = TRUE)
+  )
+  if (isTRUE(browse)) utils::browseURL(url)
+  invisible(url)
+}
+
 # Build the broker request for one SRC report. Parameter sets verified
 # against TEA's live search forms (2011 and 2019 eras).
 src_report_request <- function(year, level, geography, format) {

@@ -18,6 +18,9 @@ TXS_BASE_AEIS <- "https://rptsvr1.tea.texas.gov/perfreport/aeis"
 TXS_BASE_SRC  <- "https://rptsvr1.tea.texas.gov/perfreport/src"
 
 #' @rdname txs-constants
+TXS_LANDING_SRC <- "https://txschools.gov"
+
+#' @rdname txs-constants
 TXS_LANDING_TAPR <- paste0(
   "https://tea.texas.gov/texas-schools/accountability/",
   "academic-accountability/performance-reporting/",

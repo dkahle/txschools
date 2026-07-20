@@ -127,3 +127,41 @@ test_that("txs_get_src rejects broker error pages", {
     "did not return an SRC"
   )
 })
+
+test_that("txs_open_src builds the verified txschools.gov URL", {
+  # Pattern confirmed live 2026-07: view=school|district, id, tab, lng.
+  expect_equal(
+    txs_open_src("161920102", browse = FALSE),
+    "https://txschools.gov/?view=school&id=161920102&tab=overview&lng=en"
+  )
+  expect_equal(
+    txs_open_src("161920", level = "district", browse = FALSE),
+    "https://txschools.gov/?view=district&id=161920&tab=overview&lng=en"
+  )
+  expect_equal(
+    txs_open_src("161920", level = "district", tab = "schools",
+                 browse = FALSE),
+    "https://txschools.gov/?view=district&id=161920&tab=schools&lng=en"
+  )
+})
+
+test_that("txs_open_src launches the browser only when asked", {
+  opened <- NULL
+  testthat::local_mocked_bindings(
+    browseURL = function(url, ...) { opened <<- url; invisible(url) },
+    .package = "utils"
+  )
+  url <- txs_open_src("161920102")
+  expect_equal(opened, url)
+
+  opened <- NULL
+  txs_open_src("161920102", browse = FALSE)
+  expect_null(opened)
+})
+
+test_that("txs_open_src validates geography like txs_get_src", {
+  expect_error(txs_open_src(NULL), "single campus")
+  expect_error(txs_open_src(character(0)), "single campus")
+  expect_error(txs_open_src(NA), "single campus")
+  expect_error(txs_open_src(""), "single campus")
+})
