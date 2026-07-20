@@ -25,6 +25,11 @@ Agency (TEA):
   [`txs_get_peims_finance()`](https://dkahle.github.io/txschools/reference/txs_get_peims_finance.md),
   with optional DuckDB output via
   [`txs_write_peims_db()`](https://dkahle.github.io/txschools/reference/txs_write_peims_db.md).
+- **Property tax rates** (2005-06-present): district M&O/I&S rates from
+  the Texas Comptroller and TEA workbooks via
+  [`txs_get_tax_rates()`](https://dkahle.github.io/txschools/reference/txs_get_tax_rates.md),
+  with an interactive map explorer
+  ([`txs_viewer()`](https://dkahle.github.io/txschools/reference/txs_viewer.md)).
 
 Every table these functions return is documented in a machine-readable
 data dictionary – column types, ranges, masking semantics,
@@ -1018,6 +1023,47 @@ data frame, plain dplyr is already quick, and routing it through
 DuckDB’s R bridge is slower. duckplyr earns its keep when DuckDB reads
 the file itself.
 
+## School district tax rates and the district viewer
+
+[`txs_get_tax_rates()`](https://dkahle.github.io/txschools/reference/txs_get_tax_rates.md)
+merges the Texas Comptroller’s annual rates-and-levies workbooks (tax
+years 2019+, primary) with TEA’s adopted-tax-rates workbook (2005-06
+onward, backfill) into one tidy district-year table – a `rate_source`
+column records which file each row came from:
+
+``` r
+
+txs_get_tax_rates(2024, verbose = FALSE) |>
+  filter(district == "161920")
+#> # A tibble: 1 × 9
+#>    year school_year district district_name    mo_rate is_rate total_rate   mcr
+#>   <int> <chr>       <chr>    <chr>              <dbl>   <dbl>      <dbl> <dbl>
+#> 1  2024 2023-24     161920   China Spring ISD   0.677   0.344       1.02    NA
+#> # ℹ 1 more variable: rate_source <chr>
+```
+
+[`txs_derive_pennies()`](https://dkahle.github.io/txschools/reference/txs_derive_pennies.md)
+adds the HB3 decomposition of the M&O rate (Tier One compressed rate,
+golden pennies, copper pennies) when you supply Maximum Compressed Rates
+via the `mcr` argument – TEA publishes no clean statewide MCR file, so
+it is a pluggable input (see
+[`?txs_get_tax_rates`](https://dkahle.github.io/txschools/reference/txs_get_tax_rates.md)).
+[`txs_crosswalk()`](https://dkahle.github.io/txschools/reference/txs_crosswalk.md)
+and
+[`txs_boundaries()`](https://dkahle.github.io/txschools/reference/txs_boundaries.md)
+join district-keyed tables to Census geography for mapping.
+
+Those pieces power an interactive slippy-map explorer that ships with
+the package – an animated choropleth of every district’s rates over two
+decades, with search, a taxes-on-a-home mode, and a multi-district
+comparison tab:
+
+``` r
+
+txs_viewer_prepare()   # bake the data (first run downloads a few files)
+txs_viewer()           # launch the app
+```
+
 ## Two ways to get data, and what each one costs
 
 The examples above use two different acquisition patterns, and it is
@@ -1079,18 +1125,23 @@ txs_cache_size()
 #> # A tibble: 1 × 3
 #>   n_files size_bytes size    
 #>     <int>      <dbl> <chr>   
-#> 1     171  408449717 408.4 MB
+#> 1     182  411928251 411.9 MB
 
 txs_cache_size(by = c("source", "data_type"))
-#> # A tibble: 6 × 5
-#>   source data_type  n_files size_bytes size    
-#>   <chr>  <chr>        <int>      <dbl> <chr>   
-#> 1 aeis   rates            2    1430175 1.4 MB  
-#> 2 peims  actual          10  247217755 247.2 MB
-#> 3 peims  budget          10   72208602 72.2 MB 
-#> 4 tapr   advanced        12   67707257 67.7 MB 
-#> 5 tapr   dictionary      10    1614729 1.6 MB  
-#> 6 tapr   semantic       127   18271199 18.3 MB
+#> # A tibble: 11 × 5
+#>    source     data_type     n_files size_bytes size    
+#>    <chr>      <chr>           <int>      <dbl> <chr>   
+#>  1 aeis       rates               2    1430175 1.4 MB  
+#>  2 boundaries cartographic        1     473262 473.3 kB
+#>  3 crosswalk  ccd_directory       1      38704 38.7 kB 
+#>  4 peims      actual             10  247217755 247.2 MB
+#>  5 peims      budget             10   72208602 72.2 MB 
+#>  6 tapr       advanced           12   67707257 67.7 MB 
+#>  7 tapr       dictionary         10    1614729 1.6 MB  
+#>  8 tapr       semantic          127   18271199 18.3 MB 
+#>  9 taxrates   comptroller         6    1947651 1.9 MB  
+#> 10 taxrates   tea                 1     242091 242.1 kB
+#> 11 viewer     artifact            2     776826 776.8 kB
 ```
 
 [`txs_cache_delete()`](https://dkahle.github.io/txschools/reference/txs_cache_delete.md)

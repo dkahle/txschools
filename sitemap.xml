@@ -20,6 +20,7 @@
 <url><loc>https://dkahle.github.io/txschools/reference/sha256_file.html</loc></url>
 <url><loc>https://dkahle.github.io/txschools/reference/txs-constants.html</loc></url>
 <url><loc>https://dkahle.github.io/txschools/reference/txs-http.html</loc></url>
+<url><loc>https://dkahle.github.io/txschools/reference/txs_boundaries.html</loc></url>
 <url><loc>https://dkahle.github.io/txschools/reference/txs_bulk_download.html</loc></url>
 <url><loc>https://dkahle.github.io/txschools/reference/txs_bulk_plan.html</loc></url>
 <url><loc>https://dkahle.github.io/txschools/reference/txs_cache_delete.html</loc></url>
@@ -28,6 +29,8 @@
 <url><loc>https://dkahle.github.io/txschools/reference/txs_cache_size.html</loc></url>
 <url><loc>https://dkahle.github.io/txschools/reference/txs_catalog.html</loc></url>
 <url><loc>https://dkahle.github.io/txschools/reference/txs_cite.html</loc></url>
+<url><loc>https://dkahle.github.io/txschools/reference/txs_crosswalk.html</loc></url>
+<url><loc>https://dkahle.github.io/txschools/reference/txs_derive_pennies.html</loc></url>
 <url><loc>https://dkahle.github.io/txschools/reference/txs_directory.html</loc></url>
 <url><loc>https://dkahle.github.io/txschools/reference/txs_find_campus.html</loc></url>
 <url><loc>https://dkahle.github.io/txschools/reference/txs_get_aeis.html</loc></url>
@@ -36,11 +39,15 @@
 <url><loc>https://dkahle.github.io/txschools/reference/txs_get_tapr.html</loc></url>
 <url><loc>https://dkahle.github.io/txschools/reference/txs_get_tapr_dictionary.html</loc></url>
 <url><loc>https://dkahle.github.io/txschools/reference/txs_get_tapr_file.html</loc></url>
+<url><loc>https://dkahle.github.io/txschools/reference/txs_get_tax_rates.html</loc></url>
+<url><loc>https://dkahle.github.io/txschools/reference/txs_homestead_exemption.html</loc></url>
 <url><loc>https://dkahle.github.io/txschools/reference/txs_list_downloads.html</loc></url>
 <url><loc>https://dkahle.github.io/txschools/reference/txs_list_tapr_datasets.html</loc></url>
 <url><loc>https://dkahle.github.io/txschools/reference/txs_list_years.html</loc></url>
 <url><loc>https://dkahle.github.io/txschools/reference/txs_peims_flow.html</loc></url>
 <url><loc>https://dkahle.github.io/txschools/reference/txs_plot_peims_flow.html</loc></url>
+<url><loc>https://dkahle.github.io/txschools/reference/txs_viewer.html</loc></url>
+<url><loc>https://dkahle.github.io/txschools/reference/txs_viewer_prepare.html</loc></url>
 <url><loc>https://dkahle.github.io/txschools/reference/txs_write_peims_db.html</loc></url>
 <url><loc>https://dkahle.github.io/txschools/reference/txs_write_tapr_db.html</loc></url>
 <url><loc>https://dkahle.github.io/txschools/reference/year_from_label.html</loc></url>

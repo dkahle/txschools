@@ -61,6 +61,35 @@ Sankey-style views of PEIMS finance data.
 - [`txs_plot_peims_flow()`](https://dkahle.github.io/txschools/reference/txs_plot_peims_flow.md)
   : Plot a PEIMS money-flow diagram
 
+## Tax rates
+
+District property-tax rates and derived measures.
+
+- [`txs_get_tax_rates()`](https://dkahle.github.io/txschools/reference/txs_get_tax_rates.md)
+  : Download school district property tax rates
+- [`txs_derive_pennies()`](https://dkahle.github.io/txschools/reference/txs_derive_pennies.md)
+  : Derive the golden/copper penny decomposition of the M&O rate
+- [`txs_homestead_exemption()`](https://dkahle.github.io/txschools/reference/txs_homestead_exemption.md)
+  : Texas homestead exemption for school taxes, by year
+
+## Geography
+
+Join districts to Census geography.
+
+- [`txs_crosswalk()`](https://dkahle.github.io/txschools/reference/txs_crosswalk.md)
+  : Crosswalk TEA district numbers to NCES LEAIDs (Census GEOIDs)
+- [`txs_boundaries()`](https://dkahle.github.io/txschools/reference/txs_boundaries.md)
+  : Texas school district boundaries (via tigris)
+
+## District viewer
+
+The interactive tax-rate map explorer.
+
+- [`txs_viewer_prepare()`](https://dkahle.github.io/txschools/reference/txs_viewer_prepare.md)
+  : Prepare data for the district tax-rate viewer
+- [`txs_viewer()`](https://dkahle.github.io/txschools/reference/txs_viewer.md)
+  : Launch the district tax-rate viewer
+
 ## Cache
 
 Manage the local file cache.

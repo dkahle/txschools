@@ -99,6 +99,14 @@
 <li>New <code><a href="../reference/txs_plot_peims_flow.html">txs_plot_peims_flow()</a></code>: renders the edge list as a Sankey diagram via the ggsankey package (GitHub-only; in Suggests with a guarded, informative error when absent). Returns a normal ggplot.</li>
 <li>New vignette <code>money-flow-diagrams</code>: the concepts behind honest money-flow charts (recorded joins vs allocation, funds as the traceable link, fund-balance reconciliation) and the same charts built with ggsankey, ggalluvial, plotly, and networkD3.</li>
 </ul></div>
+<div class="section level3">
+<h3 id="tax-rates-geography-and-the-district-viewer-0-0-0-9000">Tax rates, geography, and the district viewer (2026-07)<a class="anchor" aria-label="anchor" href="#tax-rates-geography-and-the-district-viewer-0-0-0-9000"></a></h3>
+<ul><li>The txschoolviewer project is absorbed into txschools, including its uncommitted app improvements. Its targets pipeline is replaced by package getters + <code><a href="../reference/txs_viewer_prepare.html">txs_viewer_prepare()</a></code>; targets is not a dependency.</li>
+<li>New source <code><a href="../reference/txs_get_tax_rates.html">txs_get_tax_rates()</a></code>: district M&amp;O/I&amp;S property-tax rates, 2005-06 onward – Texas Comptroller rates-and-levies workbooks (primary, tax years 2019+) backfilled by TEA’s adopted-tax-rates workbook, with per-row provenance. MCR is a pluggable <code>mcr</code> argument pending an official statewide source; <code><a href="../reference/txs_derive_pennies.html">txs_derive_pennies()</a></code> adds the HB3 Tier One/golden/copper decomposition and <code><a href="../reference/txs_homestead_exemption.html">txs_homestead_exemption()</a></code> the exemption schedule.</li>
+<li>New geography helpers: <code><a href="../reference/txs_crosswalk.html">txs_crosswalk()</a></code> (TEA district number to NCES LEAID/Census GEOID, via the Urban Institute Education Data API) and <code><a href="../reference/txs_boundaries.html">txs_boundaries()</a></code> (simplified Census district boundaries via tigris/sf).</li>
+<li>New <code><a href="../reference/txs_viewer.html">txs_viewer()</a></code>: the interactive district tax-rate map explorer (MapLibre via mapgl; animated choropleth, district search, taxes-on-a-home mode, comparison tab), shipped in <code>inst/viewer/</code> with all app dependencies in Suggests. <code><a href="../reference/txs_viewer_prepare.html">txs_viewer_prepare()</a></code> bakes its data from the package getters into the cache.</li>
+<li>Follow-ups recorded, not implemented: wiring an official MCR source; a shinylive build of the viewer (geojson boundaries, no runtime sf); a viewer screenshot/vignette.</li>
+</ul></div>
 </div>
   </main><aside class="col-md-3"><nav id="toc" aria-label="Table of contents"><h2>On this page</h2>
     </nav></aside></div>
