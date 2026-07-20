@@ -38,6 +38,10 @@ the package:
 system.file("data-dict.yaml", package = "txschools")
 ```
 
+`vignette("data-dictionaries")` renders the full dictionary – every
+table, column by column, plus relationships and the TEA glossary –
+generated from that same file.
+
 ## Disclaimer
 
 `txschools` is **not affiliated with or endorsed by the Texas Education
@@ -231,7 +235,7 @@ txs_list_tapr_datasets()
 #> 13 bilingual_esl     Bilingual education and English … bilingual_… camp… year, …
 #> 14 ccmr              College, career, and military re… ccmr        camp… year, …
 #> 15 graduation        Graduation                        graduation  camp… year, …
-#> 16 attendance        Attendance                        attendance  camp… year, …
+#> 16 attendance        Attendance                        graduation  camp… year, …
 #> 17 staff             Staff information                 staff       camp… year, …
 #> 18 finance           Finance                           finance     camp… year, …
 ```
@@ -240,6 +244,9 @@ So a typical basic useage for `txs_get_tapr()` for one year would be:
 
 ``` r
 (china_spring_elem_2025 <- txs_get_tapr(year = 2025, level = "campus", geography = "161920102"))
+#> Warning: ! TAPR finance page unavailable for 161920102 (2025); datasets "finance"
+#>   returned empty.
+#> ℹ Reason: TEA's SAS broker returned an error page (no report output).
 #> <tapr>
 #> * grade: 6 rows
 #> * ethnic: 14 rows
@@ -256,7 +263,7 @@ So a typical basic useage for `txs_get_tapr()` for one year would be:
 #> * bilingual_esl: 765 rows
 #> * ccmr: 7 rows
 #> * graduation: 920 rows
-#> * attendance: 0 rows
+#> * attendance: 52 rows
 #> * staff: 102 rows
 #> * finance: 0 rows
 
@@ -1055,9 +1062,9 @@ summary), and `txs_cache_size()` totals it, optionally grouped:
 ``` r
 txs_cache_size()
 #> # A tibble: 1 × 3
-#>   n_files size_bytes size    
-#>     <int>      <dbl> <chr>   
-#> 1     182  411928251 411.9 MB
+#>   n_files size_bytes size  
+#>     <int>      <dbl> <chr> 
+#> 1     184  412043793 412 MB
 
 txs_cache_size(by = c("source", "data_type"))
 #> # A tibble: 11 × 5
@@ -1070,7 +1077,7 @@ txs_cache_size(by = c("source", "data_type"))
 #>  5 peims      budget             10   72208602 72.2 MB 
 #>  6 tapr       advanced           12   67707257 67.7 MB 
 #>  7 tapr       dictionary         10    1614729 1.6 MB  
-#>  8 tapr       semantic          127   18271199 18.3 MB 
+#>  8 tapr       semantic          129   18386741 18.4 MB 
 #>  9 taxrates   comptroller         6    1947651 1.9 MB  
 #> 10 taxrates   tea                 1     242091 242.1 kB
 #> 11 viewer     artifact            2     776826 776.8 kB
