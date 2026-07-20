@@ -118,7 +118,7 @@ df <- txs_get_tapr_file(
   data_type   = "advanced",
   output      = "tidy"
 )
-#> ℹ Using cached file: /private/var/folders/sj/hzqk2hps4wzfm92lfjdhpv3m0000gn/T/RtmpUUVDcW/txschools-vignette/tapr/2023-24/campus/advanced/tapr_campus_2024_ref.csv
+#> ℹ Using cached file: /private/var/folders/sj/hzqk2hps4wzfm92lfjdhpv3m0000gn/T/RtmpPQI9gs/txschools-vignette/tapr/2023-24/campus/advanced/tapr_campus_2024_ref.csv
 df
 #> # A tibble: 63,574 × 15
 #>    CAMPUS    CAMPNAME DISTRICT DISTNAME REGION GRDTYPE GRDSPAN  year school_year
@@ -191,7 +191,7 @@ attr(df, "txschools")
 #> [1] "https://rptsvr1.tea.texas.gov/cgi/sas/broker"
 #> 
 #> $retrieved_at
-#> [1] "2026-07-20T15:44:08Z"
+#> [1] "2026-07-20T19:35:47Z"
 #> 
 #> $sha256
 #> [1] "90e9275fea3219509c3b3ee2a4ad598ac4115667950935dc192bf3fb72a7ab95"
@@ -200,7 +200,7 @@ attr(df, "txschools")
 #> [1] 1240102
 #> 
 #> $cache_path
-#> [1] "/private/var/folders/sj/hzqk2hps4wzfm92lfjdhpv3m0000gn/T/RtmpUUVDcW/txschools-vignette/tapr/2023-24/campus/advanced/tapr_campus_2024_ref.csv"
+#> [1] "/private/var/folders/sj/hzqk2hps4wzfm92lfjdhpv3m0000gn/T/RtmpPQI9gs/txschools-vignette/tapr/2023-24/campus/advanced/tapr_campus_2024_ref.csv"
 #> 
 #> $used_cache
 #> [1] TRUE
@@ -268,7 +268,7 @@ aeis
 
 txs_cite(df)
 #> Texas Education Agency (2026). "TAPR 2023-24, campus-level (advanced,
-#> csv)." Retrieved 2026-07-20T15:44:08Z via the txschools R package;
+#> csv)." Retrieved 2026-07-20T19:35:47Z via the txschools R package;
 #> SHA-256 90e9275fea32., <https://rptsvr1.tea.texas.gov/cgi/sas/broker>.
 ```
 

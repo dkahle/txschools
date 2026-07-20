@@ -83,10 +83,12 @@ Join districts to Census geography.
 
 ## District viewer
 
-The interactive tax-rate map explorer.
+The interactive tax-rate map and finance-flow explorer.
 
 - [`txs_viewer_prepare()`](https://dkahle.github.io/txschools/reference/txs_viewer_prepare.md)
   : Prepare data for the district tax-rate viewer
+- [`txs_viewer_prepare_finance()`](https://dkahle.github.io/txschools/reference/txs_viewer_prepare_finance.md)
+  : Prepare data for the district viewer's Finance tab
 - [`txs_viewer()`](https://dkahle.github.io/txschools/reference/txs_viewer.md)
   : Launch the district tax-rate viewer
 

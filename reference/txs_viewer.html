@@ -4,12 +4,20 @@ tax rates: an animated choropleth (MapLibre via mapgl) with the M&amp;amp;O
 rate decomposed into the Tier One compressed rate and golden/copper
 pennies, district search, taxes-on-a-home mode, and a multi-district
 comparison tab. Run txs_viewer_prepare() once first to bake the
-data."><meta property="og:description" content="An interactive slippy-map explorer of Texas school district property
+data. If txs_viewer_prepare_finance() has also been run, a third
+Finance tab shows an interactive PEIMS money-flow (Sankey) diagram
+per district/year/basis; it needs the optional ggsankey package
+and degrades gracefully (with an install hint) when that isn't
+installed."><meta property="og:description" content="An interactive slippy-map explorer of Texas school district property
 tax rates: an animated choropleth (MapLibre via mapgl) with the M&amp;amp;O
 rate decomposed into the Tier One compressed rate and golden/copper
 pennies, district search, taxes-on-a-home mode, and a multi-district
 comparison tab. Run txs_viewer_prepare() once first to bake the
-data."></head><body>
+data. If txs_viewer_prepare_finance() has also been run, a third
+Finance tab shows an interactive PEIMS money-flow (Sankey) diagram
+per district/year/basis; it needs the optional ggsankey package
+and degrades gracefully (with an install hint) when that isn't
+installed."></head><body>
     <a href="#main" class="visually-hidden-focusable">Skip to contents</a>
 
 
@@ -55,7 +63,11 @@ tax rates: an animated choropleth (MapLibre via mapgl) with the M&amp;O
 rate decomposed into the Tier One compressed rate and golden/copper
 pennies, district search, taxes-on-a-home mode, and a multi-district
 comparison tab. Run <code><a href="txs_viewer_prepare.html">txs_viewer_prepare()</a></code> once first to bake the
-data.</p>
+data. If <code><a href="txs_viewer_prepare_finance.html">txs_viewer_prepare_finance()</a></code> has also been run, a third
+Finance tab shows an interactive PEIMS money-flow (Sankey) diagram
+per district/year/basis; it needs the optional <code>ggsankey</code> package
+and degrades gracefully (with an install hint) when that isn't
+installed.</p>
     </div>
 
     <div class="section level2">

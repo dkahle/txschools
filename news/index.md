@@ -206,3 +206,40 @@
   every table the package returns, rendered directly from the shipped
   `data-dict.yaml` so the vignette and the machine-readable dictionary
   cannot drift apart.
+
+### Finance tab for the district viewer (2026-07)
+
+- New third tab in
+  [`txs_viewer()`](https://dkahle.github.io/txschools/reference/txs_viewer.md):
+  an interactive PEIMS money-flow (Sankey) diagram for any district or
+  charter, with school-year, budget-vs-actual, axis-preset, and
+  category-lumping controls. Uses the same
+  [`txs_peims_flow()`](https://dkahle.github.io/txschools/reference/txs_peims_flow.md)/[`txs_plot_peims_flow()`](https://dkahle.github.io/txschools/reference/txs_plot_peims_flow.md)
+  as the README and vignette examples, so the look is consistent
+  everywhere.
+- New
+  [`txs_viewer_prepare_finance()`](https://dkahle.github.io/txschools/reference/txs_viewer_prepare_finance.md):
+  a separate, optional bake step (default: last 5 school years, both
+  budget and actual, both districts and charters) that fetches and
+  aggregates PEIMS data away from campus-level (`fin_unit`) detail into
+  a small district-wide summary, so the tab filters and redraws
+  instantly with no live network calls. Slower than
+  [`txs_viewer_prepare()`](https://dkahle.github.io/txschools/reference/txs_viewer_prepare.md)
+  (roughly 10-20 minutes by default) and entirely optional – the Map and
+  Compare tabs work without it, and the Finance tab shows a plain
+  instructional message rather than an error when it hasn’t been run.
+- The Finance tab’s chart engine (`ggsankey`, GitHub-only) stays a
+  *soft* dependency checked only where the tab renders – it does not
+  widen
+  [`txs_viewer()`](https://dkahle.github.io/txschools/reference/txs_viewer.md)’s
+  hard package-guard list, so installing the viewer for the Map/Compare
+  tabs never requires a non-CRAN package.
+- Bug fix in
+  [`txs_peims_flow()`](https://dkahle.github.io/txschools/reference/txs_peims_flow.md):
+  the fund-balance/transfer reconciliation could error (“arguments must
+  have same length”) for any district-year with zero inter-fund
+  transfers or zero other financing activity – a common case, not an
+  edge case – because an internal label helper returned a stray length-1
+  value instead of `character(0)` on a zero-row input (a
+  [`base::paste()`](https://rdrr.io/r/base/paste.html) recycling quirk).
+  Fixed at the source; regression-tested.
