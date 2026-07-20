@@ -1,5 +1,34 @@
 # Data dictionaries: every table txschools returns
 
+**Contents**
+
+- [Campus and district directory](#campus-and-district-directory)
+- [TAPR student-information
+  datasets](#tapr-student-information-datasets)
+- [TAPR average class sizes](#tapr-average-class-sizes)
+- [TAPR report-page datasets (generic long
+  form)](#tapr-report-page-datasets-generic-long-form)
+- [TAPR statewide data files (tidy long
+  form)](#tapr-statewide-data-files-tidy-long-form)
+- [TAPR variable dictionary](#tapr-variable-dictionary)
+- [AEIS statewide data files (tidy long
+  form)](#aeis-statewide-data-files-tidy-long-form)
+- [School Report Card (HTML era, tidy long
+  form)](#school-report-card-html-era-tidy-long-form)
+- [PEIMS financial data (budget or
+  actual)](#peims-financial-data-budget-or-actual)
+- [PEIMS provenance table
+  (\_peims_meta)](#peims-provenance-table-_peims_meta)
+- [School district property tax
+  rates](#school-district-property-tax-rates)
+- [TEA district number to NCES LEAID
+  crosswalk](#tea-district-number-to-nces-leaid-crosswalk)
+- [District boundaries (sf)](#district-boundaries-sf)
+- [How the tables relate](#how-the-tables-relate)
+- [Glossary](#glossary)
+- [Using the dictionary
+  programmatically](#using-the-dictionary-programmatically)
+
 Every table the package returns is documented in a machine-readable data
 dictionary shipped with the package, written in the
 [data-dict.yaml](https://data-dict.tidyverse.org) format (spec 0.1.0):
