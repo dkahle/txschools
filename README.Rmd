@@ -49,6 +49,10 @@ the package:
 system.file("data-dict.yaml", package = "txschools")
 ```
 
+`vignette("data-dictionaries")` renders the full dictionary -- every
+table, column by column, plus relationships and the TEA glossary --
+generated from that same file.
+
 ## Disclaimer
 
 `txschools` is **not affiliated with or endorsed by the Texas Education

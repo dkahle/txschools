@@ -1,0 +1,126 @@
+---
+title: "Data dictionaries: every table txschools returns"
+output: rmarkdown::html_vignette
+vignette: >
+  %\VignetteIndexEntry{Data dictionaries: every table txschools returns}
+  %\VignetteEngine{knitr::rmarkdown}
+  %\VignetteEncoding{UTF-8}
+---
+
+```{r setup, include = FALSE}
+knitr::opts_chunk$set(collapse = TRUE, comment = "#>")
+`%||%` <- function(x, y) if (is.null(x)) y else x
+```
+
+Every table the package returns is documented in a machine-readable
+data dictionary shipped with the package, written in the
+[data-dict.yaml](https://data-dict.tidyverse.org) format (spec 0.1.0):
+column types, ranges, representative values, masking semantics,
+cross-table relationships, and a glossary of TEA vocabulary. This
+vignette *renders that file* -- it is generated from the same
+dictionary your code can read, so the two can never drift apart:
+
+```{r read}
+dict <- yaml::read_yaml(
+  system.file("data-dict.yaml", package = "txschools")
+)
+length(dict$tables)
+```
+
+Two conventions apply everywhere and are worth internalizing before
+reading the tables:
+
+* **Years are ending years.** `year = 2025` means the 2024-25 school
+  year, matching TEA's URLs; `school_year` is the label form.
+* **Identifiers are zero-padded strings.** Campus numbers are nine
+  digits, district numbers six; keeping them as strings preserves
+  leading zeros.
+
+```{r render, echo = FALSE, results = "asis"}
+one_line <- function(x) {
+  if (is.null(x)) "" else gsub("\\s+", " ", trimws(x))
+}
+
+fmt_type <- function(col) {
+  ty <- col$type %||% ""
+  if (!is.null(col$units)) ty <- paste0(ty, " [", col$units, "]")
+  ty
+}
+
+fmt_vals <- function(col) {
+  if (!is.null(col$values)) {
+    v <- col$values
+    if (is.list(v) && !is.null(names(v))) {
+      paste(sprintf("`%s`", names(v)), collapse = ", ")
+    } else {
+      paste(sprintf("`%s`", unlist(v)), collapse = ", ")
+    }
+  } else if (!is.null(col$range)) {
+    paste0(col$range[[1]], " to ", col$range[[2]])
+  } else if (!is.null(col$examples)) {
+    paste(sprintf("`%s`", unlist(col$examples)), collapse = ", ")
+  } else {
+    ""
+  }
+}
+
+fmt_req <- function(col) {
+  cns <- unlist(col$constraints)
+  if (is.null(cns)) return("")
+  if ("primary_key" %in% cns) "key" else if ("required" %in% cns) "yes" else ""
+}
+
+for (tb in dict$tables) {
+  cat("\n## ", tb$label %||% tb$name, "\n\n", sep = "")
+  cat("**`", tb$name, "`** — ", one_line(tb$description), "\n\n", sep = "")
+  if (!is.null(tb$details)) cat(one_line(tb$details), "\n\n", sep = "")
+  cols <- data.frame(
+    column = vapply(tb$columns, function(cl) paste0("`", cl$name, "`"), ""),
+    type = vapply(tb$columns, fmt_type, ""),
+    required = vapply(tb$columns, fmt_req, ""),
+    description = vapply(tb$columns, function(cl) one_line(cl$description), ""),
+    `values / examples` = vapply(tb$columns, fmt_vals, ""),
+    check.names = FALSE
+  )
+  print(knitr::kable(cols, row.names = FALSE))
+  cat("\n")
+}
+```
+
+# How the tables relate
+
+```{r relationships, echo = FALSE, results = "asis"}
+rel <- data.frame(
+  join = vapply(dict$relationships, function(r) paste0("`", r$join, "`"), ""),
+  cardinality = vapply(dict$relationships, function(r) r$cardinality %||% "", ""),
+  description = vapply(dict$relationships, function(r) one_line(r$description), ""),
+  check.names = FALSE
+)
+print(knitr::kable(rel, row.names = FALSE))
+```
+
+# Glossary
+
+```{r glossary, echo = FALSE, results = "asis"}
+for (term in names(dict$glossary)) {
+  cat("**", term, "** — ", one_line(dict$glossary[[term]]), "\n\n", sep = "")
+}
+```
+
+# Using the dictionary programmatically
+
+The dictionary is plain YAML, so anything -- your code, a colleague's
+Python, an AI agent -- can consume it directly:
+
+```{r programmatic, eval = FALSE}
+dict <- yaml::read_yaml(system.file("data-dict.yaml", package = "txschools"))
+
+# Column names of the PEIMS finance table:
+peims <- Filter(function(t) t$name == "peims_finance", dict$tables)[[1]]
+vapply(peims$columns, `[[`, "", "name")
+```
+
+The [data-dict CLI](https://data-dict.tidyverse.org) can validate the
+file against the specification, and the same conventions (one
+`data-dict.yaml` per data collection) work for documenting your own
+derived datasets downstream.

@@ -91,5 +91,6 @@ articles:
   navbar: ~
   contents:
   - getting-started
+  - data-dictionaries
   - masking
   - money-flow-diagrams
