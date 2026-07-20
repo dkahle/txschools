@@ -47,5 +47,5 @@ txs_cache_size()
 #> # A tibble: 1 × 3
 #>   n_files size_bytes size    
 #>     <int>      <dbl> <chr>   
-#> 1     182  411928251 411.9 MB
+#> 1     183  411928767 411.9 MB
 ```
