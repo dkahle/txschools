@@ -230,10 +230,12 @@ tables:
       - name: page_source
         type: enum
         values: [student, staar_performance, staar_progress,
-                 bilingual_esl, ccmr, graduation, attendance, staff,
-                 finance]
+                 bilingual_esl, ccmr, graduation, staff, finance]
+        description: >
+          Which TAPR page the cell came from. The attendance dataset is
+          a filtered slice of the graduation page (TEA's combined
+          attendance/graduation/dropout report).
         constraints: [required]
-        description: Which TAPR page the cell came from.
       - name: table_index
         type: number(ordinal)
         description: Position of the source table on the page.

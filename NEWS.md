@@ -155,3 +155,14 @@
 * Follow-ups recorded, not implemented: wiring an official MCR
   source; a shinylive build of the viewer (geojson boundaries, no
   runtime sf); a viewer screenshot/vignette.
+
+## TAPR attendance fix (2026-07)
+
+* TEA's standalone TAPR attendance endpoint has never produced output;
+  the `attendance` semantic dataset silently returned zero rows. It is
+  now served as the attendance/absenteeism slice of TEA's combined
+  attendance-graduation-dropout page (the `graduation` page), which is
+  where TEA publishes those measures.
+* The semantic page fetcher now detects SAS-broker error pages,
+  refuses to cache them, warns like any other failed page, and treats
+  previously cached error pages as stale (refetched automatically).

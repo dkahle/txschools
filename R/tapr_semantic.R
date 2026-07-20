@@ -60,7 +60,10 @@ txs_list_tapr_datasets <- function() {
       "bilingual_esl",
       "ccmr",
       "graduation",
-      "attendance",
+      # TEA serves attendance on the combined attendance/graduation/
+      # dropout page; the standalone attendance.sas endpoint has never
+      # produced output.
+      "graduation",
       "staff",
       "finance"
     ),
@@ -226,7 +229,6 @@ tapr_page_catalog <- function() {
       "bilingual_esl",
       "ccmr",
       "graduation",
-      "attendance",
       "staff",
       "finance"
     ),
@@ -237,7 +239,6 @@ tapr_page_catalog <- function() {
       "reports/tapr/biling.sas",
       "reports/tapr/ccmr.sas",
       "reports/tapr/grad.sas",
-      "reports/tapr/attendance.sas",
       "reports/tapr/staff.sas",
       "reports/tapr/finance.sas"
     )
@@ -255,6 +256,11 @@ download_tapr_semantic_page <- function(year, level, geography, page_source,
   if (!cache) dest <- temp_download_path(filename)
 
   used_cache <- FALSE
+  if (cache && !refresh && file.exists(dest) && tapr_sas_error_page(dest)) {
+    # A broker error page cached before error detection existed: treat
+    # it as stale and refetch.
+    refresh <- TRUE
+  }
   if (cache && !refresh && file.exists(dest)) {
     if (verbose) cli::cli_alert_info(
       "Using cached TAPR {tapr_page_message_label(page_source)} page"
@@ -276,6 +282,11 @@ download_tapr_semantic_page <- function(year, level, geography, page_source,
     }
     dir.create(dirname(dest), recursive = TRUE, showWarnings = FALSE)
     info <- http_download(url, dest, timeout = timeout)
+    if (tapr_sas_error_page(dest)) {
+      unlink(dest)
+      stop("TEA's SAS broker returned an error page (no report output).",
+           call. = FALSE)
+    }
     meta <- list(
       source = "tapr",
       year = year,
@@ -301,6 +312,27 @@ download_tapr_semantic_page <- function(year, level, geography, page_source,
   page$path <- dest
   page$meta <- c(meta, list(used_cache = used_cache))
   page
+}
+
+# TEA's SAS broker signals a failed report with a small HTML error page
+# instead of an HTTP error; detect it so it is never cached or parsed
+# as an empty report.
+tapr_sas_error_page <- function(path) {
+  head <- tryCatch(
+    suppressWarnings(readChar(path, nchars = 2048L, useBytes = TRUE)),
+    error = function(e) ""
+  )
+  grepl("Error reading SAS output|did not produce any output", head,
+        useBytes = TRUE)
+}
+
+# The attendance dataset is the attendance/absenteeism slice of the
+# combined attendance-graduation-dropout page.
+tapr_filter_attendance <- function(x) {
+  if (!nrow(x)) return(x)
+  hit <- grepl("attendance|absen", paste(x$section, x$row_label),
+               ignore.case = TRUE)
+  x[hit, , drop = FALSE]
 }
 
 tapr_page_message_label <- function(page_source) {
@@ -445,6 +477,9 @@ extract_tapr_semantic_pages <- function(pages, year, level, geography,
         pages[[source]], key = key, year = year,
         level = level, geography = geography
       )
+      if (identical(key, "attendance")) {
+        out[[key]] <- tapr_filter_attendance(out[[key]])
+      }
     }
   }
   out
