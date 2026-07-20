@@ -13,6 +13,33 @@ vignette: >
 ```{r setup, include = FALSE}
 knitr::opts_chunk$set(collapse = TRUE, comment = "#>")
 `%||%` <- function(x, y) if (is.null(x)) y else x
+
+# Reproduces pandoc's automatic header-identifier algorithm (lowercase,
+# strip punctuation except _ . -, spaces to hyphens) so links below
+# resolve regardless of the heading level pkgdown renders them at.
+slugify <- function(x) {
+  x <- tolower(x)
+  x <- gsub("[^a-z0-9_. -]", "", x)
+  gsub(" +", "-", x)
+}
+```
+
+```{r toc, echo = FALSE, results = "asis"}
+# A manual contents block up top: the sidebar "On this page" nav
+# pkgdown adds is a side rail that collapses away on narrow (phone)
+# screens, so this is generated in the body text itself from the same
+# dictionary the rest of the vignette reads -- it cannot go stale.
+.dict_toc <- yaml::read_yaml(
+  system.file("data-dict.yaml", package = "txschools")
+)
+toc_labels <- c(
+  vapply(.dict_toc$tables, function(tb) tb$label %||% tb$name, ""),
+  "How the tables relate", "Glossary",
+  "Using the dictionary programmatically"
+)
+cat("**Contents**\n\n")
+for (lab in toc_labels) cat(sprintf("- [%s](#%s)\n", lab, slugify(lab)))
+cat("\n")
 ```
 
 Every table the package returns is documented in a machine-readable
