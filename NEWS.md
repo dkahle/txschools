@@ -128,3 +128,30 @@
   money-flow charts (recorded joins vs allocation, funds as the
   traceable link, fund-balance reconciliation) and the same charts
   built with ggsankey, ggalluvial, plotly, and networkD3.
+
+## Tax rates, geography, and the district viewer (2026-07)
+
+* The txschoolviewer project is absorbed into txschools, including its
+  uncommitted app improvements. Its targets pipeline is replaced by
+  package getters + `txs_viewer_prepare()`; targets is not a
+  dependency.
+* New source `txs_get_tax_rates()`: district M&O/I&S property-tax
+  rates, 2005-06 onward -- Texas Comptroller rates-and-levies
+  workbooks (primary, tax years 2019+) backfilled by TEA's
+  adopted-tax-rates workbook, with per-row provenance. MCR is a
+  pluggable `mcr` argument pending an official statewide source;
+  `txs_derive_pennies()` adds the HB3 Tier One/golden/copper
+  decomposition and `txs_homestead_exemption()` the exemption
+  schedule.
+* New geography helpers: `txs_crosswalk()` (TEA district number to
+  NCES LEAID/Census GEOID, via the Urban Institute Education Data
+  API) and `txs_boundaries()` (simplified Census district boundaries
+  via tigris/sf).
+* New `txs_viewer()`: the interactive district tax-rate map explorer
+  (MapLibre via mapgl; animated choropleth, district search,
+  taxes-on-a-home mode, comparison tab), shipped in `inst/viewer/`
+  with all app dependencies in Suggests. `txs_viewer_prepare()` bakes
+  its data from the package getters into the cache.
+* Follow-ups recorded, not implemented: wiring an official MCR
+  source; a shinylive build of the viewer (geojson boundaries, no
+  runtime sf); a viewer screenshot/vignette.

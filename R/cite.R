@@ -9,7 +9,8 @@
 #'
 #' @param x Optional. A tibble returned by `txs_get_*()`. If `NULL`,
 #'   returns a generic citation for the named `source`.
-#' @param source `"tapr"`, `"src"`, `"aeis"`, or `"peims"`.
+#' @param source One of `"tapr"`, `"src"`, `"aeis"`, `"peims"`,
+#'   `"taxrates"`, `"crosswalk"`, `"boundaries"`.
 #' @return A `bibentry`.
 #' @examples
 #' txs_cite(source = "tapr")
@@ -44,6 +45,19 @@ txs_cite <- function(x = NULL, source = "tapr") {
       publisher = "Texas Education Agency"
     ))
   }
+  if (!is.null(x) && !is.null(attr(x, "txschools")) &&
+      isTRUE(attr(x, "txschools")$source %in%
+               c("taxrates", "crosswalk", "boundaries"))) {
+    # Non-TEA (or multi-publisher) sources: cite the program, noting
+    # the retrieval time recorded on the object.
+    meta <- attr(x, "txschools")
+    bib <- txs_cite(source = meta$source)
+    retrieved <- meta$retrieved_at %||% NA_character_
+    if (!is.na(retrieved)) {
+      bib$note <- paste0(bib$note, " Retrieved ", retrieved, ".")
+    }
+    return(bib)
+  }
   if (!is.null(x) && !is.null(attr(x, "txschools"))) {
     meta <- attr(x, "txschools")
     return(utils::bibentry(
@@ -67,25 +81,52 @@ txs_cite <- function(x = NULL, source = "tapr") {
       publisher = "Texas Education Agency"
     ))
   }
-  source <- match.arg(source, c("tapr", "src", "aeis", "peims"))
+  source <- match.arg(source, c("tapr", "src", "aeis", "peims", "taxrates",
+                                "crosswalk", "boundaries"))
   prog <- switch(
     source,
     tapr = list(name = "Texas Academic Performance Reports",
-                url  = TXS_LANDING_TAPR),
+                url  = TXS_LANDING_TAPR,
+                publisher = "Texas Education Agency"),
     aeis = list(name = "Academic Excellence Indicator System",
-                url  = "https://rptsvr1.tea.texas.gov/perfreport/aeis/"),
+                url  = "https://rptsvr1.tea.texas.gov/perfreport/aeis/",
+                publisher = "Texas Education Agency"),
     src  = list(name = "School Report Card",
-                url  = "https://rptsvr1.tea.texas.gov/perfreport/src/"),
+                url  = "https://rptsvr1.tea.texas.gov/perfreport/src/",
+                publisher = "Texas Education Agency"),
     peims = list(name = "PEIMS Financial Data (single file)",
-                 url  = TXS_INDEX_PEIMS)
+                 url  = TXS_INDEX_PEIMS,
+                 publisher = "Texas Education Agency"),
+    taxrates = list(
+      name = "School District Property Tax Rates and Levies",
+      url  = TXS_INDEX_COMPTROLLER_RATES,
+      publisher = "Texas Comptroller of Public Accounts",
+      note = paste(
+        "Public data; accessed via the txschools R package.",
+        "School years before 2019-20 (and gaps) derive from the Texas",
+        "Education Agency adopted-tax-rates workbook:",
+        TXS_URL_TEA_ADOPTED_RATES
+      )
+    ),
+    crosswalk = list(
+      name = "Education Data Portal: CCD school district directory",
+      url  = "https://educationdata.urban.org/",
+      publisher = "Urban Institute"
+    ),
+    boundaries = list(
+      name = "Cartographic Boundary Files: Unified School Districts",
+      url  = "https://www.census.gov/geographies/mapping-files.html",
+      publisher = "U.S. Census Bureau"
+    )
   )
   utils::bibentry(
     bibtype = "Misc",
     title   = prog$name,
-    author  = utils::person(family = "Texas Education Agency"),
+    author  = utils::person(family = prog$publisher),
     year    = format(Sys.Date(), "%Y"),
     url     = prog$url,
-    publisher = "Texas Education Agency",
-    note    = "Public data; accessed via the txschools R package."
+    publisher = prog$publisher,
+    note    = prog$note %||%
+      "Public data; accessed via the txschools R package."
   )
 }

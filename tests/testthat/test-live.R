@@ -98,3 +98,28 @@ test_that("live: PEIMS charter budget pull parses end to end", {
   expect_true("fund_label" %in% names(x))
   expect_lt(mean(is.na(x$fund_label)), 0.05)
 })
+
+test_that("live: Comptroller tax-rates workbook downloads and parses", {
+  skip_if_not_live()
+  local_cache()
+  x <- txs_get_tax_rates(2024, verbose = FALSE)
+  expect_gt(nrow(x), 1000)
+  expect_true("comptroller" %in% x$rate_source)
+  expect_true(all(x$mo_rate < 2, na.rm = TRUE))
+})
+
+test_that("live: TEA adopted-rates workbook covers the deep history", {
+  skip_if_not_live()
+  local_cache()
+  x <- txs_get_tax_rates(c(2006, 2021), verbose = FALSE)
+  expect_setequal(unique(x$rate_source), "tea")
+  expect_gt(sum(x$year == 2006), 900)
+})
+
+test_that("live: Urban crosswalk API resolves Texas districts", {
+  skip_if_not_live()
+  local_cache()
+  xw <- txs_crosswalk(verbose = FALSE)
+  expect_gt(nrow(xw), 1000)
+  expect_true("161920" %in% xw$district)
+})

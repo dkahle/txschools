@@ -22,7 +22,7 @@ details: >
   all-character, and is not described here.
 
 version:
-  date: 2026-07-18
+  date: 2026-07-19
 
 tables:
   - name: directory
@@ -603,6 +603,107 @@ tables:
         description: ISO 8601 timestamp of the database write.
         examples: ["2026-07-18T23:04:12Z"]
 
+  - name: tax_rates
+    label: School district property tax rates
+    description: >
+      One row per district per school year: adopted M&O and I&S
+      property-tax rates merged from the Texas Comptroller's annual
+      rates-and-levies workbooks (tax years 2019 onward, primary) and
+      TEA's adopted-tax-rates workbook (2005-06 onward, backfill).
+      Returned by txs_get_tax_rates(). Rates are dollars per $100 of
+      taxable value.
+    details: >
+      txs_derive_pennies() appends the HB3 decomposition columns
+      (tier_one_rate, golden_rate, copper_rate, enrichment_rate,
+      golden_pennies, copper_pennies); they are NA whenever `mcr` is NA.
+      `mcr` itself is a user-supplied pluggable input -- TEA publishes
+      no clean statewide Maximum Compressed Rate file -- so it is NA
+      unless the caller provides one.
+    columns:
+      - name: year
+        type: number(ordinal)
+        constraints: [required]
+        range: [2006, 2027]
+      - name: school_year
+        type: string
+        constraints: [required]
+        examples: ["2023-24", "2005-06"]
+      - name: district
+        type: string
+        constraints: [required]
+        description: Six-digit county-district number, zero-padded.
+        examples: ["161920", "057905"]
+      - name: district_name
+        type: string
+        examples: ["CHINA SPRING ISD", "China Spring ISD"]
+      - name: mo_rate
+        type: number(quantity)
+        units: USD per $100 taxable value
+        constraints: [required]
+        range: [0, 2]
+      - name: is_rate
+        type: number(quantity)
+        units: USD per $100 taxable value
+        range: [0, 1]
+      - name: total_rate
+        type: number(quantity)
+        units: USD per $100 taxable value
+        description: >
+          From the Comptroller file where published, else mo_rate plus
+          is_rate.
+        range: [0, 3]
+      - name: mcr
+        type: number(quantity)
+        units: USD per $100 taxable value
+        description: Maximum Compressed Rate; NA unless supplied by the caller.
+        range: [0, 2]
+      - name: rate_source
+        type: enum
+        values:
+          comptroller: Texas Comptroller rates-and-levies workbook.
+          tea: TEA adopted-tax-rates workbook (backfill).
+        constraints: [required]
+
+  - name: crosswalk
+    label: TEA district number to NCES LEAID crosswalk
+    description: >
+      One row per Texas school district linking TEA's six-digit
+      county-district number to the seven-digit NCES LEAID (the Census
+      GEOID used by boundary files). Built from the NCES CCD directory
+      via the Urban Institute Education Data API. Returned by
+      txs_crosswalk().
+    columns:
+      - name: geoid
+        type: string
+        constraints: [primary_key]
+        description: Seven-digit NCES LEAID / Census GEOID.
+        examples: ["4813960", "4816860"]
+      - name: district
+        type: string
+        constraints: [required]
+        examples: ["161920", "057905"]
+      - name: lea_name
+        type: string
+        examples: ["CHINA SPRING ISD"]
+
+  - name: boundaries
+    label: District boundaries (sf)
+    description: >
+      Simplified Census cartographic school-district boundaries for
+      Texas in WGS84, one polygon per district, returned as an sf data
+      frame by txs_boundaries(). Join TEA-keyed tables through the
+      crosswalk table.
+    columns:
+      - name: geoid
+        type: string
+        constraints: [primary_key]
+        examples: ["4813960"]
+      - name: name
+        type: string
+        examples: ["China Spring ISD"]
+      - name: geometry
+        description: sf polygon geometry (EPSG:4326); not a scalar column.
+
 relationships:
   - join: peims_finance.district = directory.district
     cardinality: many-to-one
@@ -623,6 +724,14 @@ relationships:
       Statewide-file variable codes are defined in the dictionary for
       the same year and level.
     conflicts: [year, school_year, level]
+  - join: tax_rates.district = crosswalk.district
+    cardinality: many-to-one
+    description: >
+      Tax-rate rows resolve to Census geography through the crosswalk.
+  - join: crosswalk.geoid = boundaries.geoid
+    cardinality: one-to-one
+    description: >
+      The crosswalk's LEAID is the boundary file's GEOID.
 
 glossary:
   TEA: Texas Education Agency, the state agency overseeing public K-12 education in Texas.

@@ -13,8 +13,11 @@ Description: Tools for discovering, downloading, caching, parsing, and citing
     dictionaries), per-campus School Report Cards (SRC, 2004-2019), the
     Academic Excellence Indicator System (AEIS, 2004-2012), and PEIMS
     fund/function/object-level district and charter financial data
-    (budgets and actuals, 1999-2000 onward), plus a name-to-identifier
-    directory of Texas campuses and districts. Downloads
+    (budgets and actuals, 1999-2000 onward), and school district property
+    tax rates (Texas Comptroller and TEA adopted-rate workbooks, 2005-06
+    onward) with an interactive district tax-rate map viewer, plus a
+    name-to-identifier directory of Texas campuses and districts and
+    helpers joining districts to Census geography. Downloads
     happen on demand against TEA's public pages; files are cached locally
     under 'tools::R_user_dir()' with source-URL, timestamp, and checksum
     metadata. TEA masking and suppression values are preserved exactly.
@@ -43,18 +46,26 @@ Imports:
     xml2,
     yaml
 Suggests:
+    bslib,
     DBI,
     duckdb,
     ggalluvial,
     ggplot2,
     ggsankey,
+    jsonlite,
     knitr,
+    mapgl,
     mockery,
     networkD3,
     pkgdown,
     plotly,
+    rmapshaper,
     rmarkdown,
+    sf,
+    shiny,
+    shinyWidgets,
     testthat (>= 3.0.0),
+    tigris,
     withr
 Config/testthat/edition: 3
 VignetteBuilder: knitr

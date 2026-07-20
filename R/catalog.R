@@ -26,7 +26,8 @@ txs_catalog <- function() {
   yaml::read_yaml(p)
 }
 
-catalog_source <- function(source = c("tapr", "src", "aeis", "peims")) {
+catalog_source <- function(source = c("tapr", "src", "aeis", "peims",
+                                      "taxrates")) {
   source <- match.arg(source)
   cat <- txs_catalog()
   cat[[source]] %||% list()

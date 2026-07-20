@@ -209,6 +209,22 @@ peims:
     2025: https://tea.texas.gov/data-reports/financial-reports/school-finance-reports-and-data/budget2025d.zip
     2026: https://tea.texas.gov/data-reports/financial-reports/school-finance-reports-and-data/budget2026d.zip
 
+taxrates:
+  label: School District Property Tax Rates (Comptroller + TEA adopted)
+  # Comptroller "School District Tax Rates and Levies" workbooks are by
+  # TAX year (= school ending year - 1); .xls before 2018, .xlsx after.
+  # Tax year 2020 was never published (TEA backfills school year
+  # 2020-21). The TEA adopted-rates workbook is one wide file covering
+  # school years 2005-06 onward. txs_get_tax_rates() fetches directly
+  # from these URLs (no live index to scrape), SRC-style.
+  comptroller_index: https://comptroller.texas.gov/taxes/property-tax/rates/
+  comptroller_template: "https://comptroller.texas.gov/taxes/property-tax/docs/{year}-school-district-rates-levies.xlsx"
+  comptroller_tax_years: [2019, 2021, 2022, 2023, 2024, 2025]
+  tea_adopted_url: https://tea.texas.gov/about-tea/state-funding/additional-finance-resources/school-district-adopted-tax-rates-1.xlsx
+  # Ending school years the TEA workbook covered when verified 2026-07-19.
+  tea_years: [2006, 2007, 2008, 2009, 2010, 2011, 2012, 2013, 2014, 2015,
+              2016, 2017, 2018, 2019, 2020, 2021, 2022, 2023, 2024]
+
 src:
   label: School Report Card
   base: https://rptsvr1.tea.texas.gov/perfreport/src

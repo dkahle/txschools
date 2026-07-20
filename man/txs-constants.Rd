@@ -8,6 +8,8 @@
 \alias{TXS_LANDING_TAPR}
 \alias{TXS_INDEX_PEIMS}
 \alias{TXS_INDEX_PEIMS_CODES}
+\alias{TXS_INDEX_COMPTROLLER_RATES}
+\alias{TXS_URL_TEA_ADOPTED_RATES}
 \title{Package-level constants}
 \usage{
 TXS_BROKER_URL
@@ -21,6 +23,10 @@ TXS_LANDING_TAPR
 TXS_INDEX_PEIMS
 
 TXS_INDEX_PEIMS_CODES
+
+TXS_INDEX_COMPTROLLER_RATES
+
+TXS_URL_TEA_ADOPTED_RATES
 }
 \description{
 Internal constants used to identify TEA endpoints, build the HTTP

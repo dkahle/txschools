@@ -55,6 +55,18 @@ TXS_FIRST_SRC_YEAR   <- 2004
 TXS_LAST_SRC_HTML_YEAR <- 2012
 TXS_LAST_SRC_YEAR    <- 2019
 TXS_FIRST_PEIMS_YEAR <- 2000
+TXS_FIRST_TAXRATES_YEAR <- 2006
+TXS_FIRST_COMPTROLLER_TAXYEAR <- 2019
+
+#' @rdname txs-constants
+TXS_INDEX_COMPTROLLER_RATES <-
+  "https://comptroller.texas.gov/taxes/property-tax/rates/"
+
+#' @rdname txs-constants
+TXS_URL_TEA_ADOPTED_RATES <- paste0(
+  "https://tea.texas.gov/about-tea/state-funding/",
+  "additional-finance-resources/school-district-adopted-tax-rates-1.xlsx"
+)
 
 # Static UA string. We append the installed package version at runtime in
 # zzz.R rather than calling utils::packageVersion() at parse time (which

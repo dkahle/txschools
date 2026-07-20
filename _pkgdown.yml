@@ -43,6 +43,25 @@ reference:
   - txs_peims_flow
   - txs_plot_peims_flow
 
+- title: Tax rates
+  desc: District property-tax rates and derived measures.
+  contents:
+  - txs_get_tax_rates
+  - txs_derive_pennies
+  - txs_homestead_exemption
+
+- title: Geography
+  desc: Join districts to Census geography.
+  contents:
+  - txs_crosswalk
+  - txs_boundaries
+
+- title: District viewer
+  desc: The interactive tax-rate map explorer.
+  contents:
+  - txs_viewer_prepare
+  - txs_viewer
+
 - title: Cache
   desc: Manage the local file cache.
   contents:

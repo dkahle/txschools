@@ -32,6 +32,8 @@ normalize_year <- function(year, source = NULL) {
     src  = c(TXS_FIRST_SRC_YEAR, TXS_LAST_SRC_YEAR),
     # Budgets for the upcoming school year post before it starts.
     peims = c(TXS_FIRST_PEIMS_YEAR, current + 1L),
+    # Tax year = ending year - 1; rates for the coming year post in fall.
+    taxrates = c(TXS_FIRST_TAXRATES_YEAR, current + 1L),
     c(TXS_FIRST_PEIMS_YEAR, current + 1L)
   )
   if (y < bounds[1] || y > bounds[2]) {
