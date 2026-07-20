@@ -1249,6 +1249,8 @@ Download and parse public TEA data.
   : Download the TAPR variable dictionary
 - [`txs_get_src()`](https://dkahle.github.io/txschools/reference/txs_get_src.md)
   : Download an SRC (School Report Card) report
+- [`txs_open_src()`](https://dkahle.github.io/txschools/reference/txs_open_src.md)
+  : Open a campus or district's Texas School Report Card
 - [`txs_get_aeis()`](https://dkahle.github.io/txschools/reference/txs_get_aeis.md)
   : Download an AEIS (Academic Excellence Indicator System) file
 - [`txs_get_peims_finance()`](https://dkahle.github.io/txschools/reference/txs_get_peims_finance.md)

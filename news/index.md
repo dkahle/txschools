@@ -243,3 +243,14 @@
   value instead of `character(0)` on a zero-row input (a
   [`base::paste()`](https://rdrr.io/r/base/paste.html) recycling quirk).
   Fixed at the source; regression-tested.
+
+### txs_open_src() (2026-07)
+
+- New `txs_open_src(geography, level, tab, browse)`: opens a campus or
+  district’s Texas School Report Card at <https://txschools.gov> in a
+  browser. Since 2020 that JavaScript site is the *only* place SRC
+  reports live –
+  [`txs_get_src()`](https://dkahle.github.io/txschools/reference/txs_get_src.md)
+  cannot scrape it (see its documented 2004-2019 coverage) – so this is
+  the complement: `browse = FALSE` returns the URL without opening
+  anything, useful for scripting.

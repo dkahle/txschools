@@ -121,6 +121,10 @@
 <li>The Finance tab’s chart engine (<code>ggsankey</code>, GitHub-only) stays a <em>soft</em> dependency checked only where the tab renders – it does not widen <code><a href="../reference/txs_viewer.html">txs_viewer()</a></code>’s hard package-guard list, so installing the viewer for the Map/Compare tabs never requires a non-CRAN package.</li>
 <li>Bug fix in <code><a href="../reference/txs_peims_flow.html">txs_peims_flow()</a></code>: the fund-balance/transfer reconciliation could error (“arguments must have same length”) for any district-year with zero inter-fund transfers or zero other financing activity – a common case, not an edge case – because an internal label helper returned a stray length-1 value instead of <code>character(0)</code> on a zero-row input (a <code><a href="https://rdrr.io/r/base/paste.html" class="external-link">base::paste()</a></code> recycling quirk). Fixed at the source; regression-tested.</li>
 </ul></div>
+<div class="section level3">
+<h3 id="txs_open_src-0-0-0-9000">txs_open_src() (2026-07)<a class="anchor" aria-label="anchor" href="#txs_open_src-0-0-0-9000"></a></h3>
+<ul><li>New <code>txs_open_src(geography, level, tab, browse)</code>: opens a campus or district’s Texas School Report Card at <a href="https://txschools.gov" class="external-link uri">https://txschools.gov</a> in a browser. Since 2020 that JavaScript site is the <em>only</em> place SRC reports live – <code><a href="../reference/txs_get_src.html">txs_get_src()</a></code> cannot scrape it (see its documented 2004-2019 coverage) – so this is the complement: <code>browse = FALSE</code> returns the URL without opening anything, useful for scripting.</li>
+</ul></div>
 </div>
   </main><aside class="col-md-3"><nav id="toc" aria-label="Table of contents"><h2>On this page</h2>
     </nav></aside></div>
