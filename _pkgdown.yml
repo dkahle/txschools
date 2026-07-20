@@ -57,9 +57,10 @@ reference:
   - txs_boundaries
 
 - title: District viewer
-  desc: The interactive tax-rate map explorer.
+  desc: The interactive tax-rate map and finance-flow explorer.
   contents:
   - txs_viewer_prepare
+  - txs_viewer_prepare_finance
   - txs_viewer
 
 - title: Cache

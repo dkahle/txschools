@@ -85,3 +85,34 @@ taxes_on_home <- function(value, kind, school_year, home_value) {
 # School-year label embedded in a wide value column:
 # "total_rate__2022_23" -> "2022-23".
 col_to_sy <- function(col) gsub("_", "-", sub("^.*__", "", col))
+
+# Curated axis presets for the Finance tab's Sankey. txs_peims_flow()'s
+# `axes` argument has real validity constraints (canonical order;
+# "source" must be immediately followed by "fund"), so the UI offers a
+# small set of known-valid combinations rather than a free-form picker.
+fin_axes_presets <- function() {
+  tibble::tibble(
+    key = c("source_fund_function", "fund_function_object",
+            "fund_function_program"),
+    label = c(
+      "Revenue sources → funds → functions",
+      "Funds → functions → what was bought",
+      "Funds → functions → who it served"
+    ),
+    axes = list(
+      c("source", "fund", "function"),
+      c("fund", "function", "object"),
+      c("fund", "function", "program")
+    )
+  )
+}
+
+fin_axes_choices <- function() {
+  p <- fin_axes_presets()
+  stats::setNames(p$key, p$label)
+}
+
+fin_axes_for <- function(key) {
+  p <- fin_axes_presets()
+  p$axes[[match(key, p$key)]]
+}

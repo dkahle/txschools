@@ -66,7 +66,8 @@ suppression values applied by TEA are preserved exactly; this package
 
 ## Installation
 
-```r
+```{r}
+#| eval: false
 # install.packages("pak")
 pak::pak("dkahle/txschools")
 ```
@@ -670,6 +671,20 @@ comparison tab:
 ```{r viewer, eval = FALSE}
 txs_viewer_prepare()   # bake the data (first run downloads a few files)
 txs_viewer()           # launch the app
+```
+
+A third, optional Finance tab draws the same kind of PEIMS money-flow
+diagram shown [above](#peims-finance) for any district or charter you
+pick, with year and
+budget-vs-actual controls -- baked separately with
+`txs_viewer_prepare_finance()`, since it fetches full statewide PEIMS
+files and takes longer (roughly 10-20 minutes by default, covering the
+last five school years, both budget and actual, districts and
+charters):
+
+```{r viewer-finance, eval = FALSE}
+txs_viewer_prepare_finance()
+txs_viewer()
 ```
 
 ## Two ways to get data, and what each one costs

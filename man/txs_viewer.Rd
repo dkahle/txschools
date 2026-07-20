@@ -25,7 +25,11 @@ tax rates: an animated choropleth (MapLibre via mapgl) with the M&O
 rate decomposed into the Tier One compressed rate and golden/copper
 pennies, district search, taxes-on-a-home mode, and a multi-district
 comparison tab. Run \code{\link[=txs_viewer_prepare]{txs_viewer_prepare()}} once first to bake the
-data.
+data. If \code{\link[=txs_viewer_prepare_finance]{txs_viewer_prepare_finance()}} has also been run, a third
+Finance tab shows an interactive PEIMS money-flow (Sankey) diagram
+per district/year/basis; it needs the optional \code{ggsankey} package
+and degrades gracefully (with an install hint) when that isn't
+installed.
 }
 \examples{
 \dontrun{

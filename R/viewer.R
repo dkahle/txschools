@@ -125,6 +125,116 @@ viewer_build_artifact <- function(boundaries, finance_long, dir) {
   paths
 }
 
+#' Prepare data for the district viewer's Finance tab
+#'
+#' Builds the baked artifact behind the viewer's optional Finance tab: a
+#' district-level summary of PEIMS budget/actual data across the
+#' requested school years, small enough to browse instantly once
+#' prepared. This is a separate, optional step from [txs_viewer_prepare()]
+#' -- the Map and Compare tabs work without it -- because it is
+#' meaningfully slower: a district *actual* file is tens of millions of
+#' dollars across millions of rows and several megabytes to download and
+#' parse, and this fetches several such files. With the default scope
+#' (five school years, both budget and actual, both districts and
+#' charters), expect roughly 10-20 minutes on first run; subsequent runs
+#' reuse each file's on-disk cache.
+#'
+#' Each requested (year, basis, type) combination is fetched with
+#' [txs_get_peims_finance()] and campus-level detail (`fin_unit`,
+#' `campus_name`) is summed away -- the Finance tab draws district-wide
+#' flows, not per-campus ones -- keeping every other column (including
+#' the full fund/function/object/program code detail [txs_peims_flow()]
+#' needs for any axis combination). A combination TEA has not published
+#' yet (e.g. the newest actual year) is skipped with a warning rather
+#' than aborting the whole prepare.
+#'
+#' @param years Integer vector of ending school years; `NULL` (the
+#'   default) resolves to the five most recent years [txs_list_years()]
+#'   reports for PEIMS.
+#' @param basis Character vector: `"actual"`, `"budget"`, or both
+#'   (default both) -- unlike [txs_get_peims_finance()]'s single-choice
+#'   `basis`, every requested value is fetched.
+#' @param dir Output directory; default `file.path(txs_cache_dir(),
+#'   "viewer")`, where [txs_viewer()] looks.
+#' @param refresh Ignore on-disk caches and refetch.
+#' @param verbose Print progress.
+#' @return Invisibly, a list with `dir`, `path`, `n_rows`, `years`, and
+#'   the combinations that succeeded/failed.
+#' @examples
+#' \dontrun{
+#' txs_viewer_prepare_finance()
+#' txs_viewer()
+#' }
+#' @export
+txs_viewer_prepare_finance <- function(years = NULL,
+                                       basis = c("actual", "budget"),
+                                       dir = NULL,
+                                       refresh = FALSE,
+                                       verbose = TRUE) {
+  basis <- match.arg(basis, c("actual", "budget"), several.ok = TRUE)
+  years <- years %||% utils::tail(sort(txs_list_years("peims")$year), 5L)
+  dir <- dir %||% file.path(txs_cache_dir(), "viewer")
+
+  combos <- expand.grid(
+    year = years, basis = basis, type = c("district", "charter"),
+    stringsAsFactors = FALSE
+  )
+  pulls <- vector("list", nrow(combos))
+  ok <- character(0)
+  failed <- character(0)
+  for (i in seq_len(nrow(combos))) {
+    yr <- combos$year[i]; bs <- combos$basis[i]; ty <- combos$type[i]
+    label <- sprintf("%s %s %s", year_label(yr), ty, bs)
+    pulls[[i]] <- tryCatch({
+      out <- txs_get_peims_finance(yr, basis = bs, type = ty, labels = TRUE,
+                                   refresh = refresh, verbose = verbose)
+      ok <- c(ok, label)
+      out
+    }, error = function(e) {
+      cli::cli_alert_warning("Skipping {label}: {conditionMessage(e)}")
+      failed <<- c(failed, label)
+      NULL
+    })
+  }
+
+  rows <- dplyr::bind_rows(pulls)
+  if (!nrow(rows)) {
+    stop("No PEIMS data could be retrieved for the requested years/basis.",
+         call. = FALSE)
+  }
+  summary <- rows |>
+    dplyr::summarise(
+      amount = sum(.data$amount),
+      .by = c("district", "district_name", "year", "school_year", "basis",
+              "type", "fund_code", "fund_label", "function_code",
+              "function_label", "object_code", "object_label",
+              "program_intent_code", "program_intent_label")
+    )
+
+  dir.create(dir, recursive = TRUE, showWarnings = FALSE)
+  path <- file.path(dir, "peims_summary.rds")
+  saveRDS(summary, path)
+  write_sidecar(path, list(
+    source = "viewer", year = NA_integer_, school_year = NA_character_,
+    level = "district", data_type = "peims_summary", dataset = NA_character_,
+    file_format = "rds", source_url = NA_character_,
+    retrieved_at = iso8601_now(), sha256 = sha256_file(path),
+    size_bytes = file.size(path)
+  ))
+
+  if (verbose) {
+    cli::cli_alert_success(paste(
+      "Finance data ready: {nrow(summary)} rows across {length(ok)}",
+      "year/basis/type combination{?s} in {path}"
+    ))
+    if (length(failed)) {
+      cli::cli_alert_info("Skipped {length(failed)}: {paste(failed, collapse = ', ')}")
+    }
+  }
+  invisible(list(dir = dir, path = path, n_rows = nrow(summary),
+                years = years, combos_ok = ok, combos_failed = failed))
+}
+
 #' Launch the district tax-rate viewer
 #'
 #' An interactive slippy-map explorer of Texas school district property
@@ -132,7 +242,11 @@ viewer_build_artifact <- function(boundaries, finance_long, dir) {
 #' rate decomposed into the Tier One compressed rate and golden/copper
 #' pennies, district search, taxes-on-a-home mode, and a multi-district
 #' comparison tab. Run [txs_viewer_prepare()] once first to bake the
-#' data.
+#' data. If [txs_viewer_prepare_finance()] has also been run, a third
+#' Finance tab shows an interactive PEIMS money-flow (Sankey) diagram
+#' per district/year/basis; it needs the optional `ggsankey` package
+#' and degrades gracefully (with an install hint) when that isn't
+#' installed.
 #'
 #' @param dir Directory holding the prepared data; default
 #'   `file.path(txs_cache_dir(), "viewer")`.

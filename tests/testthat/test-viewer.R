@@ -102,3 +102,114 @@ test_that("the shipped app sources cleanly", {
   expect_no_error(parse(file.path(app_dir, "app.R")))
   expect_no_error(parse(file.path(app_dir, "helpers.R")))
 })
+
+# One district, two years, both bases, exercising a fin_unit/campus
+# split (China Spring rows 1-2 share fund/function/object but differ by
+# fin_unit -- the aggregation must sum these into one row).
+viewer_fake_peims <- function(year, basis, type) {
+  if (type == "charter") {
+    if (year != 2024L) {
+      # Mirrors txs_get_peims_finance()'s real behavior for a combo TEA
+      # has not published: it errors, it does not return empty.
+      stop(sprintf("No PEIMS %s %s file is published for year=%d.",
+                   type, basis, year), call. = FALSE)
+    }
+    return(tibble::tibble(
+      district = "240001", district_name = "Test Charter",
+      fin_unit = "000", campus_name = "NO COST CENTER",
+      year = year, school_year = year_label(year),
+      basis = basis, type = type,
+      fund_code = "420", fund_label = "FOOD SVC",
+      function_code = "35", function_label = "FOOD SERVICES",
+      object_code = "6341", object_label = "FOOD",
+      program_intent_code = "00", program_intent_label = "NO PROGRAM",
+      amount = 45, fiscal_year = year, updated = as.Date("2024-01-01")
+    ))
+  }
+  tibble::tibble(
+    district = "161920", district_name = "China Spring ISD",
+    fin_unit = c("000", "001"), campus_name = c("NO COST CENTER", "ELEM"),
+    year = year, school_year = year_label(year),
+    basis = basis, type = type,
+    fund_code = "199", fund_label = "GENERAL FUND",
+    function_code = "11", function_label = "INSTRUCTION",
+    object_code = "6119", object_label = "PAYROLL",
+    program_intent_code = "00", program_intent_label = "NO PROGRAM",
+    amount = c(300, 200), fiscal_year = year, updated = as.Date("2024-01-01")
+  )
+}
+
+test_that("txs_viewer_prepare_finance aggregates away campus detail", {
+  local_cache()
+  testthat::local_mocked_bindings(
+    txs_get_peims_finance = function(year, basis, type, ...) {
+      viewer_fake_peims(year, basis, type)
+    }
+  )
+
+  res <- txs_viewer_prepare_finance(years = c(2023L, 2024L),
+                                    basis = c("actual", "budget"),
+                                    verbose = FALSE)
+  expect_true(file.exists(res$path))
+  summary <- readRDS(res$path)
+
+  # fin_unit/campus_name are gone; the 000/001 split for China Spring
+  # collapsed into one summed row (300 + 200 = 500) per year/basis.
+  expect_false(any(c("fin_unit", "campus_name") %in% names(summary)))
+  cs <- summary[summary$district == "161920" & summary$year == 2024 &
+                  summary$basis == "actual", ]
+  expect_equal(nrow(cs), 1L)
+  expect_equal(cs$amount, 500)
+
+  # The unpublished 2023 charter combo was skipped, not fatal.
+  expect_false(any(summary$type == "charter" & summary$year == 2023))
+  expect_length(res$combos_failed, 2L)  # 2023 charter x {actual, budget}
+  expect_true(any(grepl("2022-23 charter (actual|budget)", res$combos_failed)))
+
+  # Sidecar visible to the cache tooling.
+  inv <- txs_cache_list()
+  expect_true(any(inv$source == "viewer" & inv$data_type == "peims_summary"))
+})
+
+test_that("txs_viewer_prepare_finance defaults years via txs_list_years", {
+  local_cache()
+  testthat::local_mocked_bindings(
+    txs_list_years = function(source, ...) {
+      tibble::tibble(source = "peims", year = 2018:2024,
+                     school_year = vapply(2018:2024, txschools:::year_label, ""))
+    },
+    txs_get_peims_finance = function(year, basis, type, ...) {
+      viewer_fake_peims(year, basis, type)
+    }
+  )
+  res <- txs_viewer_prepare_finance(basis = "actual", verbose = FALSE)
+  expect_setequal(res$years, 2020:2024)  # tail(..., 5) of 2018:2024
+})
+
+test_that("fin_axes_presets() offers only axes valid for txs_peims_flow()", {
+  app_dir <- system.file("viewer", package = "txschools")
+  skip_if(app_dir == "", "inst/viewer not installed")
+  e <- new.env()
+  sys.source(file.path(app_dir, "helpers.R"), envir = e)
+
+  presets <- e$fin_axes_presets()
+  expect_s3_class(presets, "tbl_df")
+  expect_true(all(c("key", "label", "axes") %in% names(presets)))
+
+  # A minimal fixture with one row per object class so every preset's
+  # required columns are satisfiable.
+  x <- tibble::tibble(
+    fund_code = "199", fund_label = "GENERAL FUND",
+    function_code = c("00", "11"),
+    function_label = c("NO FUNCTION", "INSTRUCTION"),
+    object_code = c("5711", "6119"),
+    object_label = c("OTHER LOCAL", "PAYROLL"),
+    program_intent_code = "00", program_intent_label = "NO PROGRAM",
+    amount = c(600, 500)
+  )
+  for (i in seq_len(nrow(presets))) {
+    ax <- presets$axes[[i]]
+    expect_no_error(txs_peims_flow(x, axes = ax))
+    expect_identical(e$fin_axes_for(presets$key[i]), ax)
+  }
+})

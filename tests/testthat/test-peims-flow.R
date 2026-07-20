@@ -120,3 +120,53 @@ test_that("txs_plot_peims_flow returns a ggplot", {
   expect_error(txs_plot_peims_flow(tibble::tibble(a = 1)),
                "txs_peims_flow")
 })
+
+test_that("txs_peims_flow handles an entity/year with no transfers or financing", {
+  # Most district-years have zero inter-fund transfers (7915/8911) and
+  # zero other financing activity (remaining 7xxx/8xxx) -- ofs_rows and
+  # ofu_rows are then both empty, which once broke the fund-balance
+  # reconciliation (base::paste() silently recycling a zero-row column
+  # to a length-1 "" instead of character(0), desyncing tapply()'s
+  # inputs). Regression fixture: revenue + expenditure only.
+  x <- tibble::tibble(
+    fund_code = c("199", "199", "199"),
+    fund_label = "GENERAL FUND",
+    function_code = c("00", "00", "11"),
+    function_label = c("NO FUNCTION", "NO FUNCTION", "INSTRUCTION"),
+    object_code = c("5711", "5811", "6119"),
+    program_intent_code = "00",
+    program_intent_label = "NO PROGRAM",
+    amount = c(600, 300, 800)
+  )
+  fl <- expect_no_error(txs_peims_flow(x))
+  expect_s3_class(fl, "peims_flow")
+  # Revenue (900) exactly funds expenditure (800): 100 left over, so the
+  # fund should show a "To fund balance" surplus, not an error.
+  expect_equal(
+    fl$amount[fl$from == "General fund" & fl$to == "To fund balance"], 100
+  )
+  expect_false(any(grepl("Transfers|financing", c(fl$from, fl$to))))
+
+  # Also exercise the reverse imbalance (expenditure > revenue, so the
+  # fund draws "From fund balance") with financing rows present on one
+  # side only (ofs_rows non-empty, ofu_rows empty).
+  y <- tibble::tibble(
+    fund_code = "199", fund_label = "GENERAL FUND",
+    function_code = c("00", "11"),
+    function_label = c("NO FUNCTION", "INSTRUCTION"),
+    object_code = c("5711", "6119"),
+    program_intent_code = "00", program_intent_label = "NO PROGRAM",
+    amount = c(100, 900)
+  )
+  y <- dplyr::bind_rows(y, tibble::tibble(
+    fund_code = "199", fund_label = "GENERAL FUND",
+    function_code = "00", function_label = "NO FUNCTION",
+    object_code = "7915", program_intent_code = "00",
+    program_intent_label = "NO PROGRAM", amount = 50
+  ))
+  fl2 <- expect_no_error(txs_peims_flow(y))
+  expect_equal(
+    fl2$amount[fl2$from == "From fund balance" & fl2$to == "General fund"],
+    750  # 900 spent - (100 revenue + 50 transfer in)
+  )
+})

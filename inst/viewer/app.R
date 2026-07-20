@@ -22,6 +22,27 @@ districts  <- readRDS(file.path(data_dir, "districts.rds"))
 finance    <- readRDS(file.path(data_dir, "finance.rds"))
 meta       <- jsonlite::read_json(file.path(data_dir, "meta.json"), simplifyVector = TRUE)
 
+# The Finance tab's PEIMS summary is optional -- baked separately via
+# txs_viewer_prepare_finance() since it is much slower to prepare than
+# the tax-rate data above. Absent, the tab shows a message instead of
+# erroring the whole app.
+peims_summary_path <- file.path(data_dir, "peims_summary.rds")
+has_finance <- file.exists(peims_summary_path)
+peims_summary <- if (has_finance) readRDS(peims_summary_path) else NULL
+if (has_finance) {
+  # Composite key sidesteps needing a separate district-vs-charter
+  # lookup: PEIMS itself is the only place that distinction exists.
+  fin_entities <- unique(peims_summary[c("district", "district_name", "type")])
+  fin_entities <- fin_entities[order(fin_entities$district_name), ]
+  fin_entity_choices <- stats::setNames(
+    paste(fin_entities$district, fin_entities$type, sep = "::"),
+    sprintf("%s (%s)", fin_entities$district_name,
+           tools::toTitleCase(fin_entities$type))
+  )
+  fin_years <- sort(unique(peims_summary$school_year))
+  fin_bases <- sort(unique(peims_summary$basis))
+}
+
 avail_years <- sort(unique(finance$school_year))
 # Precompute centroids (lng/lat) for fly-to on district search.
 ctr <- suppressWarnings(sf::st_coordinates(sf::st_centroid(sf::st_geometry(districts))))
@@ -60,6 +81,57 @@ metric_dollars_all <- function(metric, home_value) {
   vals <- lapply(cols, function(cc)
     taxes_on_home(districts[[cc]], kind, col_to_sy(cc), home_value))
   unlist(vals, use.names = FALSE)
+}
+
+# --- Finance tab: PEIMS money-flow (Sankey) diagrams --------------------------
+# Built once at app-source time (has_finance is a load-time fact, not
+# reactive state), so no need for a placeholder + uiOutput swap.
+finance_tab <- if (has_finance) {
+  # c("Display label" = "value"), shiny's convention (see e.g. map_yaxis
+  # below) -- filtered to whichever bases were actually prepared.
+  basis_all <- c("Actual" = "actual", "Budget" = "budget")
+  basis_choices <- basis_all[basis_all %in% fin_bases]
+  nav_panel(
+    "Finance",
+    layout_sidebar(
+      sidebar = sidebar(
+        width = 320,
+        selectizeInput("fin_entity", "Find a district or charter",
+                       choices = c("Type to search..." = "", fin_entity_choices),
+                       selected = ""),
+        sliderTextInput("fin_year", "School year",
+                        choices = fin_years, selected = max(fin_years),
+                        grid = TRUE),
+        radioButtons("fin_basis", "Basis", choices = basis_choices,
+                     selected = basis_choices[[1]]),
+        selectInput("fin_axes", "Show", choices = fin_axes_choices()),
+        sliderInput("fin_lump", "Categories before folding into \"Other\"",
+                    min = 3, max = 8, value = 5, step = 1),
+        hr(),
+        div(class = "small text-muted",
+            "Ribbons only connect stages TEA's accounting actually ",
+            "records — revenue sources trace to spending through ",
+            "funds, the one join the data supports; funds are ",
+            "reconciled against fund balance, transfers, and other ",
+            "financing.")
+      ),
+      card(
+        full_screen = TRUE,
+        card_header(textOutput("fin_title", inline = TRUE)),
+        plotOutput("fin_plot", height = "70vh")
+      )
+    )
+  )
+} else {
+  nav_panel(
+    "Finance",
+    div(
+      class = "text-muted", style = "padding: 2rem;",
+      p("Run ", tags$code("txschools::txs_viewer_prepare_finance()"),
+        " to enable this tab (downloads and aggregates several PEIMS ",
+        "financial files; first run takes roughly 10-20 minutes).")
+    )
+  )
 }
 
 # --- UI -----------------------------------------------------------------------
@@ -151,7 +223,10 @@ ui <- page_navbar(
         plotlyOutput("compare_plot", height = "74vh")
       )
     )
-  )
+  ),
+
+  # Tab 3: PEIMS money-flow diagram for one district/charter, optional.
+  finance_tab
 )
 
 # --- Server -------------------------------------------------------------------
@@ -387,6 +462,53 @@ server <- function(input, output, session) {
       highlight(on = "plotly_click", off = "plotly_doubleclick",
                 selectize = TRUE, dynamic = FALSE, opacityDim = 0.12)
   })
+
+  # --- Finance tab: filter the pre-aggregated PEIMS summary and draw ----------
+  if (has_finance) {
+    fin_rows <- reactive({
+      req(input$fin_entity, input$fin_year, input$fin_basis)
+      parts <- strsplit(input$fin_entity, "::", fixed = TRUE)[[1]]
+      peims_summary |>
+        filter(.data$district == parts[1], .data$type == parts[2],
+               .data$school_year == input$fin_year,
+               .data$basis == input$fin_basis)
+    })
+
+    output$fin_title <- renderText({
+      d <- fin_rows()
+      req(nrow(d) > 0)
+      sprintf("%s, %s: every dollar in, every dollar out",
+             d$district_name[[1]], input$fin_year)
+    })
+
+    output$fin_plot <- renderPlot({
+      d <- fin_rows()
+      validate(need(nrow(d) > 0,
+                    "No PEIMS data for that district, year, and basis."))
+      validate(need(
+        requireNamespace("ggsankey", quietly = TRUE) &&
+          requireNamespace("ggplot2", quietly = TRUE),
+        paste(
+          "This chart needs the ggsankey and ggplot2 packages.\n",
+          "install.packages(\"ggplot2\")\n",
+          'remotes::install_github("davidsjoberg/ggsankey")'
+        )
+      ))
+      flows <- txschools::txs_peims_flow(
+        d, axes = fin_axes_for(input$fin_axes), lump = input$fin_lump
+      )
+      txschools::txs_plot_peims_flow(flows) +
+        ggplot2::labs(
+          title = sprintf("%s: every dollar in, every dollar out",
+                          d$district_name[[1]]),
+          subtitle = sprintf("PEIMS %s, %s", input$fin_basis, input$fin_year)
+        ) +
+        ggplot2::theme(
+          plot.title = ggplot2::element_text(face = "bold", size = 15),
+          plot.subtitle = ggplot2::element_text(color = "grey35", size = 10)
+        )
+    })
+  }
 }
 
 shinyApp(ui, server)

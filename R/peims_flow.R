@@ -235,6 +235,14 @@ peims_object_class <- function(object_code) {
 # Human label for an axis, falling back to the code when the label
 # columns are absent (labels = FALSE pulls).
 peims_axis_label <- function(rows, prefix, noun) {
+  # base::paste() does not vectorize to zero length when one argument
+  # is a zero-row column and another is a length-1 scalar (it silently
+  # recycles the empty side to ""), so a 0-row `rows` must be handled
+  # explicitly -- otherwise callers concatenating this against other
+  # axes (e.g. the fund-balance reconciliation) get a length mismatch
+  # whenever an entity/year has no rows on one side (a district-year
+  # with no inter-fund transfers, say).
+  if (!NROW(rows)) return(character(0))
   lab_col <- paste0(prefix, "_label")
   code_col <- paste0(prefix, "_code")
   if (lab_col %in% names(rows) && !all(is.na(rows[[lab_col]]))) {
