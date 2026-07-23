@@ -97,11 +97,10 @@ finance_tab <- if (has_finance) {
       sidebar = sidebar(
         width = 320,
         selectizeInput("fin_entity", "Find a district or charter",
-                       choices = c("Type to search..." = "", fin_entity_choices),
-                       selected = ""),
-        sliderTextInput("fin_year", "School year",
-                        choices = fin_years, selected = max(fin_years),
-                        grid = TRUE),
+                       choices = NULL,
+                       options = list(placeholder = "Type to search...")),
+        selectInput("fin_year", "School year",
+                    choices = rev(fin_years), selected = max(fin_years)),
         radioButtons("fin_basis", "Basis", choices = basis_choices,
                      selected = basis_choices[[1]]),
         selectInput("fin_axes", "Show", choices = fin_axes_choices()),
@@ -152,8 +151,8 @@ ui <- page_navbar(
         selectInput("metric", "Color districts by",
                     choices = pv_metric_choices(), selected = "total_rate"),
         selectizeInput("search", "Find a district",
-                       choices = c("Type to search..." = "", district_choices),
-                       selected = ""),
+                       choices = NULL,
+                       options = list(placeholder = "Type to search...")),
         radioButtons("map_yaxis", "Legend shows",
                      choices = c("Tax rate ($ per $100 value)" = "rate",
                                  "Taxes by home value" = "dollars"),
@@ -232,9 +231,17 @@ ui <- page_navbar(
 # --- Server -------------------------------------------------------------------
 server <- function(input, output, session) {
 
-  # Server-side selectize for the large (~1,000) district list (Compare tab).
+  # Server-side selectize for the large (~1,000) district lists: the
+  # browser only ever gets options matching what's typed, not the
+  # whole list embedded in the page.
   updateSelectizeInput(session, "cmp_districts",
                        choices = district_choices, server = TRUE)
+  updateSelectizeInput(session, "search",
+                       choices = district_choices, server = TRUE)
+  if (has_finance) {
+    updateSelectizeInput(session, "fin_entity",
+                         choices = fin_entity_choices, server = TRUE)
+  }
 
   cur_col <- reactive({
     req(input$metric, input$year)

@@ -209,3 +209,16 @@
   documented 2004-2019 coverage) -- so this is the complement:
   `browse = FALSE` returns the URL without opening anything, useful
   for scripting.
+
+## Viewer polish (2026-07)
+
+* Finance tab's school-year picker is a dropdown (`selectInput`)
+  rather than a slider -- the slider was carried over from the Map
+  tab's animated choropleth control without its reason to exist (the
+  play-button animation), which a plain dropdown suits better for a
+  five-choice, non-animated pick.
+* The Map tab's district search and the Finance tab's entity search
+  now use server-side selectize (matching the existing Compare tab
+  pattern) instead of embedding the full ~1,000-option list in the
+  page HTML, clearing Shiny's "large number of options" performance
+  warning for both.
