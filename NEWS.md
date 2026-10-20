@@ -222,3 +222,12 @@
   pattern) instead of embedding the full ~1,000-option list in the
   page HTML, clearing Shiny's "large number of options" performance
   warning for both.
+
+## Strict request spacing (2026-10)
+
+* HTTP requests are now spaced strictly at the configured rate
+  (`options(txschools.rate_per_sec)`, default one per second), as the
+  README promises. Previously httr2's token bucket let up to 60
+  requests per host through in a burst before throttling began. The
+  package now requires httr2 >= 1.1.1 (which `txs_crosswalk()` already
+  needed).

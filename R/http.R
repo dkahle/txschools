@@ -30,10 +30,12 @@ http_request <- function(url, timeout = NULL, max_tries = NULL) {
   ua <- getOption("txschools.user_agent", TXS_USER_AGENT_BASE)
   host <- httr2::url_parse(url)$hostname
 
+  # A one-token bucket refilled every 1 / rate seconds: strict spacing.
+  # (`rate` alone would build a 60-token bucket that allows bursts.)
   httr2::request(url) |>
     httr2::req_user_agent(ua) |>
     httr2::req_timeout(timeout) |>
-    httr2::req_throttle(rate = rate, realm = host) |>
+    httr2::req_throttle(capacity = 1, fill_time_s = 1 / rate, realm = host) |>
     httr2::req_retry(
       max_tries    = max_tries,
       backoff      = function(i) min(2 ^ i, 30),
