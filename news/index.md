@@ -254,3 +254,52 @@
   cannot scrape it (see its documented 2004-2019 coverage) – so this is
   the complement: `browse = FALSE` returns the URL without opening
   anything, useful for scripting.
+
+### Viewer polish (2026-07)
+
+- Finance tab’s school-year picker is a dropdown (`selectInput`) rather
+  than a slider – the slider was carried over from the Map tab’s
+  animated choropleth control without its reason to exist (the
+  play-button animation), which a plain dropdown suits better for a
+  five-choice, non-animated pick.
+- The Map tab’s district search and the Finance tab’s entity search now
+  use server-side selectize (matching the existing Compare tab pattern)
+  instead of embedding the full ~1,000-option list in the page HTML,
+  clearing Shiny’s “large number of options” performance warning for
+  both.
+
+### Strict request spacing (2026-10)
+
+- HTTP requests are now spaced strictly at the configured rate
+  (`options(txschools.rate_per_sec)`, default one per second), as the
+  README promises. Previously httr2’s token bucket let up to 60 requests
+  per host through in a burst before throttling began. The package now
+  requires httr2 \>= 1.1.1 (which
+  [`txs_crosswalk()`](https://dkahle.github.io/txschools/reference/txs_crosswalk.md)
+  already needed).
+
+### FIRST financial integrity ratings (2026-10)
+
+- New source
+  [`txs_get_first()`](https://dkahle.github.io/txschools/reference/txs_get_first.md):
+  TEA’s Financial Integrity Rating System of Texas (FIRST) ratings for
+  every district (School FIRST, 2002-03 onward) and charter (Charter
+  FIRST, 2011-12 onward, including the separate university-charter list
+  since 2017-18). One tidy row per district or charter and rating year:
+  status, rating, letter grade (2015-16 onward), score, a `fiscal_year`
+  key that lines each rating up with the PEIMS actuals it was computed
+  from, and a `release` column. `years` are ending rating years (2026
+  means the 2025-26 ratings) and are required.
+- `release` flags preliminary ratings. Charter FIRST labels its
+  workbooks correctly, but School FIRST titles every workbook “Final” –
+  including the preliminary 2025-26 ratings – so district rows
+  downloaded before December 1 of the rating year count as preliminary.
+  Cached preliminary copies are never replaced silently; the function
+  points to `refresh = TRUE` once finals are due.
+- TEA serves FIRST only through two ASP.NET search apps (no files, no
+  API), so each workbook is fetched in a short cookie session: page,
+  year postback, Download (plus a list postback for university
+  charters). The internal HTTP layer gains cookie-jar support and an
+  in-memory form POST, and each workbook is checked (zip signature,
+  header, title year, and list) before it is cached, so a silently
+  failed postback can never cache the wrong year.

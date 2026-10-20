@@ -19,8 +19,9 @@ normalize_year(year, source = NULL)
 
 - source:
 
-  Optional TEA program (`"tapr"`, `"aeis"`, `"src"`, `"peims"`); when
-  given, the year is validated against that program's coverage.
+  Optional TEA program (`"tapr"`, `"aeis"`, `"src"`, `"peims"`,
+  `"taxrates"`, `"first"`); when given, the year is validated against
+  that program's coverage.
 
 ## Value
 

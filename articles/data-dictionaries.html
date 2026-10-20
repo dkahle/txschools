@@ -91,6 +91,8 @@ data (budget or actual)</a></li>
 (_peims_meta)</a></li>
 <li><a href="#school-district-property-tax-rates">School district
 property tax rates</a></li>
+<li><a href="#first-financial-integrity-ratings">FIRST financial
+integrity ratings</a></li>
 <li><a href="#tea-district-number-to-nces-leaid-crosswalk">TEA district
 number to NCES LEAID crosswalk</a></li>
 <li><a href="#district-boundaries-sf">District boundaries (sf)</a></li>
@@ -110,7 +112,7 @@ dictionary your code can read, so the two can never drift apart:</p>
 <span>  <span class="fu"><a href="https://rdrr.io/r/base/system.file.html" class="external-link">system.file</a></span><span class="op">(</span><span class="st">"data-dict.yaml"</span>, package <span class="op">=</span> <span class="st">"txschools"</span><span class="op">)</span></span>
 <span><span class="op">)</span></span>
 <span><span class="fu"><a href="https://rdrr.io/r/base/length.html" class="external-link">length</a></span><span class="op">(</span><span class="va">dict</span><span class="op">$</span><span class="va">tables</span><span class="op">)</span></span>
-<span><span class="co">#&gt; [1] 13</span></span></code></pre></div>
+<span><span class="co">#&gt; [1] 14</span></span></code></pre></div>
 <p>Two conventions apply everywhere and are worth internalizing before
 reading the tables:</p>
 <ul>
@@ -946,7 +948,7 @@ cell-level long form. Returned by txs_get_src(). Grain: one row per
 report line item per comparison-group column. (2013-2019 reports are
 PDF-only and are returned as a one-row file descriptor instead; 2020+
 lives at txschools.gov, out of package scope.)</p>
-<table style="width:100%;" class="table">
+<table style="width:99%;" class="table">
 <colgroup>
 <col width="18%">
 <col width="19%">
@@ -1506,6 +1508,175 @@ caller.</td>
 </table>
 </div>
 <div class="section level3">
+<h3 id="first-financial-integrity-ratings">FIRST financial integrity ratings<a class="anchor" aria-label="anchor" href="#first-financial-integrity-ratings"></a>
+</h3>
+<p><strong><code>first_ratings</code></strong> — One row per school
+district or open-enrollment charter per rating year: TEA’s Financial
+Integrity Rating System of Texas (FIRST) rating, from School FIRST
+(districts, 2002-03 onward) and Charter FIRST (charters, 2011-12
+onward). Returned by txs_get_first(). Each rating year’s ratings are
+computed from the prior fiscal year’s audited financial data.</p>
+<p>The rating system changed over time, so compare <code>score</code>
+within an era: 2002-03 to 2013-14 used achievement labels (“Superior
+Achievement” through “Substandard Achievement”) on 65-85 point scales;
+2014-15 was pass/fail on 30 points; from 2015-16 ratings are letter
+grades (A, B, C, F) on 100 points. University charters, rated pass/fail
+in a separate list since 2017-18, have
+<code>university_charter = true</code> and no score. TEA posts
+preliminary ratings in August and final ratings by mid-November; School
+FIRST labels every workbook “Final”, so <code>release</code> marks
+district rows downloaded before December 1 of the rating year as
+preliminary, and charter rows follow TEA’s own label.</p>
+<table class="table">
+<colgroup>
+<col width="7%">
+<col width="9%">
+<col width="3%">
+<col width="35%">
+<col width="43%">
+</colgroup>
+<thead><tr class="header">
+<th align="left">column</th>
+<th align="left">type</th>
+<th align="left">required</th>
+<th align="left">description</th>
+<th align="left">values / examples</th>
+</tr></thead>
+<tbody>
+<tr class="odd">
+<td align="left"><code>year</code></td>
+<td align="left">number(ordinal)</td>
+<td align="left">yes</td>
+<td align="left">Ending rating year; 2026 means the 2025-26
+ratings.</td>
+<td align="left">2003 to 2026</td>
+</tr>
+<tr class="even">
+<td align="left"><code>school_year</code></td>
+<td align="left">string</td>
+<td align="left">yes</td>
+<td align="left"></td>
+<td align="left">
+<code>2025-26</code>, <code>2002-03</code>
+</td>
+</tr>
+<tr class="odd">
+<td align="left"><code>fiscal_year</code></td>
+<td align="left">number(ordinal)</td>
+<td align="left">yes</td>
+<td align="left">Fiscal year whose audited financial data was rated
+(year - 1); joins peims_finance.fiscal_year.</td>
+<td align="left">2002 to 2025</td>
+</tr>
+<tr class="even">
+<td align="left"><code>type</code></td>
+<td align="left">enum</td>
+<td align="left">yes</td>
+<td align="left"></td>
+<td align="left">
+<code>district</code>, <code>charter</code>
+</td>
+</tr>
+<tr class="odd">
+<td align="left"><code>university_charter</code></td>
+<td align="left">boolean</td>
+<td align="left">yes</td>
+<td align="left">True for rows from TEA’s separate university-charter
+list (2017-18 onward; pass/fail, no score).</td>
+<td align="left"></td>
+</tr>
+<tr class="even">
+<td align="left"><code>district</code></td>
+<td align="left">string</td>
+<td align="left">yes</td>
+<td align="left">Six-digit district number, zero-padded; charters
+included.</td>
+<td align="left">
+<code>001902</code>, <code>161920</code>,
+<code>003801</code>
+</td>
+</tr>
+<tr class="odd">
+<td align="left"><code>district_name</code></td>
+<td align="left">string</td>
+<td align="left"></td>
+<td align="left"></td>
+<td align="left">
+<code>CAYUGA ISD</code>,
+<code>PINEYWOODS COMMUNITY ACADEMY</code>
+</td>
+</tr>
+<tr class="even">
+<td align="left"><code>region</code></td>
+<td align="left">string</td>
+<td align="left"></td>
+<td align="left">Two-digit Education Service Center region.</td>
+<td align="left">
+<code>07</code>, <code>12</code>
+</td>
+</tr>
+<tr class="odd">
+<td align="left"><code>status</code></td>
+<td align="left">enum</td>
+<td align="left"></td>
+<td align="left"></td>
+<td align="left">
+<code>Pass</code>, <code>Fail</code>,
+<code>Suspended</code>, <code>Undetermined</code>
+</td>
+</tr>
+<tr class="even">
+<td align="left"><code>rating</code></td>
+<td align="left">string</td>
+<td align="left"></td>
+<td align="left">TEA’s rating label as published,
+whitespace-trimmed.</td>
+<td align="left">
+<code>A = Superior Achievement</code>,
+<code>A - Superior Achievement</code>,
+<code>Superior Achievement</code>, <code>Pass</code>,
+<code>Suspended: No Reason Given</code>
+</td>
+</tr>
+<tr class="odd">
+<td align="left"><code>grade</code></td>
+<td align="left">enum</td>
+<td align="left"></td>
+<td align="left">Letter grade (2015-16 onward); null for earlier years
+and for pass/fail ratings.</td>
+<td align="left">
+<code>A</code>, <code>B</code>, <code>C</code>,
+<code>F</code>
+</td>
+</tr>
+<tr class="even">
+<td align="left"><code>score</code></td>
+<td align="left">number(quantity) [points]</td>
+<td align="left"></td>
+<td align="left">FIRST points; the maximum depends on the era (100 since
+2015-16). Null for university charters.</td>
+<td align="left">0 to 100</td>
+</tr>
+<tr class="odd">
+<td align="left"><code>release</code></td>
+<td align="left">enum</td>
+<td align="left">yes</td>
+<td align="left"></td>
+<td align="left">
+<code>preliminary</code>, <code>final</code>
+</td>
+</tr>
+<tr class="even">
+<td align="left"><code>last_updated</code></td>
+<td align="left">date</td>
+<td align="left"></td>
+<td align="left">TEA’s last-update stamp for the row.</td>
+<td align="left">2004-01-01 to 2027-12-31</td>
+</tr>
+</tbody>
+</table>
+</div>
+<div class="section level3">
 <h3 id="tea-district-number-to-nces-leaid-crosswalk">TEA district number to NCES LEAID crosswalk<a class="anchor" aria-label="anchor" href="#tea-district-number-to-nces-leaid-crosswalk"></a>
 </h3>
 <p><strong><code>crosswalk</code></strong> — One row per Texas school
@@ -1610,9 +1781,9 @@ column.</td>
 </h2>
 <table class="table">
 <colgroup>
-<col width="21%">
-<col width="4%">
-<col width="74%">
+<col width="35%">
+<col width="3%">
+<col width="60%">
 </colgroup>
 <thead><tr class="header">
 <th align="left">join</th>
@@ -1639,6 +1810,20 @@ its directory entry for the same year.</td>
 <td align="left">many-to-one</td>
 <td align="left">Statewide-file variable codes are defined in the
 dictionary for the same year and level.</td>
+</tr>
+<tr class="even">
+<td align="left"><code>first_ratings.district = directory.district</code></td>
+<td align="left">many-to-one</td>
+<td align="left">A FIRST row’s district or charter resolves to the
+directory’s district entry (directory <code>level = "district"</code>
+rows).</td>
+</tr>
+<tr class="odd">
+<td align="left"><code>first_ratings.district = peims_finance.district AND first_ratings.fiscal_year = peims_finance.fiscal_year</code></td>
+<td align="left">one-to-many</td>
+<td align="left">A rating pairs with the PEIMS actuals it was computed
+from: the same district in the fiscal year before the rating year (use
+<code>basis = "actual"</code>).</td>
 </tr>
 <tr class="even">
 <td align="left"><code>tax_rates.district = crosswalk.district</code></td>
@@ -1703,6 +1888,10 @@ campus, otherwise “000” (no cost center) or “999” (undistributed).</p>
 <p><strong>charter</strong> — Open-enrollment charter school, reported
 by TEA under the nonprofit chart of accounts in PEIMS finance and as
 districts in most other tables.</p>
+<p><strong>FIRST</strong> — Financial Integrity Rating System of Texas,
+TEA’s annual financial accountability rating of every district (School
+FIRST) and charter (Charter FIRST), based on the prior fiscal year’s
+audited financial data; the source of the first_ratings table.</p>
 <p><strong>ESC region</strong> — One of twenty Education Service Center
 regions Texas districts belong to (e.g. Region 12, Waco).</p>
 </div>

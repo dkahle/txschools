@@ -37,6 +37,8 @@ Download and parse public TEA data.
   : Download an AEIS (Academic Excellence Indicator System) file
 - [`txs_get_peims_finance()`](https://dkahle.github.io/txschools/reference/txs_get_peims_finance.md)
   : Download PEIMS financial data (budget or actual)
+- [`txs_get_first()`](https://dkahle.github.io/txschools/reference/txs_get_first.md)
+  : Download TEA's FIRST financial integrity ratings
 
 ## TAPR semantic datasets
 

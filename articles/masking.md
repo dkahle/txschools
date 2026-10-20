@@ -19,20 +19,18 @@ masked cell.
 
 ## Helpers
 
-``` r
-
-is_masked(c("12.3", "*", ".", " -1 ", "0"))
-#> [1] FALSE  TRUE  TRUE  TRUE FALSE
-mask_strip(c("12.3", "*", ".", "-1", "0"))
-#> # A tibble: 5 × 3
-#>   value_num masked mask_code
-#>       <dbl> <lgl>  <chr>    
-#> 1      12.3 FALSE  NA       
-#> 2      NA   TRUE   *        
-#> 3      NA   TRUE   .        
-#> 4      NA   TRUE   -1       
-#> 5       0   FALSE  NA
-```
+\
+[`is_masked`](https://dkahle.github.io/txschools/reference/is_masked.md)`(`[`c`](https://rdrr.io/r/base/c.html)`(``"12.3"``, ``"*"``, ``"."``, ``" -1 "``, ``"0"``)``)`\
+`#> [1] FALSE  TRUE  TRUE  TRUE FALSE`\
+[`mask_strip`](https://dkahle.github.io/txschools/reference/is_masked.md)`(`[`c`](https://rdrr.io/r/base/c.html)`(``"12.3"``, ``"*"``, ``"."``, ``"-1"``, ``"0"``)``)`\
+`#> ``# A tibble: 5 × 3`\
+`#>   value_num masked mask_code`\
+`#>       ``<dbl>`` ``<lgl>``  ``<chr>``    `\
+`#> ``1``      12.3 FALSE  ``NA``       `\
+`#> ``2``      ``NA``   TRUE   *        `\
+`#> ``3``      ``NA``   TRUE   .        `\
+`#> ``4``      ``NA``   TRUE   -1       `\
+`#> ``5``       0   FALSE  ``NA`
 
 [`mask_strip()`](https://dkahle.github.io/txschools/reference/is_masked.md)
 is the safe way to get a numeric column from a TAPR table: it returns
@@ -45,15 +43,13 @@ downstream code never confuses “12.3” with “\*“.
 Display formatting is stripped before numeric parsing — `"97%"` parses
 to `97` (as printed, not divided by 100) and `"$4,668"` to `4668`:
 
-``` r
-
-mask_strip(c("97%", "$4,668"))
-#> # A tibble: 2 × 3
-#>   value_num masked mask_code
-#>       <dbl> <lgl>  <chr>    
-#> 1        97 FALSE  NA       
-#> 2      4668 FALSE  NA
-```
+\
+[`mask_strip`](https://dkahle.github.io/txschools/reference/is_masked.md)`(`[`c`](https://rdrr.io/r/base/c.html)`(``"97%"``, ``"$4,668"``)``)`\
+`#> ``# A tibble: 2 × 3`\
+`#>   value_num masked mask_code`\
+`#>       ``<dbl>`` ``<lgl>``  ``<chr>``    `\
+`#> ``1``        97 FALSE  ``NA``       `\
+`#> ``2``      ``4``668 FALSE  ``NA`
 
 This is the package-wide convention: **numeric values are kept at the
 scale TEA printed them**. The one exception is the semantic TAPR student
@@ -69,30 +65,26 @@ such as `"< 1%"`. Values that fail numeric parsing are flagged as masked
 — with the original marker preserved in `mask_code`, never silently
 degraded to an unmasked `NA`:
 
-``` r
-
-mask_strip(c("< 1%", "?"))
-#> # A tibble: 2 × 3
-#>   value_num masked mask_code
-#>       <dbl> <lgl>  <chr>    
-#> 1        NA TRUE   < 1%     
-#> 2        NA TRUE   ?
-```
+\
+[`mask_strip`](https://dkahle.github.io/txschools/reference/is_masked.md)`(`[`c`](https://rdrr.io/r/base/c.html)`(``"< 1%"``, ``"?"``)``)`\
+`#> ``# A tibble: 2 × 3`\
+`#>   value_num masked mask_code`\
+`#>       ``<dbl>`` ``<lgl>``  ``<chr>``    `\
+`#> ``1``        ``NA`` TRUE   < 1%     `\
+`#> ``2``        ``NA`` TRUE   ?`
 
 Everything else that fails numeric parsing — year labels like
 `"2019-20"`, grade spans like `"02 - 04"`, names — is ordinary text,
 left unmasked with an `NA` numeric slot:
 
-``` r
-
-mask_strip(c("2019-20", "02 - 04", "MCLENNAN"))
-#> # A tibble: 3 × 3
-#>   value_num masked mask_code
-#>       <dbl> <lgl>  <chr>    
-#> 1        NA FALSE  NA       
-#> 2        NA FALSE  NA       
-#> 3        NA FALSE  NA
-```
+\
+[`mask_strip`](https://dkahle.github.io/txschools/reference/is_masked.md)`(`[`c`](https://rdrr.io/r/base/c.html)`(``"2019-20"``, ``"02 - 04"``, ``"MCLENNAN"``)``)`\
+`#> ``# A tibble: 3 × 3`\
+`#>   value_num masked mask_code`\
+`#>       ``<dbl>`` ``<lgl>``  ``<chr>``    `\
+`#> ``1``        ``NA`` FALSE  ``NA``       `\
+`#> ``2``        ``NA`` FALSE  ``NA``       `\
+`#> ``3``        ``NA`` FALSE  ``NA`
 
 The `txs_get_*()` family applies this transformation automatically when
 `output = "tidy"` and exposes the masking codes used via

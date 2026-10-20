@@ -125,6 +125,22 @@
 <h3 id="txs_open_src-0-0-0-9000">txs_open_src() (2026-07)<a class="anchor" aria-label="anchor" href="#txs_open_src-0-0-0-9000"></a></h3>
 <ul><li>New <code>txs_open_src(geography, level, tab, browse)</code>: opens a campus or district’s Texas School Report Card at <a href="https://txschools.gov" class="external-link uri">https://txschools.gov</a> in a browser. Since 2020 that JavaScript site is the <em>only</em> place SRC reports live – <code><a href="../reference/txs_get_src.html">txs_get_src()</a></code> cannot scrape it (see its documented 2004-2019 coverage) – so this is the complement: <code>browse = FALSE</code> returns the URL without opening anything, useful for scripting.</li>
 </ul></div>
+<div class="section level3">
+<h3 id="viewer-polish-0-0-0-9000">Viewer polish (2026-07)<a class="anchor" aria-label="anchor" href="#viewer-polish-0-0-0-9000"></a></h3>
+<ul><li>Finance tab’s school-year picker is a dropdown (<code>selectInput</code>) rather than a slider – the slider was carried over from the Map tab’s animated choropleth control without its reason to exist (the play-button animation), which a plain dropdown suits better for a five-choice, non-animated pick.</li>
+<li>The Map tab’s district search and the Finance tab’s entity search now use server-side selectize (matching the existing Compare tab pattern) instead of embedding the full ~1,000-option list in the page HTML, clearing Shiny’s “large number of options” performance warning for both.</li>
+</ul></div>
+<div class="section level3">
+<h3 id="strict-request-spacing-0-0-0-9000">Strict request spacing (2026-10)<a class="anchor" aria-label="anchor" href="#strict-request-spacing-0-0-0-9000"></a></h3>
+<ul><li>HTTP requests are now spaced strictly at the configured rate (<code>options(txschools.rate_per_sec)</code>, default one per second), as the README promises. Previously httr2’s token bucket let up to 60 requests per host through in a burst before throttling began. The package now requires httr2 &gt;= 1.1.1 (which <code><a href="../reference/txs_crosswalk.html">txs_crosswalk()</a></code> already needed).</li>
+</ul></div>
+<div class="section level3">
+<h3 id="first-financial-integrity-ratings-0-0-0-9000">FIRST financial integrity ratings (2026-10)<a class="anchor" aria-label="anchor" href="#first-financial-integrity-ratings-0-0-0-9000"></a></h3>
+<ul><li>New source <code><a href="../reference/txs_get_first.html">txs_get_first()</a></code>: TEA’s Financial Integrity Rating System of Texas (FIRST) ratings for every district (School FIRST, 2002-03 onward) and charter (Charter FIRST, 2011-12 onward, including the separate university-charter list since 2017-18). One tidy row per district or charter and rating year: status, rating, letter grade (2015-16 onward), score, a <code>fiscal_year</code> key that lines each rating up with the PEIMS actuals it was computed from, and a <code>release</code> column. <code>years</code> are ending rating years (2026 means the 2025-26 ratings) and are required.</li>
+<li>
+<code>release</code> flags preliminary ratings. Charter FIRST labels its workbooks correctly, but School FIRST titles every workbook “Final” – including the preliminary 2025-26 ratings – so district rows downloaded before December 1 of the rating year count as preliminary. Cached preliminary copies are never replaced silently; the function points to <code>refresh = TRUE</code> once finals are due.</li>
+<li>TEA serves FIRST only through two ASP.NET search apps (no files, no API), so each workbook is fetched in a short cookie session: page, year postback, Download (plus a list postback for university charters). The internal HTTP layer gains cookie-jar support and an in-memory form POST, and each workbook is checked (zip signature, header, title year, and list) before it is cached, so a silently failed postback can never cache the wrong year.</li>
+</ul></div>
 </div>
   </main><aside class="col-md-3"><nav id="toc" aria-label="Table of contents"><h2>On this page</h2>
     </nav></aside></div>

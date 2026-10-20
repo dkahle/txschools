@@ -15,14 +15,12 @@ Throughout we use China Spring ISD’s 2023-24 actuals. Chunks that
 download data or draw charts only run when the vignette is built with
 `TXS_LIVE=true`; the code is complete either way.
 
-``` r
-
-library(txschools)
-library(dplyr)
-
-cs <- txs_get_peims_finance(2024, "actual", "district", verbose = FALSE) |>
-  filter(district == "161920")
-```
+\
+[`library`](https://rdrr.io/r/base/library.html)`(``txschools``)`\
+[`library`](https://rdrr.io/r/base/library.html)`(`[`dplyr`](https://dplyr.tidyverse.org)`)`\
+\
+`cs`` ``<-`` `[`txs_get_peims_finance`](https://dkahle.github.io/txschools/reference/txs_get_peims_finance.md)`(``2024``, ``"actual"``, ``"district"``, verbose ``=`` ``FALSE``)`` ``|>`\
+`  `[`filter`](https://dplyr.tidyverse.org/reference/filter.html)`(``district`` ``==`` ``"161920"``)`
 
 ## The concept: what a flow diagram claims
 
@@ -81,43 +79,39 @@ draws it with [ggsankey](https://github.com/davidsjoberg/ggsankey)
 (GitHub-only: `remotes::install_github("davidsjoberg/ggsankey")`) and
 returns a regular ggplot.
 
-``` r
-
-flows <- txs_peims_flow(cs, lump = 4)
-flows
-#> # A tibble: 31 × 5
-#>    from_axis from                       to_axis to                        amount
-#>    <chr>     <chr>                      <chr>   <chr>                      <dbl>
-#>  1 source    State revenue              fund    General fund              1.98e7
-#>  2 source    Local revenue              fund    General fund              9.65e6
-#>  3 source    Local revenue              fund    Debt service funds        4.70e6
-#>  4 source    From fund balance          fund    Capital projects funds    2.64e6
-#>  5 source    Other financing sources    fund    General fund              1.98e6
-#>  6 source    From fund balance          fund    General fund              1.72e6
-#>  7 source    Federal revenue            fund    Other funds               9.60e5
-#>  8 source    State revenue              fund    Debt service funds        8.59e5
-#>  9 source    Transfers from other funds fund    Capital projects funds    8.58e5
-#> 10 source    Federal revenue            fund    National school breakfas… 7.73e5
-#> # ℹ 21 more rows
-```
+\
+`flows`` ``<-`` `[`txs_peims_flow`](https://dkahle.github.io/txschools/reference/txs_peims_flow.md)`(``cs``, lump ``=`` ``4``)`\
+`flows`\
+`#> ``# A tibble: 31 × 5`\
+`#>    from_axis from                       to_axis to                        amount`\
+`#>    ``<chr>``     ``<chr>``                      ``<chr>``   ``<chr>``                      ``<dbl>`\
+`#> `` 1`` source    State revenue              fund    General fund              1.98``e``7`\
+`#> `` 2`` source    Local revenue              fund    General fund              9.65``e``6`\
+`#> `` 3`` source    Local revenue              fund    Debt service funds        4.70``e``6`\
+`#> `` 4`` source    From fund balance          fund    Capital projects funds    2.64``e``6`\
+`#> `` 5`` source    Other financing sources    fund    General fund              1.98``e``6`\
+`#> `` 6`` source    From fund balance          fund    General fund              1.72``e``6`\
+`#> `` 7`` source    Federal revenue            fund    Other funds               9.60``e``5`\
+`#> `` 8`` source    State revenue              fund    Debt service funds        8.59``e``5`\
+`#> `` 9`` source    Transfers from other funds fund    Capital projects funds    8.58``e``5`\
+`#> ``10`` source    Federal revenue            fund    National school breakfas… 7.73``e``5`\
+`#> ``# ℹ 21 more rows`
 
 The edge list is the whole interface: `from_axis`/`from` and
 `to_axis`/`to` name the stages and nodes, `amount` is dollars. Note the
 fund-balance rows doing the reconciliation.
 
-``` r
-
-library(ggplot2)
-
-txs_plot_peims_flow(flows) +
-  labs(
-    title = "China Spring ISD, 2023-24: every dollar in, every dollar out",
-    subtitle = "PEIMS actuals: revenue sources → funds → functions"
-  ) +
-  theme(plot.title = element_text(face = "bold", size = 15),
-        plot.subtitle = element_text(color = "grey35", size = 10,
-                                     margin = margin(b = 6)))
-```
+\
+[`library`](https://rdrr.io/r/base/library.html)`(`[`ggplot2`](https://ggplot2.tidyverse.org)`)`\
+\
+[`txs_plot_peims_flow`](https://dkahle.github.io/txschools/reference/txs_plot_peims_flow.md)`(``flows``)`` ``+`\
+`  `[`labs`](https://ggplot2.tidyverse.org/reference/labs.html)`(`\
+`    title ``=`` ``"China Spring ISD, 2023-24: every dollar in, every dollar out"``,`\
+`    subtitle ``=`` ``"PEIMS actuals: revenue sources → funds → functions"`\
+`  ``)`` ``+`\
+`  `[`theme`](https://ggplot2.tidyverse.org/reference/theme.html)`(``plot.title ``=`` `[`element_text`](https://ggplot2.tidyverse.org/reference/element.html)`(``face ``=`` ``"bold"``, size ``=`` ``15``)``,`\
+`        plot.subtitle ``=`` `[`element_text`](https://ggplot2.tidyverse.org/reference/element.html)`(``color ``=`` ``"grey35"``, size ``=`` ``10``,`\
+`                                     margin ``=`` `[`margin`](https://ggplot2.tidyverse.org/reference/element.html)`(``b ``=`` ``6``)``)``)`
 
 ![](money-flow-diagrams_files/figure-html/flow-plot-1.png)
 
@@ -135,18 +129,16 @@ Expenditure rows record fund, function, object, and program intent
 *jointly*, so any rightward continuation among those axes stays honest.
 What did instruction dollars buy?
 
-``` r
-
-txs_peims_flow(cs, axes = c("fund", "function", "object"), lump = 4) |>
-  txs_plot_peims_flow() +
-  labs(
-    title = "China Spring ISD, 2023-24 spending",
-    subtitle = "funds → functions → objects (what the money bought)"
-  ) +
-  theme(plot.title = element_text(face = "bold", size = 15),
-        plot.subtitle = element_text(color = "grey35", size = 10,
-                                     margin = margin(b = 6)))
-```
+\
+[`txs_peims_flow`](https://dkahle.github.io/txschools/reference/txs_peims_flow.md)`(``cs``, axes ``=`` `[`c`](https://rdrr.io/r/base/c.html)`(``"fund"``, ``"function"``, ``"object"``)``, lump ``=`` ``4``)`` ``|>`\
+`  `[`txs_plot_peims_flow`](https://dkahle.github.io/txschools/reference/txs_plot_peims_flow.md)`(``)`` ``+`\
+`  `[`labs`](https://ggplot2.tidyverse.org/reference/labs.html)`(`\
+`    title ``=`` ``"China Spring ISD, 2023-24 spending"``,`\
+`    subtitle ``=`` ``"funds → functions → objects (what the money bought)"`\
+`  ``)`` ``+`\
+`  `[`theme`](https://ggplot2.tidyverse.org/reference/theme.html)`(``plot.title ``=`` `[`element_text`](https://ggplot2.tidyverse.org/reference/element.html)`(``face ``=`` ``"bold"``, size ``=`` ``15``)``,`\
+`        plot.subtitle ``=`` `[`element_text`](https://ggplot2.tidyverse.org/reference/element.html)`(``color ``=`` ``"grey35"``, size ``=`` ``10``,`\
+`                                     margin ``=`` `[`margin`](https://ggplot2.tidyverse.org/reference/element.html)`(``b ``=`` ``6``)``)``)`
 
 ![](money-flow-diagrams_files/figure-html/flow-object-1.png)
 
@@ -173,23 +165,21 @@ middle (and the per-fund grant stories). The edge list for it is two
 [`summarise()`](https://dplyr.tidyverse.org/reference/summarise.html)
 calls:
 
-``` r
-
-rev <- cs |>
-  filter(grepl("^5[789]", object_code)) |>
-  mutate(from = case_when(
-    grepl("^57", object_code) ~ "Local revenue",
-    grepl("^58", object_code) ~ "State revenue",
-    grepl("^59", object_code) ~ "Federal revenue")) |>
-  summarise(amount = sum(amount), .by = from) |>
-  mutate(to = "China Spring ISD")
-
-spend <- cs |>
-  filter(grepl("^6", object_code)) |>
-  summarise(amount = sum(amount), .by = function_label) |>
-  transmute(from = "China Spring ISD",
-            to = stringr::str_to_sentence(function_label), amount)
-```
+\
+`rev`` ``<-`` ``cs`` ``|>`\
+`  `[`filter`](https://dplyr.tidyverse.org/reference/filter.html)`(`[`grepl`](https://rdrr.io/r/base/grep.html)`(``"^5[789]"``, ``object_code``)``)`` ``|>`\
+`  `[`mutate`](https://dplyr.tidyverse.org/reference/mutate.html)`(``from ``=`` `[`case_when`](https://dplyr.tidyverse.org/reference/case-and-replace-when.html)`(`\
+`    `[`grepl`](https://rdrr.io/r/base/grep.html)`(``"^57"``, ``object_code``)`` ``~`` ``"Local revenue"``,`\
+`    `[`grepl`](https://rdrr.io/r/base/grep.html)`(``"^58"``, ``object_code``)`` ``~`` ``"State revenue"``,`\
+`    `[`grepl`](https://rdrr.io/r/base/grep.html)`(``"^59"``, ``object_code``)`` ``~`` ``"Federal revenue"``)``)`` ``|>`\
+`  `[`summarise`](https://dplyr.tidyverse.org/reference/summarise.html)`(``amount ``=`` `[`sum`](https://rdrr.io/r/base/sum.html)`(``amount``)``, .by ``=`` ``from``)`` ``|>`\
+`  `[`mutate`](https://dplyr.tidyverse.org/reference/mutate.html)`(``to ``=`` ``"China Spring ISD"``)`\
+\
+`spend`` ``<-`` ``cs`` ``|>`\
+`  `[`filter`](https://dplyr.tidyverse.org/reference/filter.html)`(`[`grepl`](https://rdrr.io/r/base/grep.html)`(``"^6"``, ``object_code``)``)`` ``|>`\
+`  `[`summarise`](https://dplyr.tidyverse.org/reference/summarise.html)`(``amount ``=`` `[`sum`](https://rdrr.io/r/base/sum.html)`(``amount``)``, .by ``=`` ``function_label``)`` ``|>`\
+`  `[`transmute`](https://dplyr.tidyverse.org/reference/transmute.html)`(``from ``=`` ``"China Spring ISD"``,`\
+`            to ``=`` ``stringr``::`[`str_to_sentence`](https://stringr.tidyverse.org/reference/case.html)`(``function_label``)``, ``amount``)`
 
 This is the shape most Sankey tools consume directly, which brings us to
 tooling.
@@ -209,32 +199,30 @@ axes – and it is at its best when every crossing is a real joint
 observation. The `source -> fund` stage is exactly that, so a two-axis
 alluvial of it is fully honest, crossings included:
 
-``` r
-
-library(ggalluvial)
-library(ggplot2)
-
-src_fund <- flows |>
-  filter(from_axis == "source", to_axis == "fund")
-
-ggplot(src_fund,
-       aes(y = amount, axis1 = from, axis2 = to, fill = from)) +
-  geom_alluvium(width = 1/8, alpha = 0.65) +
-  geom_stratum(width = 1/8, fill = "grey97", color = "grey50") +
-  geom_text(stat = "stratum",
-            aes(label = stringr::str_wrap(after_stat(stratum), 16)),
-            size = 3, lineheight = 0.95) +
-  scale_fill_manual(values = c(
-    "State revenue" = "#2a78d6", "Local revenue" = "#008300",
-    "Federal revenue" = "#e87ba4", "From fund balance" = "grey60"
-  ), guide = "none") +
-  scale_x_discrete(limits = c("Source", "Fund"), expand = c(0.1, 0.05)) +
-  labs(title = "Which funds each revenue class feeds",
-       subtitle = "China Spring ISD, 2023-24; every crossing is a recorded total",
-       y = NULL) +
-  theme_minimal() +
-  theme(axis.text.y = element_blank(), panel.grid = element_blank())
-```
+\
+[`library`](https://rdrr.io/r/base/library.html)`(`[`ggalluvial`](http://corybrunson.github.io/ggalluvial/)`)`\
+[`library`](https://rdrr.io/r/base/library.html)`(`[`ggplot2`](https://ggplot2.tidyverse.org)`)`\
+\
+`src_fund`` ``<-`` ``flows`` ``|>`\
+`  `[`filter`](https://dplyr.tidyverse.org/reference/filter.html)`(``from_axis`` ``==`` ``"source"``, ``to_axis`` ``==`` ``"fund"``)`\
+\
+[`ggplot`](https://ggplot2.tidyverse.org/reference/ggplot.html)`(``src_fund``,`\
+`       `[`aes`](https://ggplot2.tidyverse.org/reference/aes.html)`(``y ``=`` ``amount``, axis1 ``=`` ``from``, axis2 ``=`` ``to``, fill ``=`` ``from``)``)`` ``+`\
+`  `[`geom_alluvium`](http://corybrunson.github.io/ggalluvial/reference/geom_alluvium.md)`(``width ``=`` ``1``/``8``, alpha ``=`` ``0.65``)`` ``+`\
+`  `[`geom_stratum`](http://corybrunson.github.io/ggalluvial/reference/geom_stratum.md)`(``width ``=`` ``1``/``8``, fill ``=`` ``"grey97"``, color ``=`` ``"grey50"``)`` ``+`\
+`  `[`geom_text`](https://ggplot2.tidyverse.org/reference/geom_text.html)`(``stat ``=`` ``"stratum"``,`\
+`            `[`aes`](https://ggplot2.tidyverse.org/reference/aes.html)`(``label ``=`` ``stringr``::`[`str_wrap`](https://stringr.tidyverse.org/reference/str_wrap.html)`(`[`after_stat`](https://ggplot2.tidyverse.org/reference/aes_eval.html)`(``stratum``)``, ``16``)``)``,`\
+`            size ``=`` ``3``, lineheight ``=`` ``0.95``)`` ``+`\
+`  `[`scale_fill_manual`](https://ggplot2.tidyverse.org/reference/scale_manual.html)`(``values ``=`` `[`c`](https://rdrr.io/r/base/c.html)`(`\
+`    ``"State revenue"`` ``=`` ``"#2a78d6"``, ``"Local revenue"`` ``=`` ``"#008300"``,`\
+`    ``"Federal revenue"`` ``=`` ``"#e87ba4"``, ``"From fund balance"`` ``=`` ``"grey60"`\
+`  ``)``, guide ``=`` ``"none"``)`` ``+`\
+`  `[`scale_x_discrete`](https://ggplot2.tidyverse.org/reference/scale_discrete.html)`(``limits ``=`` `[`c`](https://rdrr.io/r/base/c.html)`(``"Source"``, ``"Fund"``)``, expand ``=`` `[`c`](https://rdrr.io/r/base/c.html)`(``0.1``, ``0.05``)``)`` ``+`\
+`  `[`labs`](https://ggplot2.tidyverse.org/reference/labs.html)`(``title ``=`` ``"Which funds each revenue class feeds"``,`\
+`       subtitle ``=`` ``"China Spring ISD, 2023-24; every crossing is a recorded total"``,`\
+`       y ``=`` ``NULL``)`` ``+`\
+`  `[`theme_minimal`](https://ggplot2.tidyverse.org/reference/ggtheme.html)`(``)`` ``+`\
+`  `[`theme`](https://ggplot2.tidyverse.org/reference/theme.html)`(``axis.text.y ``=`` `[`element_blank`](https://ggplot2.tidyverse.org/reference/element.html)`(``)``, panel.grid ``=`` `[`element_blank`](https://ggplot2.tidyverse.org/reference/element.html)`(``)``)`
 
 ![](money-flow-diagrams_files/figure-html/alluvial-1.png)
 
@@ -254,52 +242,48 @@ node/link list that is a few lines from the edge list. When this
 vignette is built live (as on the package site) the chart below is a
 real widget – hover a ribbon for its dollars, drag the nodes around:
 
-``` r
-
-library(plotly)
-
-nodes <- unique(c(flows$from, flows$to))
-node_pal <- c(
-  "State revenue" = "#2a78d6", "Local revenue" = "#008300",
-  "Federal revenue" = "#e87ba4", "Instruction" = "#eda100",
-  "Facility maintenance and operations" = "#1baf7a",
-  "Debt service" = "#eb6834",
-  "Facilities acquisition and construction" = "#4a3aa7"
-)
-node_col <- unname(node_pal[nodes])
-node_col[is.na(node_col)] <- "#9c9a92"
-
-plot_ly(
-  type = "sankey",
-  valueformat = "$,.0f",
-  node = list(label = nodes, color = node_col, pad = 18, thickness = 12),
-  link = list(
-    source = match(flows$from, nodes) - 1L,  # zero-indexed
-    target = match(flows$to, nodes) - 1L,
-    value = flows$amount
-  )
-)
-```
+\
+[`library`](https://rdrr.io/r/base/library.html)`(`[`plotly`](https://plotly-r.com)`)`\
+\
+`nodes`` ``<-`` `[`unique`](https://rdrr.io/r/base/unique.html)`(`[`c`](https://rdrr.io/r/base/c.html)`(``flows``$``from``, ``flows``$``to``)``)`\
+`node_pal`` ``<-`` `[`c`](https://rdrr.io/r/base/c.html)`(`\
+`  ``"State revenue"`` ``=`` ``"#2a78d6"``, ``"Local revenue"`` ``=`` ``"#008300"``,`\
+`  ``"Federal revenue"`` ``=`` ``"#e87ba4"``, ``"Instruction"`` ``=`` ``"#eda100"``,`\
+`  ``"Facility maintenance and operations"`` ``=`` ``"#1baf7a"``,`\
+`  ``"Debt service"`` ``=`` ``"#eb6834"``,`\
+`  ``"Facilities acquisition and construction"`` ``=`` ``"#4a3aa7"`\
+`)`\
+`node_col`` ``<-`` `[`unname`](https://rdrr.io/r/base/unname.html)`(``node_pal``[``nodes``]``)`\
+`node_col``[`[`is.na`](https://rdrr.io/r/base/NA.html)`(``node_col``)``]`` ``<-`` ``"#9c9a92"`\
+\
+[`plot_ly`](https://rdrr.io/pkg/plotly/man/plot_ly.html)`(`\
+`  type ``=`` ``"sankey"``,`\
+`  valueformat ``=`` ``"$,.0f"``,`\
+`  node ``=`` `[`list`](https://rdrr.io/r/base/list.html)`(``label ``=`` ``nodes``, color ``=`` ``node_col``, pad ``=`` ``18``, thickness ``=`` ``12``)``,`\
+`  link ``=`` `[`list`](https://rdrr.io/r/base/list.html)`(`\
+`    source ``=`` `[`match`](https://rdrr.io/r/base/match.html)`(``flows``$``from``, ``nodes``)`` ``-`` ``1L``,  ``# zero-indexed`\
+`    target ``=`` `[`match`](https://rdrr.io/r/base/match.html)`(``flows``$``to``, ``nodes``)`` ``-`` ``1L``,`\
+`    value ``=`` ``flows``$``amount`\
+`  ``)`\
+`)`
 
 ### networkD3 (interactive, D3)
 
 The older D3 wrapper works the same way from a data frame of links and a
 data frame of nodes:
 
-``` r
-
-library(networkD3)
-
-nodes <- data.frame(name = unique(c(flows$from, flows$to)))
-links <- data.frame(
-  source = match(flows$from, nodes$name) - 1L,
-  target = match(flows$to, nodes$name) - 1L,
-  value = flows$amount
-)
-sankeyNetwork(Links = links, Nodes = nodes, Source = "source",
-              Target = "target", Value = "value", NodeID = "name",
-              fontSize = 12, nodeWidth = 12)
-```
+\
+[`library`](https://rdrr.io/r/base/library.html)`(`[`networkD3`](https://christophergandrud.github.io/networkD3/)`)`\
+\
+`nodes`` ``<-`` `[`data.frame`](https://rdrr.io/r/base/data.frame.html)`(``name ``=`` `[`unique`](https://rdrr.io/r/base/unique.html)`(`[`c`](https://rdrr.io/r/base/c.html)`(``flows``$``from``, ``flows``$``to``)``)``)`\
+`links`` ``<-`` `[`data.frame`](https://rdrr.io/r/base/data.frame.html)`(`\
+`  source ``=`` `[`match`](https://rdrr.io/r/base/match.html)`(``flows``$``from``, ``nodes``$``name``)`` ``-`` ``1L``,`\
+`  target ``=`` `[`match`](https://rdrr.io/r/base/match.html)`(``flows``$``to``, ``nodes``$``name``)`` ``-`` ``1L``,`\
+`  value ``=`` ``flows``$``amount`\
+`)`\
+[`sankeyNetwork`](https://rdrr.io/pkg/networkD3/man/sankeyNetwork.html)`(``Links ``=`` ``links``, Nodes ``=`` ``nodes``, Source ``=`` ``"source"``,`\
+`              Target ``=`` ``"target"``, Value ``=`` ``"value"``, NodeID ``=`` ``"name"``,`\
+`              fontSize ``=`` ``12``, nodeWidth ``=`` ``12``)`
 
 ### Choosing
 

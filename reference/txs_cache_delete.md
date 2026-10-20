@@ -31,7 +31,8 @@ txs_cache_delete(
 
 - source:
 
-  Optional source filter (`"tapr"`, `"src"`, `"aeis"`, `"peims"`).
+  Optional source filter (`"tapr"`, `"src"`, `"aeis"`, `"peims"`,
+  `"taxrates"`, `"first"`, `"crosswalk"`, `"boundaries"`, `"viewer"`).
 
 - level:
 

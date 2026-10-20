@@ -21,6 +21,8 @@
   (\_peims_meta)](#peims-provenance-table-_peims_meta)
 - [School district property tax
   rates](#school-district-property-tax-rates)
+- [FIRST financial integrity
+  ratings](#first-financial-integrity-ratings)
 - [TEA district number to NCES LEAID
   crosswalk](#tea-district-number-to-nces-leaid-crosswalk)
 - [District boundaries (sf)](#district-boundaries-sf)
@@ -37,14 +39,12 @@ cross-table relationships, and a glossary of TEA vocabulary. This
 vignette *renders that file* – it is generated from the same dictionary
 your code can read, so the two can never drift apart:
 
-``` r
-
-dict <- yaml::read_yaml(
-  system.file("data-dict.yaml", package = "txschools")
-)
-length(dict$tables)
-#> [1] 13
-```
+\
+`dict`` ``<-`` ``yaml``::`[`read_yaml`](https://yaml.r-lib.org/reference/read_yaml.html)`(`\
+`  `[`system.file`](https://rdrr.io/r/base/system.file.html)`(``"data-dict.yaml"``, package ``=`` ``"txschools"``)`\
+`)`\
+[`length`](https://rdrr.io/r/base/length.html)`(``dict``$``tables``)`\
+`#> [1] 14`
 
 Two conventions apply everywhere and are worth internalizing before
 reading the tables:
@@ -336,6 +336,43 @@ provides one.
 | `mcr` | number(quantity) \[USD per \$100 taxable value\] |  | Maximum Compressed Rate; NA unless supplied by the caller. | 0 to 2 |
 | `rate_source` | enum | yes |  | `comptroller`, `tea` |
 
+### FIRST financial integrity ratings
+
+**`first_ratings`** — One row per school district or open-enrollment
+charter per rating year: TEA’s Financial Integrity Rating System of
+Texas (FIRST) rating, from School FIRST (districts, 2002-03 onward) and
+Charter FIRST (charters, 2011-12 onward). Returned by txs_get_first().
+Each rating year’s ratings are computed from the prior fiscal year’s
+audited financial data.
+
+The rating system changed over time, so compare `score` within an era:
+2002-03 to 2013-14 used achievement labels (“Superior Achievement”
+through “Substandard Achievement”) on 65-85 point scales; 2014-15 was
+pass/fail on 30 points; from 2015-16 ratings are letter grades (A, B, C,
+F) on 100 points. University charters, rated pass/fail in a separate
+list since 2017-18, have `university_charter = true` and no score. TEA
+posts preliminary ratings in August and final ratings by mid-November;
+School FIRST labels every workbook “Final”, so `release` marks district
+rows downloaded before December 1 of the rating year as preliminary, and
+charter rows follow TEA’s own label.
+
+| column | type | required | description | values / examples |
+|:---|:---|:---|:---|:---|
+| `year` | number(ordinal) | yes | Ending rating year; 2026 means the 2025-26 ratings. | 2003 to 2026 |
+| `school_year` | string | yes |  | `2025-26`, `2002-03` |
+| `fiscal_year` | number(ordinal) | yes | Fiscal year whose audited financial data was rated (year - 1); joins peims_finance.fiscal_year. | 2002 to 2025 |
+| `type` | enum | yes |  | `district`, `charter` |
+| `university_charter` | boolean | yes | True for rows from TEA’s separate university-charter list (2017-18 onward; pass/fail, no score). |  |
+| `district` | string | yes | Six-digit district number, zero-padded; charters included. | `001902`, `161920`, `003801` |
+| `district_name` | string |  |  | `CAYUGA ISD`, `PINEYWOODS COMMUNITY ACADEMY` |
+| `region` | string |  | Two-digit Education Service Center region. | `07`, `12` |
+| `status` | enum |  |  | `Pass`, `Fail`, `Suspended`, `Undetermined` |
+| `rating` | string |  | TEA’s rating label as published, whitespace-trimmed. | `A = Superior Achievement`, `A - Superior Achievement`, `Superior Achievement`, `Pass`, `Suspended: No Reason Given` |
+| `grade` | enum |  | Letter grade (2015-16 onward); null for earlier years and for pass/fail ratings. | `A`, `B`, `C`, `F` |
+| `score` | number(quantity) \[points\] |  | FIRST points; the maximum depends on the era (100 since 2015-16). Null for university charters. | 0 to 100 |
+| `release` | enum | yes |  | `preliminary`, `final` |
+| `last_updated` | date |  | TEA’s last-update stamp for the row. | 2004-01-01 to 2027-12-31 |
+
 ### TEA district number to NCES LEAID crosswalk
 
 **`crosswalk`** — One row per Texas school district linking TEA’s
@@ -369,6 +406,8 @@ crosswalk table.
 | `peims_finance.district = directory.district` | many-to-one | A PEIMS finance row’s district resolves to the directory’s district entry for the same year (directory `level = "district"` rows carry the district number in both `id` and `district`). |
 | `tapr_student.geography = directory.id` | many-to-one | A TAPR entity’s campus or district number resolves to its directory entry for the same year. |
 | `tapr_file.variable_code = tapr_dictionary.variable` | many-to-one | Statewide-file variable codes are defined in the dictionary for the same year and level. |
+| `first_ratings.district = directory.district` | many-to-one | A FIRST row’s district or charter resolves to the directory’s district entry (directory `level = "district"` rows). |
+| `first_ratings.district = peims_finance.district AND first_ratings.fiscal_year = peims_finance.fiscal_year` | one-to-many | A rating pairs with the PEIMS actuals it was computed from: the same district in the fiscal year before the rating year (use `basis = "actual"`). |
 | `tax_rates.district = crosswalk.district` | many-to-one | Tax-rate rows resolve to Census geography through the crosswalk. |
 | `crosswalk.geoid = boundaries.geoid` | one-to-one | The crosswalk’s LEAID is the boundary file’s GEOID. |
 
@@ -427,6 +466,11 @@ campus number where the money is attributable to a campus, otherwise
 nonprofit chart of accounts in PEIMS finance and as districts in most
 other tables.
 
+**FIRST** — Financial Integrity Rating System of Texas, TEA’s annual
+financial accountability rating of every district (School FIRST) and
+charter (Charter FIRST), based on the prior fiscal year’s audited
+financial data; the source of the first_ratings table.
+
 **ESC region** — One of twenty Education Service Center regions Texas
 districts belong to (e.g. Region 12, Waco).
 
@@ -435,14 +479,12 @@ districts belong to (e.g. Region 12, Waco).
 The dictionary is plain YAML, so anything – your code, a colleague’s
 Python, an AI agent – can consume it directly:
 
-``` r
-
-dict <- yaml::read_yaml(system.file("data-dict.yaml", package = "txschools"))
-
-# Column names of the PEIMS finance table:
-peims <- Filter(function(t) t$name == "peims_finance", dict$tables)[[1]]
-vapply(peims$columns, `[[`, "", "name")
-```
+\
+`dict`` ``<-`` ``yaml``::`[`read_yaml`](https://yaml.r-lib.org/reference/read_yaml.html)`(`[`system.file`](https://rdrr.io/r/base/system.file.html)`(``"data-dict.yaml"``, package ``=`` ``"txschools"``)``)`\
+\
+`# Column names of the PEIMS finance table:`\
+`peims`` ``<-`` `[`Filter`](https://rdrr.io/r/base/funprog.html)`(``function``(``t``)`` ``t``$``name`` ``==`` ``"peims_finance"``, ``dict``$``tables``)``[[``1``]``]`\
+[`vapply`](https://rdrr.io/r/base/lapply.html)`(``peims``$``columns``, ``` `[[` ```, ``""``, ``"name"``)`
 
 The [data-dict CLI](https://data-dict.tidyverse.org) can validate the
 file against the specification, and the same conventions (one

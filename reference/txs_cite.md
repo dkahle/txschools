@@ -27,7 +27,7 @@ txs_cite(x = NULL, source = "tapr")
 - source:
 
   One of `"tapr"`, `"src"`, `"aeis"`, `"peims"`, `"taxrates"`,
-  `"crosswalk"`, `"boundaries"`.
+  `"first"`, `"crosswalk"`, `"boundaries"`.
 
 ## Value
 
