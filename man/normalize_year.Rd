@@ -10,8 +10,8 @@ normalize_year(year, source = NULL)
 \item{year}{Integer scalar; the ending calendar year.}
 
 \item{source}{Optional TEA program (\code{"tapr"}, \code{"aeis"}, \code{"src"},
-\code{"peims"}); when given, the year is validated against that
-program's coverage.}
+\code{"peims"}, \code{"taxrates"}, \code{"first"}); when given, the year is
+validated against that program's coverage.}
 }
 \value{
 Integer scalar.

@@ -250,7 +250,8 @@ txs_cache_size <- function(source = NULL, year = NULL, level = NULL,
 #'
 #' @param year Optional ending year filter.
 #' @param source Optional source filter (`"tapr"`, `"src"`, `"aeis"`,
-#'   `"peims"`).
+#'   `"peims"`, `"taxrates"`, `"first"`, `"crosswalk"`, `"boundaries"`,
+#'   `"viewer"`).
 #' @param level Optional level filter (`"campus"`, `"district"`, …).
 #' @param data_type Optional data-type filter (`"advanced"`,
 #'   `"dictionary"`, `"report"`, …).

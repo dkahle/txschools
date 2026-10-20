@@ -38,6 +38,9 @@ school-performance data published by the Texas Education Agency (TEA):
 * **Property tax rates** (2005-06-present): district M&O/I&S rates from
   the Texas Comptroller and TEA workbooks via `txs_get_tax_rates()`,
   with an interactive map explorer (`txs_viewer()`).
+* **FIRST financial ratings** (2002-03-present): TEA's Financial
+  Integrity Rating System of Texas ratings for every district and
+  charter via `txs_get_first()`.
 
 Every table these functions return is documented in a machine-readable
 data dictionary -- column types, ranges, masking semantics,
@@ -56,8 +59,8 @@ generated from that same file.
 ## Disclaimer
 
 `txschools` is **not affiliated with or endorsed by the Texas Education
-Agency**. It downloads files from TEA's *public* TAPR/SRC/AEIS pages on
-demand and does **not** redistribute TEA data. Users are responsible for
+Agency**. It downloads files from TEA's *public* web pages on demand
+and does **not** redistribute TEA data. Users are responsible for
 compliance with
 [TEA's site policies](https://tea.texas.gov/about-tea/welcome-and-overview/site-policies)
 and with FERPA and other applicable privacy laws. Masking and
@@ -652,7 +655,7 @@ district-year table -- a `rate_source` column records which file each
 row came from:
 
 ```{r taxrates}
-txs_get_tax_rates(2024, verbose = FALSE) |>
+txs_get_tax_rates(2024:2026, verbose = FALSE) |>
   filter(district == "161920")
 ```
 
@@ -687,6 +690,33 @@ txs_viewer_prepare_finance()
 txs_viewer()
 ```
 
+## FIRST financial integrity ratings
+
+Every year TEA rates each district's and charter's financial management
+under FIRST, the Financial Integrity Rating System of Texas, based on
+the prior fiscal year's audited financials. `txs_get_first()` pulls the
+statewide ratings -- School FIRST for districts since 2002-03, Charter
+FIRST for charters since 2011-12 -- into one tidy table:
+
+```{r first}
+first <- txs_get_first(2022:2026, type = "district", verbose = FALSE)
+first |>
+  filter(district == "161920") |>
+  select(school_year, district_name, rating, score, release)
+```
+
+```{r first-grades}
+first |>
+  filter(year == 2026) |>
+  count(grade)
+```
+
+The newest year's ratings are preliminary from August until TEA posts
+final ratings by mid-November; the `release` column says which, and
+`refresh = TRUE` replaces a cached preliminary copy. `fiscal_year`
+lines each rating up with the PEIMS actuals it was computed from, via
+`txs_get_peims_finance(fiscal_year, "actual")`.
+
 ## Two ways to get data, and what each one costs
 
 The examples above use two different acquisition patterns, and it is
@@ -700,11 +730,13 @@ worth choosing deliberately because they have opposite cost profiles:
   campuses that way is five hundred. This mode is right when you care
   about *a few entities in depth*.
 * **Statewide file pulls** (`txs_get_tapr_file()`, `txs_get_aeis()`,
-  `txs_get_peims_finance()`)
+  `txs_get_peims_finance()`, `txs_get_first()`)
   download one file containing *every* campus or district in Texas for
   a year and dataset -- a single request, but megabytes (a district
-  STAAR file runs ~5-14 MB). You then filter locally, as the McLennan
-  County comparison above does. This mode is right when you compare
+  STAAR file runs ~5-14 MB; FIRST's small workbooks instead take a
+  short three- or four-request session each). You then filter locally,
+  as the McLennan County comparison above does. This mode is right when
+  you compare
   *many entities on a few measures*: eight districts over nine years
   cost nine requests there, not seventy-two.
 
@@ -771,7 +803,8 @@ touching the cache at all.
 * Identifies itself with a clear, package-named `User-Agent`.
 * Respects `robots.txt` (configurable via
   `options("txschools.respect_robots")`).
-* Never scrapes TEAL/authenticated resources.
+* Never uses login-protected (TEAL) resources; the public FIRST search
+  pages it reads need no login.
 * Every download is cached with provenance sidecars (see the cache
   section above), so nothing is requested twice.
 

@@ -11,8 +11,12 @@
 #' @name txs-http
 NULL
 
+# `cookies` is an optional path to a cookie-jar file; when given, the
+# request reads and writes session cookies there (needed by TEA's
+# ASP.NET apps, whose form posts only work inside a session).
 #' @rdname txs-http
-http_request <- function(url, timeout = NULL, max_tries = NULL) {
+http_request <- function(url, timeout = NULL, max_tries = NULL,
+                         cookies = NULL) {
   if (!check_robots(url)) {
     stop(
       sprintf(
@@ -32,7 +36,7 @@ http_request <- function(url, timeout = NULL, max_tries = NULL) {
 
   # A one-token bucket refilled every 1 / rate seconds: strict spacing.
   # (`rate` alone would build a 60-token bucket that allows bursts.)
-  httr2::request(url) |>
+  req <- httr2::request(url) |>
     httr2::req_user_agent(ua) |>
     httr2::req_timeout(timeout) |>
     httr2::req_throttle(capacity = 1, fill_time_s = 1 / rate, realm = host) |>
@@ -41,11 +45,29 @@ http_request <- function(url, timeout = NULL, max_tries = NULL) {
       backoff      = function(i) min(2 ^ i, 30),
       is_transient = function(resp) httr2::resp_status(resp) %in% c(408, 425, 429, 500, 502, 503, 504)
     )
+  if (!is.null(cookies)) req <- httr2::req_cookie_preserve(req, cookies)
+  req
 }
 
 #' @rdname txs-http
-http_get <- function(url, timeout = NULL, max_tries = NULL) {
-  req <- http_request(url, timeout = timeout, max_tries = max_tries)
+http_get <- function(url, timeout = NULL, max_tries = NULL, cookies = NULL) {
+  req <- http_request(url, timeout = timeout, max_tries = max_tries,
+                      cookies = cookies)
+  httr2::req_perform(req)
+}
+
+#' POST a URL-encoded form and return the response in memory.
+#'
+#' The method is left implicit (curl's POST-with-body), never set with
+#' `httr2::req_method()`: a 302 answer to the post must be followed as
+#' a GET, which an explicit method would carry over to the redirect.
+#'
+#' @rdname txs-http
+http_post_form <- function(url, params, timeout = NULL, max_tries = NULL,
+                           cookies = NULL) {
+  req <- http_request(url, timeout = timeout, max_tries = max_tries,
+                      cookies = cookies)
+  req <- httr2::req_body_form(req, !!!params)
   httr2::req_perform(req)
 }
 

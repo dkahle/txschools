@@ -19,7 +19,8 @@ txs_cache_delete(
 \item{year}{Optional ending year filter.}
 
 \item{source}{Optional source filter (\code{"tapr"}, \code{"src"}, \code{"aeis"},
-\code{"peims"}).}
+\code{"peims"}, \code{"taxrates"}, \code{"first"}, \code{"crosswalk"}, \code{"boundaries"},
+\code{"viewer"}).}
 
 \item{level}{Optional level filter (\code{"campus"}, \code{"district"}, …).}
 

@@ -15,7 +15,9 @@ Description: Tools for discovering, downloading, caching, parsing, and citing
     fund/function/object-level district and charter financial data
     (budgets and actuals, 1999-2000 onward), and school district property
     tax rates (Texas Comptroller and TEA adopted-rate workbooks, 2005-06
-    onward) with an interactive district tax-rate map viewer, plus a
+    onward) with an interactive district tax-rate map viewer, and the
+    Financial Integrity Rating System of Texas (FIRST) ratings of
+    districts and charters (2002-03 onward), plus a
     name-to-identifier directory of Texas campuses and districts and
     helpers joining districts to Census geography. Downloads
     happen on demand against TEA's public pages; files are cached locally

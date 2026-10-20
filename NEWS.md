@@ -231,3 +231,29 @@
   requests per host through in a burst before throttling began. The
   package now requires httr2 >= 1.1.1 (which `txs_crosswalk()` already
   needed).
+
+## FIRST financial integrity ratings (2026-10)
+
+* New source `txs_get_first()`: TEA's Financial Integrity Rating
+  System of Texas (FIRST) ratings for every district (School FIRST,
+  2002-03 onward) and charter (Charter FIRST, 2011-12 onward,
+  including the separate university-charter list since 2017-18). One
+  tidy row per district or charter and rating year: status, rating,
+  letter grade (2015-16 onward), score, a `fiscal_year` key that
+  lines each rating up with the PEIMS actuals it was computed from,
+  and a `release` column. `years` are ending rating years (2026 means
+  the 2025-26 ratings) and are required.
+* `release` flags preliminary ratings. Charter FIRST labels its
+  workbooks correctly, but School FIRST titles every workbook "Final"
+  -- including the preliminary 2025-26 ratings -- so district rows
+  downloaded before December 1 of the rating year count as
+  preliminary. Cached preliminary copies are never replaced silently;
+  the function points to `refresh = TRUE` once finals are due.
+* TEA serves FIRST only through two ASP.NET search apps (no files, no
+  API), so each workbook is fetched in a short cookie session: page,
+  year postback, Download (plus a list postback for university
+  charters). The internal HTTP layer gains cookie-jar support and an
+  in-memory form POST, and each workbook is checked (zip signature,
+  header, title year, and list) before it is cached, so a silently
+  failed postback can never cache the wrong year.
+

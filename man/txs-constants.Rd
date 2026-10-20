@@ -11,6 +11,9 @@
 \alias{TXS_INDEX_PEIMS_CODES}
 \alias{TXS_INDEX_COMPTROLLER_RATES}
 \alias{TXS_URL_TEA_ADOPTED_RATES}
+\alias{TXS_LANDING_FIRST}
+\alias{TXS_URL_SCHOOL_FIRST}
+\alias{TXS_URL_CHARTER_FIRST}
 \title{Package-level constants}
 \usage{
 TXS_BROKER_URL
@@ -30,6 +33,12 @@ TXS_INDEX_PEIMS_CODES
 TXS_INDEX_COMPTROLLER_RATES
 
 TXS_URL_TEA_ADOPTED_RATES
+
+TXS_LANDING_FIRST
+
+TXS_URL_SCHOOL_FIRST
+
+TXS_URL_CHARTER_FIRST
 }
 \description{
 Internal constants used to identify TEA endpoints, build the HTTP

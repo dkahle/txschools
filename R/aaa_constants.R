@@ -71,6 +71,31 @@ TXS_URL_TEA_ADOPTED_RATES <- paste0(
   "additional-finance-resources/school-district-adopted-tax-rates-1.xlsx"
 )
 
+#' @rdname txs-constants
+TXS_LANDING_FIRST <- paste0(
+  "https://tea.texas.gov/data-reports/financial-compliance/",
+  "financial-integrity-rating-system-texas-first"
+)
+
+# The two public ASP.NET apps behind TEA's FIRST ratings: School FIRST
+# (districts) and Charter FIRST (charters, with a separate
+# university-charter view).
+#' @rdname txs-constants
+TXS_URL_SCHOOL_FIRST <-
+  "https://tealprod.tea.state.tx.us/First/forms/Main.aspx"
+
+#' @rdname txs-constants
+TXS_URL_CHARTER_FIRST <-
+  "https://pryor.tea.state.tx.us/Tea.CharterFirst.Web/Public/District.aspx"
+
+# First ending rating year each FIRST list covers (2003 = 2002-03).
+TXS_FIRST_RATING_START <- c(district = 2003L, charter = 2012L,
+                            university_charter = 2018L)
+
+# Month-day by which TEA has posted final FIRST ratings for rating year
+# Y (preliminary ratings post in August of Y, finals by mid-November).
+TXS_FIRST_FINAL_CUTOFF <- "12-01"
+
 # Static UA string. We append the installed package version at runtime in
 # zzz.R rather than calling utils::packageVersion() at parse time (which
 # would resolve to NA during R CMD check installs).

@@ -27,6 +27,9 @@ Agency (TEA):
 - **Property tax rates** (2005-06-present): district M&O/I&S rates from
   the Texas Comptroller and TEA workbooks via `txs_get_tax_rates()`,
   with an interactive map explorer (`txs_viewer()`).
+- **FIRST financial ratings** (2002-03-present): TEA’s Financial
+  Integrity Rating System of Texas ratings for every district and
+  charter via `txs_get_first()`.
 
 Every table these functions return is documented in a machine-readable
 data dictionary – column types, ranges, masking semantics,
@@ -45,9 +48,9 @@ generated from that same file.
 ## Disclaimer
 
 `txschools` is **not affiliated with or endorsed by the Texas Education
-Agency**. It downloads files from TEA’s *public* TAPR/SRC/AEIS pages on
-demand and does **not** redistribute TEA data. Users are responsible for
-compliance with [TEA’s site
+Agency**. It downloads files from TEA’s *public* web pages on demand and
+does **not** redistribute TEA data. Users are responsible for compliance
+with [TEA’s site
 policies](https://tea.texas.gov/about-tea/welcome-and-overview/site-policies)
 and with FERPA and other applicable privacy laws. Masking and
 suppression values applied by TEA are preserved exactly; this package
@@ -987,12 +990,14 @@ district-year table – a `rate_source` column records which file each row
 came from:
 
 ``` r
-txs_get_tax_rates(2024, verbose = FALSE) |>
+txs_get_tax_rates(2024:2026, verbose = FALSE) |>
   filter(district == "161920")
-#> # A tibble: 1 × 9
+#> # A tibble: 3 × 9
 #>    year school_year district district_name    mo_rate is_rate total_rate   mcr
 #>   <int> <chr>       <chr>    <chr>              <dbl>   <dbl>      <dbl> <dbl>
-#> 1  2024 2023-24     161920   China Spring ISD   0.677   0.344       1.02    NA
+#> 1  2024 2023-24     161920   China Spring ISD   0.677   0.344      1.02     NA
+#> 2  2025 2024-25     161920   China Spring ISD   0.667   0.352      1.02     NA
+#> 3  2026 2025-26     161920   China Spring ISD   0.727   0.255      0.982    NA
 #> # ℹ 1 more variable: rate_source <chr>
 ```
 
@@ -1025,6 +1030,48 @@ txs_viewer_prepare_finance()
 txs_viewer()
 ```
 
+## FIRST financial integrity ratings
+
+Every year TEA rates each district’s and charter’s financial management
+under FIRST, the Financial Integrity Rating System of Texas, based on
+the prior fiscal year’s audited financials. `txs_get_first()` pulls the
+statewide ratings – School FIRST for districts since 2002-03, Charter
+FIRST for charters since 2011-12 – into one tidy table:
+
+``` r
+first <- txs_get_first(2022:2026, type = "district", verbose = FALSE)
+first |>
+  filter(district == "161920") |>
+  select(school_year, district_name, rating, score, release)
+#> # A tibble: 5 × 5
+#>   school_year district_name    rating                         score release    
+#>   <chr>       <chr>            <chr>                          <dbl> <chr>      
+#> 1 2021-22     CHINA SPRING ISD A = Superior Achievement         100 final      
+#> 2 2022-23     CHINA SPRING ISD A = Superior Achievement          96 final      
+#> 3 2023-24     CHINA SPRING ISD A = Superior Achievement          96 final      
+#> 4 2024-25     CHINA SPRING ISD A = Superior Achievement          92 final      
+#> 5 2025-26     CHINA SPRING ISD B = Above Standard Achievement    88 preliminary
+```
+
+``` r
+first |>
+  filter(year == 2026) |>
+  count(grade)
+#> # A tibble: 4 × 2
+#>   grade     n
+#>   <chr> <int>
+#> 1 A       830
+#> 2 B       111
+#> 3 C        58
+#> 4 F        19
+```
+
+The newest year’s ratings are preliminary from August until TEA posts
+final ratings by mid-November; the `release` column says which, and
+`refresh = TRUE` replaces a cached preliminary copy. `fiscal_year` lines
+each rating up with the PEIMS actuals it was computed from, via
+`txs_get_peims_finance(fiscal_year, "actual")`.
+
 ## Two ways to get data, and what each one costs
 
 The examples above use two different acquisition patterns, and it is
@@ -1038,12 +1085,14 @@ worth choosing deliberately because they have opposite cost profiles:
   campuses that way is five hundred. This mode is right when you care
   about *a few entities in depth*.
 - **Statewide file pulls** (`txs_get_tapr_file()`, `txs_get_aeis()`,
-  `txs_get_peims_finance()`) download one file containing *every* campus
-  or district in Texas for a year and dataset – a single request, but
-  megabytes (a district STAAR file runs ~5-14 MB). You then filter
-  locally, as the McLennan County comparison above does. This mode is
-  right when you compare *many entities on a few measures*: eight
-  districts over nine years cost nine requests there, not seventy-two.
+  `txs_get_peims_finance()`, `txs_get_first()`) download one file
+  containing *every* campus or district in Texas for a year and dataset
+  – a single request, but megabytes (a district STAAR file runs ~5-14
+  MB; FIRST’s small workbooks instead take a short three- or
+  four-request session each). You then filter locally, as the McLennan
+  County comparison above does. This mode is right when you compare
+  *many entities on a few measures*: eight districts over nine years
+  cost nine requests there, not seventy-two.
 
 Either way, every downloaded file lands in a persistent local cache, so
 the network cost is paid once: re-running an analysis (or re-rendering
@@ -1076,24 +1125,26 @@ txs_cache_size()
 #> # A tibble: 1 × 3
 #>   n_files size_bytes size    
 #>     <int>      <dbl> <chr>   
-#> 1     191  448474842 448.5 MB
+#> 1     255  790852591 790.9 MB
 
 txs_cache_size(by = c("source", "data_type"))
-#> # A tibble: 12 × 5
+#> # A tibble: 14 × 5
 #>    source     data_type     n_files size_bytes size    
 #>    <chr>      <chr>           <int>      <dbl> <chr>   
-#>  1 aeis       rates               2    1430175 1.4 MB  
+#>  1 aeis       rates               3    1488804 1.5 MB  
 #>  2 boundaries cartographic        1     473262 473.3 kB
 #>  3 crosswalk  ccd_directory       1      38704 38.7 kB 
-#>  4 peims      actual             12  251095978 251.1 MB
-#>  5 peims      budget             14   86429981 86.4 MB 
-#>  6 tapr       advanced           12   67707257 67.7 MB 
-#>  7 tapr       dictionary         10    1614729 1.6 MB  
-#>  8 tapr       semantic          129   18386741 18.4 MB 
-#>  9 taxrates   comptroller         6    1947651 1.9 MB  
-#> 10 taxrates   tea                 1     242091 242.1 kB
-#> 11 viewer     artifact            2     776826 776.8 kB
-#> 12 viewer     peims_summary       1   18331447 18.3 MB
+#>  4 first      ratings             5     214298 214.3 kB
+#>  5 peims      actual             32  417291047 417.3 MB
+#>  6 peims      budget             51  251983642 252 MB  
+#>  7 src        report              1      10366 10.4 kB 
+#>  8 tapr       advanced           12   67707257 67.7 MB 
+#>  9 tapr       dictionary         10    1614729 1.6 MB  
+#> 10 tapr       semantic          129   18386741 18.4 MB 
+#> 11 taxrates   comptroller         6    1947651 1.9 MB  
+#> 12 taxrates   tea                 1     242091 242.1 kB
+#> 13 viewer     artifact            2     776802 776.8 kB
+#> 14 viewer     peims_summary       1   28677197 28.7 MB
 ```
 
 `txs_cache_delete()` takes the same filters as `txs_cache_size()` –
@@ -1127,7 +1178,8 @@ touching the cache at all.
 - Identifies itself with a clear, package-named `User-Agent`.
 - Respects `robots.txt` (configurable via
   `options("txschools.respect_robots")`).
-- Never scrapes TEAL/authenticated resources.
+- Never uses login-protected (TEAL) resources; the public FIRST search
+  pages it reads need no login.
 - Every download is cached with provenance sidecars (see the cache
   section above), so nothing is requested twice.
 

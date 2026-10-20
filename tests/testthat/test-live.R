@@ -2,7 +2,7 @@
 # TXS_LIVE=true so CRAN/CI stay offline; run them with
 #   TXS_LIVE=true Rscript -e 'devtools::test(filter = "live")'
 # These are the guard against fixture drift: every claimed data path is
-# exercised for real, politely (~10 rate-limited requests total).
+# exercised for real, politely (~25 rate-limited requests total).
 
 skip_if_not_live <- function() {
   testthat::skip_if_not(
@@ -122,4 +122,30 @@ test_that("live: Urban crosswalk API resolves Texas districts", {
   xw <- txs_crosswalk(verbose = FALSE)
   expect_gt(nrow(xw), 1000)
   expect_true("161920" %in% xw$district)
+})
+
+test_that("live: FIRST ratings for districts, charters, university charters", {
+  skip_if_not_live()
+  local_cache()
+  x <- txs_get_first(2024, verbose = FALSE)
+  districts <- x[x$type == "district", ]
+  charters <- x[x$type == "charter" & !x$university_charter, ]
+  university <- x[x$university_charter, ]
+  expect_gt(nrow(districts), 1000)
+  expect_gt(nrow(charters), 150)
+  expect_true(nrow(university) >= 3 && nrow(university) <= 10)
+  expect_true(all(is.na(university$score)))
+  expect_equal(anyDuplicated(x[c("year", "district")]), 0L)
+  expect_setequal(unique(x$release), "final")
+  expect_true(all(x$grade %in% c("A", "B", "C", "F", NA)))
+  expect_true(all(nchar(x$district) == 6L))
+})
+
+test_that("live: FIRST deep history parses the pre-letter-grade labels", {
+  skip_if_not_live()
+  local_cache()
+  x <- txs_get_first(2003, type = "district", verbose = FALSE)
+  expect_gt(nrow(x), 1000)
+  expect_true(all(is.na(x$grade)))
+  expect_true("Superior Achievement" %in% x$rating)
 })

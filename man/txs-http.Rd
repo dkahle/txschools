@@ -4,12 +4,15 @@
 \alias{txs-http}
 \alias{http_request}
 \alias{http_get}
+\alias{http_post_form}
 \alias{http_download}
 \title{Internal HTTP helpers}
 \usage{
-http_request(url, timeout = NULL, max_tries = NULL)
+http_request(url, timeout = NULL, max_tries = NULL, cookies = NULL)
 
-http_get(url, timeout = NULL, max_tries = NULL)
+http_get(url, timeout = NULL, max_tries = NULL, cookies = NULL)
+
+http_post_form(url, params, timeout = NULL, max_tries = NULL, cookies = NULL)
 
 http_download(
   url,
@@ -29,6 +32,10 @@ Thin wrappers around \code{httr2} that enforce:
 \item configurable timeout (\code{options("txschools.timeout")}),
 \item a \code{robots.txt} check before each request.
 }
+
+The method is left implicit (curl's POST-with-body), never set with
+\code{httr2::req_method()}: a 302 answer to the post must be followed as
+a GET, which an explicit method would carry over to the redirect.
 
 \code{method = "post"} sends \code{params} as a URL-encoded form body (used for
 TEA's SAS broker and AEIS CGI endpoints); \code{method = "get"} appends

@@ -26,6 +26,7 @@ reference:
   - txs_open_src
   - txs_get_aeis
   - txs_get_peims_finance
+  - txs_get_first
 
 - title: TAPR semantic datasets
   desc: Discover semantic TAPR table outputs.

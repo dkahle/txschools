@@ -20,6 +20,13 @@ test_that("normalize_year enforces per-source coverage", {
   expect_error(normalize_year(2020, source = "src"), "out of range")
 })
 
+test_that("normalize_year bounds FIRST rating years", {
+  expect_identical(normalize_year(2003, source = "first"), 2003L)
+  expect_error(normalize_year(2002, source = "first"), "FIRST `year`")
+  current <- as.integer(format(Sys.Date(), "%Y"))
+  expect_error(normalize_year(current + 1L, source = "first"), "out of range")
+})
+
 test_that("year_label formats YYYY-YY", {
   expect_identical(year_label(2024), "2023-24")
   expect_identical(year_label(2000), "1999-00")

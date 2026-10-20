@@ -7,8 +7,8 @@
 #'
 #' @param year Integer scalar; the ending calendar year.
 #' @param source Optional TEA program (`"tapr"`, `"aeis"`, `"src"`,
-#'   `"peims"`); when given, the year is validated against that
-#'   program's coverage.
+#'   `"peims"`, `"taxrates"`, `"first"`); when given, the year is
+#'   validated against that program's coverage.
 #' @return Integer scalar.
 #' @keywords internal
 normalize_year <- function(year, source = NULL) {
@@ -34,6 +34,8 @@ normalize_year <- function(year, source = NULL) {
     peims = c(TXS_FIRST_PEIMS_YEAR, current + 1L),
     # Tax year = ending year - 1; rates for the coming year post in fall.
     taxrates = c(TXS_FIRST_TAXRATES_YEAR, current + 1L),
+    # Ending rating year; ratings for year Y post in August of Y.
+    first = c(TXS_FIRST_RATING_START[["district"]], current),
     c(TXS_FIRST_PEIMS_YEAR, current + 1L)
   )
   if (y < bounds[1] || y > bounds[2]) {

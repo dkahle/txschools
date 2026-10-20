@@ -10,7 +10,7 @@
 #' @param x Optional. A tibble returned by `txs_get_*()`. If `NULL`,
 #'   returns a generic citation for the named `source`.
 #' @param source One of `"tapr"`, `"src"`, `"aeis"`, `"peims"`,
-#'   `"taxrates"`, `"crosswalk"`, `"boundaries"`.
+#'   `"taxrates"`, `"first"`, `"crosswalk"`, `"boundaries"`.
 #' @return A `bibentry`.
 #' @examples
 #' txs_cite(source = "tapr")
@@ -47,9 +47,9 @@ txs_cite <- function(x = NULL, source = "tapr") {
   }
   if (!is.null(x) && !is.null(attr(x, "txschools")) &&
       isTRUE(attr(x, "txschools")$source %in%
-               c("taxrates", "crosswalk", "boundaries"))) {
-    # Non-TEA (or multi-publisher) sources: cite the program, noting
-    # the retrieval time recorded on the object.
+               c("taxrates", "first", "crosswalk", "boundaries"))) {
+    # Non-TEA, multi-publisher, or multi-file sources: cite the
+    # program, noting the retrieval time recorded on the object.
     meta <- attr(x, "txschools")
     bib <- txs_cite(source = meta$source)
     retrieved <- meta$retrieved_at %||% NA_character_
@@ -82,7 +82,7 @@ txs_cite <- function(x = NULL, source = "tapr") {
     ))
   }
   source <- match.arg(source, c("tapr", "src", "aeis", "peims", "taxrates",
-                                "crosswalk", "boundaries"))
+                                "first", "crosswalk", "boundaries"))
   prog <- switch(
     source,
     tapr = list(name = "Texas Academic Performance Reports",
@@ -107,6 +107,14 @@ txs_cite <- function(x = NULL, source = "tapr") {
         "Education Agency adopted-tax-rates workbook:",
         TXS_URL_TEA_ADOPTED_RATES
       )
+    ),
+    first = list(
+      name = paste(
+        "Financial Integrity Rating System of Texas (FIRST) ratings:",
+        "School FIRST and Charter FIRST"
+      ),
+      url  = TXS_LANDING_FIRST,
+      publisher = "Texas Education Agency"
     ),
     crosswalk = list(
       name = "Education Data Portal: CCD school district directory",

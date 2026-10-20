@@ -6,8 +6,9 @@ label: Texas Education Agency public school-performance data (via txschools)
 description: >
   Tables returned by the txschools R package, which downloads, caches,
   and parses public data published by the Texas Education Agency (TEA):
-  TAPR (2013-present), SRC (2004-2019), AEIS (2004-2012), and PEIMS
-  financial data (1999-2000-present). The package redistributes no
+  TAPR (2013-present), SRC (2004-2019), AEIS (2004-2012), PEIMS
+  financial data (1999-2000-present), and FIRST financial integrity
+  ratings (2002-03-present). The package redistributes no
   data; every table below is materialized on demand from TEA's public
   pages and files. Values suppressed by TEA under FERPA are preserved
   as masking codes, never imputed.
@@ -22,7 +23,7 @@ details: >
   all-character, and is not described here.
 
 version:
-  date: 2026-07-19
+  date: 2026-10-19
 
 tables:
   - name: directory
@@ -666,6 +667,104 @@ tables:
           tea: TEA adopted-tax-rates workbook (backfill).
         constraints: [required]
 
+  - name: first_ratings
+    label: FIRST financial integrity ratings
+    description: >
+      One row per school district or open-enrollment charter per
+      rating year: TEA's Financial Integrity Rating System of Texas
+      (FIRST) rating, from School FIRST (districts, 2002-03 onward)
+      and Charter FIRST (charters, 2011-12 onward). Returned by
+      txs_get_first(). Each rating year's ratings are computed from
+      the prior fiscal year's audited financial data.
+    details: >
+      The rating system changed over time, so compare `score` within
+      an era: 2002-03 to 2013-14 used achievement labels ("Superior
+      Achievement" through "Substandard Achievement") on 65-85 point
+      scales; 2014-15 was pass/fail on 30 points; from 2015-16 ratings
+      are letter grades (A, B, C, F) on 100 points. University
+      charters, rated pass/fail in a separate list since 2017-18, have
+      `university_charter = true` and no score. TEA posts preliminary
+      ratings in August and final ratings by mid-November; School
+      FIRST labels every workbook "Final", so `release` marks district
+      rows downloaded before December 1 of the rating year as
+      preliminary, and charter rows follow TEA's own label.
+    columns:
+      - name: year
+        type: number(ordinal)
+        constraints: [required]
+        description: Ending rating year; 2026 means the 2025-26 ratings.
+        range: [2003, 2026]
+      - name: school_year
+        type: string
+        constraints: [required]
+        examples: ["2025-26", "2002-03"]
+      - name: fiscal_year
+        type: number(ordinal)
+        constraints: [required]
+        description: >
+          Fiscal year whose audited financial data was rated (year -
+          1); joins peims_finance.fiscal_year.
+        range: [2002, 2025]
+      - name: type
+        type: enum
+        values:
+          district: Traditional independent school district (School FIRST).
+          charter: Open-enrollment charter (Charter FIRST).
+        constraints: [required]
+      - name: university_charter
+        type: boolean
+        constraints: [required]
+        description: >
+          True for rows from TEA's separate university-charter list
+          (2017-18 onward; pass/fail, no score).
+      - name: district
+        type: string
+        constraints: [required]
+        description: Six-digit district number, zero-padded; charters included.
+        examples: ["001902", "161920", "003801"]
+      - name: district_name
+        type: string
+        examples: ["CAYUGA ISD", "PINEYWOODS COMMUNITY ACADEMY"]
+      - name: region
+        type: string
+        description: Two-digit Education Service Center region.
+        examples: ["07", "12"]
+      - name: status
+        type: enum
+        values:
+          Pass: Passed FIRST.
+          Fail: Failed FIRST.
+          Suspended: Rating suspended (charters, 2011-12 and 2012-13).
+          Undetermined: Rating not determined (charters, 2013-14).
+      - name: rating
+        type: string
+        description: TEA's rating label as published, whitespace-trimmed.
+        examples: ["A = Superior Achievement", "A - Superior Achievement",
+                   "Superior Achievement", "Pass", "Suspended: No Reason Given"]
+      - name: grade
+        type: enum
+        description: >
+          Letter grade (2015-16 onward); null for earlier years and for
+          pass/fail ratings.
+        values: [A, B, C, F]
+      - name: score
+        type: number(quantity)
+        units: points
+        description: >
+          FIRST points; the maximum depends on the era (100 since
+          2015-16). Null for university charters.
+        range: [0, 100]
+      - name: release
+        type: enum
+        values:
+          preliminary: Posted in August; may change on appeal.
+          final: Final ratings, posted by mid-November.
+        constraints: [required]
+      - name: last_updated
+        type: date
+        description: TEA's last-update stamp for the row.
+        range: ["2004-01-01", "2027-12-31"]
+
   - name: crosswalk
     label: TEA district number to NCES LEAID crosswalk
     description: >
@@ -726,6 +825,19 @@ relationships:
       Statewide-file variable codes are defined in the dictionary for
       the same year and level.
     conflicts: [year, school_year, level]
+  - join: first_ratings.district = directory.district
+    cardinality: many-to-one
+    description: >
+      A FIRST row's district or charter resolves to the directory's
+      district entry (directory `level = "district"` rows).
+    conflicts: [district_name, year, region]
+  - join: first_ratings.district = peims_finance.district AND first_ratings.fiscal_year = peims_finance.fiscal_year
+    cardinality: one-to-many
+    description: >
+      A rating pairs with the PEIMS actuals it was computed from: the
+      same district in the fiscal year before the rating year (use
+      `basis = "actual"`).
+    conflicts: [year, school_year, district_name, type]
   - join: tax_rates.district = crosswalk.district
     cardinality: many-to-one
     description: >
@@ -787,6 +899,11 @@ glossary:
     Open-enrollment charter school, reported by TEA under the
     nonprofit chart of accounts in PEIMS finance and as districts in
     most other tables.
+  FIRST: >
+    Financial Integrity Rating System of Texas, TEA's annual financial
+    accountability rating of every district (School FIRST) and charter
+    (Charter FIRST), based on the prior fiscal year's audited
+    financial data; the source of the first_ratings table.
   ESC region: >
     One of twenty Education Service Center regions Texas districts
     belong to (e.g. Region 12, Waco).

@@ -225,6 +225,29 @@ taxrates:
   tea_years: [2006, 2007, 2008, 2009, 2010, 2011, 2012, 2013, 2014, 2015,
               2016, 2017, 2018, 2019, 2020, 2021, 2022, 2023, 2024]
 
+first:
+  label: Financial Integrity Rating System of Texas (School FIRST + Charter FIRST)
+  # Two public ASP.NET WebForms apps; no API and no bulk-file index.
+  # Each statewide workbook comes from a session (cookies required):
+  # GET the page, POST a postback of the `...$ddlYear` select
+  # (__EVENTTARGET = its name), then POST again with the submit whose
+  # value is "Download" (an .xlsx comes back). The university-charter
+  # list needs one more postback of `...$ddlNonAdmin` =
+  # DistStatusUniversity (302 to District.aspx?UniversityCharters=true)
+  # before the Download. Year option VALUES differ by app for the same
+  # rating year (School 2024 = Charter 2025 = the 2025-26 ratings), so
+  # years are matched by the option LABEL ("2025-2026"). School FIRST
+  # titles every workbook "Final", even while ratings are preliminary
+  # (August to mid-November); Charter FIRST labels them correctly.
+  # txs_get_first() reads the live dropdowns; these years document the
+  # coverage verified 2026-10-19 (ending rating years).
+  landing: https://tea.texas.gov/data-reports/financial-compliance/financial-integrity-rating-system-texas-first
+  school_url: https://tealprod.tea.state.tx.us/First/forms/Main.aspx
+  charter_url: https://pryor.tea.state.tx.us/Tea.CharterFirst.Web/Public/District.aspx
+  district_years: [2003, 2026]
+  charter_years: [2012, 2026]
+  university_charter_years: [2018, 2026]
+
 src:
   label: School Report Card
   base: https://rptsvr1.tea.texas.gov/perfreport/src

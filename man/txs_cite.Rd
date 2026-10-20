@@ -11,7 +11,7 @@ txs_cite(x = NULL, source = "tapr")
 returns a generic citation for the named \code{source}.}
 
 \item{source}{One of \code{"tapr"}, \code{"src"}, \code{"aeis"}, \code{"peims"},
-\code{"taxrates"}, \code{"crosswalk"}, \code{"boundaries"}.}
+\code{"taxrates"}, \code{"first"}, \code{"crosswalk"}, \code{"boundaries"}.}
 }
 \value{
 A \code{bibentry}.
