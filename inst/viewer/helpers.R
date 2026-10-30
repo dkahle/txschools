@@ -82,6 +82,67 @@ taxes_on_home <- function(value, kind, school_year, home_value) {
   rate_equiv * taxable / 100
 }
 
+# FIRST rating for the district card: the map year's, else the latest
+# earlier one (TEA posts a school year's ratings in August, so the newest
+# tax year often has none yet). NULL when the district has no rating.
+first_rating_for <- function(first, district, school_year) {
+  r <- first[first$district %in% district &
+               first$school_year <= school_year, ]
+  if (!nrow(r)) return(NULL)
+  # Labels like "2023-24" sort as text (which.max() needs numbers).
+  r[which(r$school_year == max(r$school_year))[1], ]
+}
+
+# One line for the district card: the letter grade (2015-16 onward; pass
+# or fail before) as a colored chip, then the rating, score, and whether
+# TEA's ratings for that year are still preliminary.
+first_rating_tag <- function(r, school_year) {
+  if (is.null(r)) {
+    return(shiny::tags$div(class = "small text-muted mb-2",
+                           "No FIRST financial rating on record."))
+  }
+  grade_colors <- c(A = "#1a9850", B = "#66bd63", C = "#f39c12",
+                    F = "#d73027")
+  graded <- !is.na(r$grade)
+  chip <- if (graded) r$grade else r$status %||% "?"
+  color <- if (graded) {
+    grade_colors[[r$grade]]
+  } else if (identical(r$status, "Pass")) {
+    "#6c757d"
+  } else {
+    "#d73027"
+  }
+  label <- sub("^\\s*[ABCF]\\s*[=-]\\s*", "", r$rating)
+  if (identical(label, chip)) label <- NULL
+  details <- c(
+    label,
+    if (!is.na(r$score)) paste(format(r$score), "points"),
+    if (identical(r$release, "preliminary")) "preliminary"
+  )
+  when <- if (identical(r$school_year, school_year)) {
+    r$school_year
+  } else {
+    paste0(r$school_year, ", latest")
+  }
+  shiny::tags$div(
+    class = "small mb-2",
+    style = "display:flex;align-items:center;gap:8px;flex-wrap:wrap;",
+    title = paste(
+      "TEA's Financial Integrity Rating System of Texas grades each",
+      "district's financial management from its prior fiscal year's",
+      "audited finances."
+    ),
+    shiny::tags$span(class = "text-muted",
+                     sprintf("FIRST financial rating (%s)", when)),
+    shiny::tags$span(
+      style = sprintf(paste0("background:%s;color:#fff;font-weight:700;",
+                             "border-radius:4px;padding:0 8px;"), color),
+      chip
+    ),
+    shiny::tags$span(paste(details, collapse = " · "))
+  )
+}
+
 # School-year label embedded in a wide value column:
 # "total_rate__2022_23" -> "2022-23".
 col_to_sy <- function(col) gsub("_", "-", sub("^.*__", "", col))

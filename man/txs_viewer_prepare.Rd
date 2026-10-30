@@ -10,6 +10,7 @@ txs_viewer_prepare(
   boundaries_year = 2023,
   dir = NULL,
   refresh = FALSE,
+  first = TRUE,
   verbose = TRUE
 )
 }
@@ -27,6 +28,12 @@ CSV path with columns (\code{year} or \code{school_year}, \code{district} or
 
 \item{refresh}{If \code{TRUE}, re-download even if cached.}
 
+\item{first}{If \code{TRUE} (the default), also bake School FIRST ratings
+for the baked school years so the district card can show each
+district's grade (about three requests per school year on the
+first run). If they cannot be fetched, the bake still succeeds and
+the card omits them.}
+
 \item{verbose}{Print progress.}
 }
 \value{
@@ -37,10 +44,11 @@ list.
 Builds the baked data artifacts behind \code{\link[=txs_viewer]{txs_viewer()}}: statewide tax
 rates (with the penny decomposition) joined to district boundaries
 through the NCES crosswalk, written as a wide map table, a tidy long
-table, and a small metadata file. Composes \code{\link[=txs_get_tax_rates]{txs_get_tax_rates()}},
-\code{\link[=txs_derive_pennies]{txs_derive_pennies()}}, \code{\link[=txs_crosswalk]{txs_crosswalk()}}, and \code{\link[=txs_boundaries]{txs_boundaries()}} --
-the first run downloads several files and takes a few minutes;
-subsequent runs reuse the cache.
+table, and a small metadata file, plus each district's FIRST financial
+rating for the district detail card. Composes \code{\link[=txs_get_tax_rates]{txs_get_tax_rates()}},
+\code{\link[=txs_derive_pennies]{txs_derive_pennies()}}, \code{\link[=txs_crosswalk]{txs_crosswalk()}}, \code{\link[=txs_boundaries]{txs_boundaries()}}, and
+\code{\link[=txs_get_first]{txs_get_first()}} -- the first run downloads several files and takes
+a few minutes; subsequent runs reuse the cache.
 }
 \examples{
 \dontrun{

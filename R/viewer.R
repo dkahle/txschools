@@ -3,15 +3,21 @@
 #' Builds the baked data artifacts behind [txs_viewer()]: statewide tax
 #' rates (with the penny decomposition) joined to district boundaries
 #' through the NCES crosswalk, written as a wide map table, a tidy long
-#' table, and a small metadata file. Composes [txs_get_tax_rates()],
-#' [txs_derive_pennies()], [txs_crosswalk()], and [txs_boundaries()] --
-#' the first run downloads several files and takes a few minutes;
-#' subsequent runs reuse the cache.
+#' table, and a small metadata file, plus each district's FIRST financial
+#' rating for the district detail card. Composes [txs_get_tax_rates()],
+#' [txs_derive_pennies()], [txs_crosswalk()], [txs_boundaries()], and
+#' [txs_get_first()] -- the first run downloads several files and takes
+#' a few minutes; subsequent runs reuse the cache.
 #'
 #' @inheritParams txs_get_tax_rates
 #' @param boundaries_year Census TIGER vintage for [txs_boundaries()].
 #' @param dir Output directory; default `file.path(txs_cache_dir(),
 #'   "viewer")`, where [txs_viewer()] looks.
+#' @param first If `TRUE` (the default), also bake School FIRST ratings
+#'   for the baked school years so the district card can show each
+#'   district's grade (about three requests per school year on the
+#'   first run). If they cannot be fetched, the bake still succeeds and
+#'   the card omits them.
 #' @param verbose Print progress.
 #' @return Invisibly, a list with `dir`, `paths`, and the metadata
 #'   list.
@@ -26,6 +32,7 @@ txs_viewer_prepare <- function(years = NULL,
                                boundaries_year = 2023,
                                dir = NULL,
                                refresh = FALSE,
+                               first = TRUE,
                                verbose = TRUE) {
   for (pkg in c("sf", "tigris", "jsonlite")) {
     if (!requireNamespace(pkg, quietly = TRUE)) {
@@ -42,8 +49,13 @@ txs_viewer_prepare <- function(years = NULL,
   bnd <- txs_boundaries(year = boundaries_year, refresh = refresh,
                         verbose = verbose)
 
+  ratings <- if (isTRUE(first)) {
+    viewer_first(rates, refresh = refresh, verbose = verbose)
+  }
+
   finance_long <- viewer_finance_long(rates, xwalk)
-  paths <- viewer_build_artifact(bnd, finance_long, dir = dir)
+  paths <- viewer_build_artifact(bnd, finance_long, dir = dir,
+                                 first = ratings)
 
   meta <- jsonlite::read_json(paths[["meta"]], simplifyVector = TRUE)
   if (verbose) {
@@ -67,10 +79,37 @@ viewer_finance_long <- function(rates, xwalk) {
     dplyr::arrange(.data$geoid, .data$year)
 }
 
-# Bake the three artifacts: districts.rds (wide sf, one column per
-# metric-year), finance.rds (tidy long), meta.json. Sidecars make them
-# visible to txs_cache_list()/txs_cache_delete(source = "viewer").
-viewer_build_artifact <- function(boundaries, finance_long, dir) {
+# School FIRST ratings for the district card, for the baked school years
+# TEA could have rated (a school year's ratings post in August of its
+# ending year). Optional: a failure leaves the card without ratings
+# rather than failing the bake.
+viewer_first <- function(rates, refresh, verbose) {
+  current <- as.integer(format(Sys.Date(), "%Y"))
+  years <- sort(unique(rates$year))
+  years <- years[years >= TXS_FIRST_RATING_START[["district"]] &
+                   years <= current]
+  if (!length(years)) return(NULL)
+  tryCatch({
+    x <- txs_get_first(years, type = "district", refresh = refresh,
+                       verbose = verbose)
+    x[c("district", "year", "school_year", "status", "rating", "grade",
+        "score", "release")]
+  }, error = function(e) {
+    cli::cli_alert_warning(paste0(
+      "FIRST ratings unavailable ({conditionMessage(e)}); the district ",
+      "card will omit them."
+    ))
+    NULL
+  })
+}
+
+# Bake the artifacts: districts.rds (wide sf, one column per
+# metric-year), finance.rds (tidy long), meta.json, and the optional
+# first.rds (FIRST ratings; removed when this bake has none, so the app
+# never shows ratings from an older bake). Sidecars make them visible to
+# txs_cache_list()/txs_cache_delete(source = "viewer").
+viewer_build_artifact <- function(boundaries, finance_long, dir,
+                                  first = NULL) {
   dir.create(dir, recursive = TRUE, showWarnings = FALSE)
 
   metric_cols <- intersect(
@@ -113,13 +152,23 @@ viewer_build_artifact <- function(boundaries, finance_long, dir) {
   jsonlite::write_json(meta, paths[["meta"]], auto_unbox = TRUE,
                        pretty = TRUE)
 
-  for (p in paths[c("districts", "finance")]) {
+  first_path <- file.path(dir, "first.rds")
+  if (!is.null(first) && nrow(first)) {
+    saveRDS(tibble::as_tibble(first), first_path)
+    paths <- c(paths, first = first_path)
+  } else {
+    unlink(c(first_path, sidecar_path(first_path)))
+  }
+
+  for (key in intersect(c("districts", "finance", "first"), names(paths))) {
+    p <- paths[[key]]
     write_sidecar(p, list(
       source = "viewer", year = NA_integer_, school_year = NA_character_,
-      level = "district", data_type = "artifact", dataset = NA_character_,
-      file_format = "rds", source_url = NA_character_,
-      retrieved_at = iso8601_now(), sha256 = sha256_file(p),
-      size_bytes = file.size(p)
+      level = "district",
+      data_type = if (key == "first") "first_ratings" else "artifact",
+      dataset = NA_character_, file_format = "rds",
+      source_url = NA_character_, retrieved_at = iso8601_now(),
+      sha256 = sha256_file(p), size_bytes = file.size(p)
     ))
   }
   paths
@@ -241,8 +290,10 @@ txs_viewer_prepare_finance <- function(years = NULL,
 #' tax rates: an animated choropleth (MapLibre via mapgl) with the M&O
 #' rate decomposed into the Tier One compressed rate and golden/copper
 #' pennies, district search, taxes-on-a-home mode, and a multi-district
-#' comparison tab. Run [txs_viewer_prepare()] once first to bake the
-#' data. If [txs_viewer_prepare_finance()] has also been run, a third
+#' comparison tab. Clicking a district opens a detail card with its rate
+#' history and its FIRST financial rating for the selected school year.
+#' Run [txs_viewer_prepare()] once first to bake the data. If
+#' [txs_viewer_prepare_finance()] has also been run, a third
 #' Finance tab shows an interactive PEIMS money-flow (Sankey) diagram
 #' per district/year/basis; it needs the optional `ggsankey` package
 #' and degrades gracefully (with an install hint) when that isn't

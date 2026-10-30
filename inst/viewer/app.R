@@ -43,6 +43,13 @@ if (has_finance) {
   fin_bases <- sort(unique(peims_summary$basis))
 }
 
+# FIRST ratings for the district card are optional too (absent when baked
+# with txs_viewer_prepare(first = FALSE), or before ratings were added):
+# without them the card simply omits the line.
+first_path <- file.path(data_dir, "first.rds")
+has_first <- file.exists(first_path)
+first_ratings <- if (has_first) readRDS(first_path) else NULL
+
 avail_years <- sort(unique(finance$school_year))
 # Precompute centroids (lng/lat) for fly-to on district search.
 ctr <- suppressWarnings(sf::st_coordinates(sf::st_centroid(sf::st_geometry(districts))))
@@ -367,8 +374,18 @@ server <- function(input, output, session) {
 
     tagList(
       h5(sprintf("%s (CDN %s)", nm, cdn)),
+      if (has_first) uiOutput("detail_first"),
       plotlyOutput("trend", height = "300px")
     )
+  })
+
+  # FIRST rating for the map's school year. Its own output, so stepping
+  # the year (or the play animation) redraws this line, not the chart.
+  output$detail_first <- renderUI({
+    g <- selected(); req(g, has_first, input$year)
+    cdn <- finance$district[match(g, finance$geoid)]
+    first_rating_tag(first_rating_for(first_ratings, cdn, input$year),
+                     input$year)
   })
 
   # Trend: total / M&O / I&S across years.

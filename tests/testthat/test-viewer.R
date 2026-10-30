@@ -32,18 +32,50 @@ viewer_fake_boundaries <- function() {
   )
 }
 
-test_that("txs_viewer_prepare bakes the three artifacts", {
+viewer_fake_first <- function() {
+  tibble::tibble(
+    year = c(2023L, 2024L, 2024L),
+    school_year = c("2022-23", "2023-24", "2023-24"),
+    fiscal_year = c(2022L, 2023L, 2023L),
+    type = "district", university_charter = FALSE,
+    district = c("161920", "161920", "057905"),
+    district_name = c("CHINA SPRING ISD", "CHINA SPRING ISD", "DALLAS ISD"),
+    region = c("12", "12", "10"), status = "Pass",
+    rating = c("A = Superior Achievement", "B = Above Standard Achievement",
+               "C = Meets Standard Achievement"),
+    grade = c("A", "B", "C"), score = c(96, 88, 75),
+    release = c("final", "preliminary", "preliminary"),
+    last_updated = as.Date("2024-11-01")
+  )
+}
+
+test_that("txs_viewer_prepare bakes the artifacts", {
   skip_if_not_installed("sf")
   skip_if_not_installed("jsonlite")
   local_cache()
+  asked <- NULL
   testthat::local_mocked_bindings(
     txs_get_tax_rates = function(...) viewer_fake_rates(),
     txs_crosswalk = function(...) viewer_fake_xwalk(),
-    txs_boundaries = function(...) viewer_fake_boundaries()
+    txs_boundaries = function(...) viewer_fake_boundaries(),
+    txs_get_first = function(years, type, ...) {
+      asked <<- list(years = years, type = type)
+      viewer_fake_first()
+    }
   )
 
   res <- txs_viewer_prepare(verbose = FALSE)
   expect_true(all(file.exists(res$paths)))
+  expect_setequal(names(res$paths),
+                  c("districts", "finance", "meta", "first"))
+
+  # FIRST ratings for the baked school years, districts only.
+  expect_equal(asked$years, c(2023L, 2024L))
+  expect_equal(asked$type, "district")
+  first <- readRDS(res$paths[["first"]])
+  expect_named(first, c("district", "year", "school_year", "status",
+                        "rating", "grade", "score", "release"))
+  expect_equal(nrow(first), 3L)
 
   districts <- readRDS(res$paths[["districts"]])
   expect_s3_class(districts, "sf")
@@ -75,6 +107,85 @@ test_that("txs_viewer_prepare bakes the three artifacts", {
   # Artifacts are visible to the cache tooling via sidecars.
   inv <- txs_cache_list()
   expect_true("viewer" %in% inv$source)
+  expect_true(any(inv$source == "viewer" & inv$data_type == "first_ratings"))
+})
+
+test_that("txs_viewer_prepare survives missing FIRST ratings", {
+  skip_if_not_installed("sf")
+  skip_if_not_installed("jsonlite")
+  local_cache()
+  testthat::local_mocked_bindings(
+    txs_get_tax_rates = function(...) viewer_fake_rates(),
+    txs_crosswalk = function(...) viewer_fake_xwalk(),
+    txs_boundaries = function(...) viewer_fake_boundaries(),
+    txs_get_first = function(...) viewer_fake_first()
+  )
+  res <- txs_viewer_prepare(verbose = FALSE)
+  first_path <- res$paths[["first"]]
+  expect_true(file.exists(first_path))
+
+  # A failed fetch still bakes the map data, and drops the older
+  # ratings rather than showing them beside newer rates.
+  testthat::local_mocked_bindings(
+    txs_get_first = function(...) stop("TEA is down")
+  )
+  expect_message(res <- txs_viewer_prepare(verbose = FALSE),
+                 "FIRST ratings unavailable")
+  expect_true(all(file.exists(res$paths)))
+  expect_false("first" %in% names(res$paths))
+  expect_false(file.exists(first_path))
+  expect_false(file.exists(sidecar_path(first_path)))
+
+  # first = FALSE skips the fetch entirely.
+  testthat::local_mocked_bindings(
+    txs_get_first = function(...) stop("should not be called")
+  )
+  res <- txs_viewer_prepare(first = FALSE, verbose = FALSE)
+  expect_false("first" %in% names(res$paths))
+})
+
+test_that("the district card shows the map year's FIRST rating", {
+  app_dir <- system.file("viewer", package = "txschools")
+  skip_if(app_dir == "", "inst/viewer not installed")
+  skip_if_not_installed("shiny")
+  e <- new.env()
+  sys.source(file.path(app_dir, "helpers.R"), envir = e)
+  first <- viewer_fake_first()
+
+  # The selected year's rating, else the latest earlier one.
+  expect_equal(e$first_rating_for(first, "161920", "2023-24")$grade, "B")
+  expect_equal(e$first_rating_for(first, "161920", "2022-23")$grade, "A")
+  expect_equal(e$first_rating_for(first, "161920", "2025-26")$school_year,
+               "2023-24")
+  expect_null(e$first_rating_for(first, "161920", "2021-22"))
+  expect_null(e$first_rating_for(first, "999999", "2023-24"))
+
+  html <- as.character(e$first_rating_tag(
+    e$first_rating_for(first, "161920", "2023-24"), "2023-24"
+  ))
+  expect_match(html, "FIRST financial rating (2023-24)", fixed = TRUE)
+  expect_match(html, ">B</span>", fixed = TRUE)
+  expect_match(html, "Above Standard Achievement")
+  expect_match(html, "88 points")
+  expect_match(html, "preliminary")
+
+  latest <- as.character(e$first_rating_tag(
+    e$first_rating_for(first, "161920", "2025-26"), "2025-26"
+  ))
+  expect_match(latest, "(2023-24, latest)", fixed = TRUE)
+
+  # Before letter grades: pass/fail chip plus TEA's label.
+  old <- tibble::tibble(
+    district = "161920", year = 2006L, school_year = "2005-06",
+    status = "Pass", rating = "Superior Achievement", grade = NA_character_,
+    score = 75, release = "final"
+  )
+  html <- as.character(e$first_rating_tag(old, "2005-06"))
+  expect_match(html, ">Pass</span>", fixed = TRUE)
+  expect_match(html, "Superior Achievement")
+  expect_false(grepl("preliminary", html))
+  expect_match(as.character(e$first_rating_tag(NULL, "2023-24")),
+               "No FIRST financial rating on record")
 })
 
 test_that("txs_viewer errors helpfully without prepared data", {
