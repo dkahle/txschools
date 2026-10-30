@@ -141,6 +141,12 @@
 <code>release</code> flags preliminary ratings. Charter FIRST labels its workbooks correctly, but School FIRST titles every workbook “Final” – including the preliminary 2025-26 ratings – so district rows downloaded before December 1 of the rating year count as preliminary. Cached preliminary copies are never replaced silently; the function points to <code>refresh = TRUE</code> once finals are due.</li>
 <li>TEA serves FIRST only through two ASP.NET search apps (no files, no API), so each workbook is fetched in a short cookie session: page, year postback, Download (plus a list postback for university charters). The internal HTTP layer gains cookie-jar support and an in-memory form POST, and each workbook is checked (zip signature, header, title year, and list) before it is cached, so a silently failed postback can never cache the wrong year.</li>
 </ul></div>
+<div class="section level3">
+<h3 id="first-grade-in-the-viewers-district-card-0-0-0-9000">FIRST grade in the viewer’s district card (2026-10)<a class="anchor" aria-label="anchor" href="#first-grade-in-the-viewers-district-card-0-0-0-9000"></a></h3>
+<ul><li>The district viewer’s detail card now shows the district’s FIRST financial rating for the school year on the map: a colored chip with the letter grade (pass/fail before 2015-16), TEA’s rating, the score, and whether that year’s ratings are still preliminary. Since TEA posts a school year’s ratings in August, a newer map year falls back to the latest rating, labeled as such. The line is its own output, so the play animation redraws it without redrawing the rate-history chart.</li>
+<li>
+<code><a href="../reference/txs_viewer_prepare.html">txs_viewer_prepare()</a></code> gains <code>first = TRUE</code>, baking School FIRST ratings for the baked school years into <code>first.rds</code> (about three requests per school year on the first run). A failed fetch does not fail the bake – the card just omits the line – and data baked before this change keeps working; re-run <code><a href="../reference/txs_viewer_prepare.html">txs_viewer_prepare()</a></code> to add the ratings.</li>
+</ul></div>
 </div>
   </main><aside class="col-md-3"><nav id="toc" aria-label="Table of contents"><h2>On this page</h2>
     </nav></aside></div>

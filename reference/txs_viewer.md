@@ -4,7 +4,8 @@ An interactive slippy-map explorer of Texas school district property tax
 rates: an animated choropleth (MapLibre via mapgl) with the M&O rate
 decomposed into the Tier One compressed rate and golden/copper pennies,
 district search, taxes-on-a-home mode, and a multi-district comparison
-tab. Run
+tab. Clicking a district opens a detail card with its rate history and
+its FIRST financial rating for the selected school year. Run
 [`txs_viewer_prepare()`](https://dkahle.github.io/txschools/reference/txs_viewer_prepare.md)
 once first to bake the data. If
 [`txs_viewer_prepare_finance()`](https://dkahle.github.io/txschools/reference/txs_viewer_prepare_finance.md)

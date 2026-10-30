@@ -4,12 +4,14 @@ Builds the baked data artifacts behind
 [`txs_viewer()`](https://dkahle.github.io/txschools/reference/txs_viewer.md):
 statewide tax rates (with the penny decomposition) joined to district
 boundaries through the NCES crosswalk, written as a wide map table, a
-tidy long table, and a small metadata file. Composes
+tidy long table, and a small metadata file, plus each district's FIRST
+financial rating for the district detail card. Composes
 [`txs_get_tax_rates()`](https://dkahle.github.io/txschools/reference/txs_get_tax_rates.md),
 [`txs_derive_pennies()`](https://dkahle.github.io/txschools/reference/txs_derive_pennies.md),
 [`txs_crosswalk()`](https://dkahle.github.io/txschools/reference/txs_crosswalk.md),
+[`txs_boundaries()`](https://dkahle.github.io/txschools/reference/txs_boundaries.md),
 and
-[`txs_boundaries()`](https://dkahle.github.io/txschools/reference/txs_boundaries.md)
+[`txs_get_first()`](https://dkahle.github.io/txschools/reference/txs_get_first.md)
 – the first run downloads several files and takes a few minutes;
 subsequent runs reuse the cache.
 
@@ -22,6 +24,7 @@ txs_viewer_prepare(
   boundaries_year = 2023,
   dir = NULL,
   refresh = FALSE,
+  first = TRUE,
   verbose = TRUE
 )
 ```
@@ -54,6 +57,13 @@ txs_viewer_prepare(
 - refresh:
 
   If `TRUE`, re-download even if cached.
+
+- first:
+
+  If `TRUE` (the default), also bake School FIRST ratings for the baked
+  school years so the district card can show each district's grade
+  (about three requests per school year on the first run). If they
+  cannot be fetched, the bake still succeeds and the card omits them.
 
 - verbose:
 

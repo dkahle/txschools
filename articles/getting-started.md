@@ -111,7 +111,7 @@ not one rectangular table.
 `  data_type   ``=`` ``"advanced"``,`\
 `  output      ``=`` ``"tidy"`\
 `)`\
-`#> ``ℹ`` Using cached file: /private/var/folders/sj/hzqk2hps4wzfm92lfjdhpv3m0000gn/T/RtmpvXxU7I/txschools-vignette/tapr/2023-24/campus/advanced/tapr_campus_2024_ref.csv`\
+`#> ``ℹ`` Using cached file: /private/var/folders/sj/hzqk2hps4wzfm92lfjdhpv3m0000gn/T/RtmpERGAs1/txschools-vignette/tapr/2023-24/campus/advanced/tapr_campus_2024_ref.csv`\
 `df`\
 `#> ``# A tibble: 63,574 × 15`\
 `#>    CAMPUS    CAMPNAME DISTRICT DISTNAME REGION GRDTYPE GRDSPAN  year school_year`\
@@ -180,7 +180,7 @@ Every call records source metadata as an attribute:
 `#> [1] "https://rptsvr1.tea.texas.gov/cgi/sas/broker"`\
 `#> `\
 `#> $retrieved_at`\
-`#> [1] "2026-10-20T02:01:05Z"`\
+`#> [1] "2026-10-30T18:43:01Z"`\
 `#> `\
 `#> $sha256`\
 `#> [1] "90e9275fea3219509c3b3ee2a4ad598ac4115667950935dc192bf3fb72a7ab95"`\
@@ -189,7 +189,7 @@ Every call records source metadata as an attribute:
 `#> [1] 1240102`\
 `#> `\
 `#> $cache_path`\
-`#> [1] "/private/var/folders/sj/hzqk2hps4wzfm92lfjdhpv3m0000gn/T/RtmpvXxU7I/txschools-vignette/tapr/2023-24/campus/advanced/tapr_campus_2024_ref.csv"`\
+`#> [1] "/private/var/folders/sj/hzqk2hps4wzfm92lfjdhpv3m0000gn/T/RtmpERGAs1/txschools-vignette/tapr/2023-24/campus/advanced/tapr_campus_2024_ref.csv"`\
 `#> `\
 `#> $used_cache`\
 `#> [1] TRUE`\
@@ -251,7 +251,7 @@ Statewide AEIS files (2004-2012) are keyed by level and dataset code:
 \
 [`txs_cite`](https://dkahle.github.io/txschools/reference/txs_cite.md)`(``df``)`\
 `#> Texas Education Agency (2026). "TAPR 2023-24, campus-level (advanced,`\
-`#> csv)." Retrieved 2026-10-20T02:01:05Z via the txschools R package;`\
+`#> csv)." Retrieved 2026-10-30T18:43:01Z via the txschools R package;`\
 `#> SHA-256 90e9275fea32., <https://rptsvr1.tea.texas.gov/cgi/sas/broker>.`
 
 ## Bulk multi-year downloads

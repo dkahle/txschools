@@ -1024,8 +1024,9 @@ join district-keyed tables to Census geography for mapping.
 
 Those pieces power an interactive slippy-map explorer that ships with
 the package – an animated choropleth of every district’s rates over two
-decades, with search, a taxes-on-a-home mode, and a multi-district
-comparison tab:
+decades, with search, a taxes-on-a-home mode, a district card showing
+each district’s rate history and FIRST financial rating, and a
+multi-district comparison tab:
 
 \
 [`txs_viewer_prepare`](https://dkahle.github.io/txschools/reference/txs_viewer_prepare.md)`(``)``   ``# bake the data (first run downloads a few files)`\

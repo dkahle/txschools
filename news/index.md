@@ -303,3 +303,21 @@
   in-memory form POST, and each workbook is checked (zip signature,
   header, title year, and list) before it is cached, so a silently
   failed postback can never cache the wrong year.
+
+### FIRST grade in the viewer’s district card (2026-10)
+
+- The district viewer’s detail card now shows the district’s FIRST
+  financial rating for the school year on the map: a colored chip with
+  the letter grade (pass/fail before 2015-16), TEA’s rating, the score,
+  and whether that year’s ratings are still preliminary. Since TEA posts
+  a school year’s ratings in August, a newer map year falls back to the
+  latest rating, labeled as such. The line is its own output, so the
+  play animation redraws it without redrawing the rate-history chart.
+- [`txs_viewer_prepare()`](https://dkahle.github.io/txschools/reference/txs_viewer_prepare.md)
+  gains `first = TRUE`, baking School FIRST ratings for the baked school
+  years into `first.rds` (about three requests per school year on the
+  first run). A failed fetch does not fail the bake – the card just
+  omits the line – and data baked before this change keeps working;
+  re-run
+  [`txs_viewer_prepare()`](https://dkahle.github.io/txschools/reference/txs_viewer_prepare.md)
+  to add the ratings.
